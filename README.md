@@ -1,11 +1,11 @@
-# Betaflight Configurator
+# GIGFPV Configurator
 
-![Betaflight](http://static.rcgroups.net/forums/attachments/6/1/0/3/7/6/a9088900-228-bf_logo.jpg)
+![GIGFPV](src/images/gf_logo_black.svg)
 
 [![Latest version](https://img.shields.io/github/v/release/betaflight/betaflight-configurator)](https://github.com/betaflight/betaflight-configurator/releases) [![Build](https://img.shields.io/github/actions/workflow/status/betaflight/betaflight-configurator/nightly.yml?branch=master)](https://github.com/betaflight/betaflight-configurator/actions/workflows/nightly.yml) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/betaflight-configurator/localized.svg)](https://crowdin.com/project/betaflight-configurator) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=betaflight_betaflight-configurator&metric=alert_status)](https://sonarcloud.io/dashboard?id=betaflight_betaflight-configurator) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Join us on Discord!](https://img.shields.io/discord/868013470023548938)](https://discord.gg/n4E6ak4u3c)
 
 
-Betaflight Configurator is a crossplatform configuration tool for the Betaflight flight control system.
+GIGFPV Configurator is a crossplatform configuration tool for the GIGFPV flight control system.
 
 It runs as an application under different operating systems and allows you to configure the Betaflight software running on any supported Betaflight target. [Downloads are available in Releases.](https://github.com/betaflight/betaflight-configurator/releases)
 
@@ -13,9 +13,9 @@ Various types of aircraft are supported by the tool and by Betaflight, e.g. quad
 
 ## Authors
 
-Betaflight Configurator is a [fork](#credits) of the Cleanflight Configurator with support for Betaflight instead of Cleanflight.
+GIGFPV Configurator is a [fork](#credits) of the Cleanflight Configurator with support for GIGFPV instead of Cleanflight.
 
-This configurator is the only configurator with support for Betaflight specific features. It will likely require that you run the latest firmware on the flight controller.
+This configurator is the only configurator with support for GIGFPV specific features. It will likely require that you run the latest firmware on the flight controller.
 
 If you are experiencing any problems please make sure you are running the [latest firmware version](https://github.com/betaflight/betaflight/releases/).
 

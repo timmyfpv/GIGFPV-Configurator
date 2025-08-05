@@ -6,11 +6,11 @@
     <script type="module" src="/src/js/utils/common.js?v=${Date.now()}"></script>
     <script type="module" src="/src/js/browserMain.js?v=${Date.now()}"></script>
 
-    <title>Betaflight</title>
-    <meta name="description" content="Configuration and management tool for the Betaflight flight control firmware">
-    <link rel="icon" href="/images/pwa/favicon.ico">
-    <link rel="apple-touch-icon" href="/images/pwa/apple-touch-icon.png" sizes="128x128">
-    <meta name="theme-color" content="#eea600">
+    <title>GIGFPV</title>
+    <meta name="description" content="Configuration and management tool for the GIGFPV flight control firmware">
+    <link rel="icon" href="/images/pwa/gf_icon.png">
+    <link rel="apple-touch-icon" href="/images/pwa/gf_icon.png" sizes="128x128">
+    <meta name="theme-color" content="#5b6bff">
 </head>
 <body>
 <div id="main-wrapper">
@@ -20,12 +20,12 @@
         <div id="menu_btn">
             <em class="fas fa-bars"></em>
         </div>
-        <betaflight-logo
+        <gigfpv-logo
             :configurator-version="CONFIGURATOR.getDisplayVersion()"
             :firmware-version="FC.CONFIG.flightControllerVersion"
             :firmware-id="FC.CONFIG.flightControllerIdentifier"
             :hardware-id="FC.CONFIG.hardwareName"
-        ></betaflight-logo>
+        ></gigfpv-logo>
         <port-picker
             v-model="PortHandler.portPicker"
             :connected-bluetooth-devices="PortHandler.currentBluetoothPorts"

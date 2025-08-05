@@ -1,8 +1,8 @@
 {
-  "name": "betaflight-configurator",
-  "productName": "Betaflight",
-  "displayName": "Betaflight - Configuration and management tool",
-  "description": "Crossplatform configuration and management tool for the Betaflight flight control firmware.",
+  "name": "gigfpv-configurator",
+  "productName": "GIGFPV",
+  "displayName": "GIGFPV - Configuration and management tool",
+  "description": "Crossplatform configuration and management tool for the GIGFPV flight control firmware.",
   "version": "11.0.0",
   "type": "module",
   "main": "index.html",
@@ -25,17 +25,17 @@
     "prepare": "husky install"
   },
   "window": {
-    "icon": "images/bf_icon_128.png",
+    "icon": "images/gigfpv-logo-black.png",
     "id": "main-window",
     "min_width": 1024,
     "min_height": 550,
-    "title": "Betaflight Configurator"
+    "title": "GIGFPV Configurator"
   },
   "repository": {
     "type": "git",
     "url": "github.com/betaflight/betaflight-configurator"
   },
-  "author": "The Betaflight open source project.",
+  "author": "The GIGFPV open source project.",
   "license": "GPL-3.0",
   "engines": {
     "node": "20.x"

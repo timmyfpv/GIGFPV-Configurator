@@ -5,22 +5,22 @@
 */
 
 body {
-    --primary-50: #fffaeb;
-    --primary-100: #fff4d6;
-    --primary-200: #ffe9ad;
-    --primary-300: #ffdc7a;
-    --primary-400: #ffcd42;
-    --primary-500: #ffbb00;
-    --primary-600: #e6a800;
-    --primary-700: #cc9600;
-    --primary-800: #a87b00;
-    --primary-900: #7a5a00;
-    --primary-950: #5c4300;
+    --primary-50: #f0f4ff;
+    --primary-100: #e0e9ff;
+    --primary-200: #c7d6ff;
+    --primary-300: #a5b8ff;
+    --primary-400: #7c8eff;
+    --primary-500: #5b6bff;
+    --primary-600: #4c5aff;
+    --primary-700: #3d49ff;
+    --primary-800: #3333cc;
+    --primary-900: #2a2a99;
+    --primary-950: #1a1a66;
 
-    --primary-transparent-1: rgba(255, 187, 0, 0.1);
-    --primary-transparent-2: rgba(255, 187, 0, 0.2);
-    --primary-transparent-3: rgba(255, 187, 0, 0.3);
-    --primary-transparent-4: rgba(255, 187, 0, 0.4);
+    --primary-transparent-1: rgba(91, 107, 255, 0.1);
+    --primary-transparent-2: rgba(91, 107, 255, 0.2);
+    --primary-transparent-3: rgba(91, 107, 255, 0.3);
+    --primary-transparent-4: rgba(91, 107, 255, 0.4);
 
     --surface-50: hsl(0, 0%, 100%);
     --surface-100: hsl(0, 0%, 98%);
