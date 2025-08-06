@@ -1,0 +1,103 @@
+<div class="tab-elrs_flasher">
+    <div class="content_wrapper">
+        <div class="gui_box">
+            <div class="gui_box_titlebar">
+                <div class="spacer_box_title">ELRS Flasher</div>
+            </div>
+            <div class="spacer">
+                <div class="elrs_flasher_content">
+                    <table class="cf_table">
+                        <tr>
+                            <td>
+                                <select name="firmware_version">
+                                    <option value="0" i18n="firmwareFlasherOptionLoading">Loading ...</option>
+                                </select>
+                                <div class="helpicon cf_tip_wide" i18n_title="firmwareFlasherOnlineSelectFirmwareVersionDescription"></div>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select name="hardware-vendor">
+                                    <option value="0" i18n="firmwareFlasherOptionLoading">Loading ...</option>
+                                </select>
+                                <div class="helpicon cf_tip_wide" i18n_title="firmwareFlasherHardwareVendorDescription"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select name="radio-frequency">
+                                    <option value="0" i18n="firmwareFlasherOptionLoading">Loading ...</option>
+                                </select>
+                                <div class="helpicon cf_tip_wide" i18n_title="firmwareFlasherRadioFrequencyDescription"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select name="hardware-target">
+                                    <option value="0" i18n="firmwareFlasherOptionLoading">Loading ...</option>
+                                </select>
+                                <div class="helpicon cf_tip_wide" i18n_title="firmwareFlasherHardwareTargetDescription"></div>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <input type="text" name="bind-phrase" placeholder="Bind Phrase">
+                                <div class="helpicon cf_tip_wide" i18n_title="firmwareFlasherBindPhraseDescription"></div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <select name="regulatory-domain">
+                                    <option value="0" i18n="firmwareFlasherOptionLoading">Loading ...</option>
+                                </select>
+                                <div class="helpicon cf_tip_wide" i18n_title="firmwareFlasherRegulatoryDomainDescription"></div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <input type="text" name="wifi-ssid" placeholder="WiFi SSID">
+                                <div class="helpicon cf_tip_wide" i18n_title="firmwareFlasherWifiSSIDDescription"></div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <input type="password" name="wifi-password" placeholder="WiFi Password">
+                                <div class="helpicon cf_tip_wide" i18n_title="firmwareFlasherWifiPasswordDescription"></div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <select name="flashing-method">
+                                    <option value="0" i18n="firmwareFlasherOptionLoading">Loading ...</option>
+                                </select>
+                                <div class="helpicon cf_tip_wide" i18n_title="firmwareFlasherFlashingMethodDescription"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+
+<div class="content_toolbar toolbar_fixed_bottom">
+    <div class="info"><a name="progressbar"></a>
+        <progress class="progress" value="0" min="0" max="100"></progress>
+        <span class="progressLabel"></span>
+    </div>
+    <div class="btn">
+        <a class="connect_device disabled" href="#" i18n="firmwareFlasherConnectDevice"></a>
+    </div>
+    <div class="btn">
+        <a class="flash_firmware disabled" href="#progressbar" i18n="firmwareFlasherFlashFirmware"></a> 
+    </div>
+</div>

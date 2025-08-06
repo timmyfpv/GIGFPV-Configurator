@@ -356,6 +356,9 @@
     "tabFirmwareFlasher": {
         "message": "Firmware Flasher"
     },
+    "tabElrsFlasher": {
+        "message": "ELRS Flasher"
+    },
     "tabLanding": {
         "message": "Welcome"
     },
@@ -3582,6 +3585,30 @@
     },
     "firmwareFlasherBranch": {
         "message": "Select Pull Request or Commit"
+    },
+    "firmwareFlasherHardwareTargetDescription": {
+        "message": "Select hardware target for your receiver"
+    },
+    "firmwareFlasherHardwareVendorDescription": {
+        "message": "Select hardware vendor for your receiver."
+    },
+    "firmwareFlasherRadioFrequencyDescription": {
+        "message": "Select radio frequency for your receiver."
+    },
+    "firmwareFlasherBindPhraseDescription": {
+        "message": "Enter bind phrase for your receiver."
+    },
+    "firmwareFlasherRegulatoryDomainDescription": {
+        "message": "Select regulatory domain for your receiver."
+    },
+    "firmwareFlasherFlashingMethodDescription": {
+        "message": "Select flashing method for your receiver."
+    },
+    "firmwareFlasherWifiPasswordDescription": {
+        "message": "Enter WiFi password for your receiver."
+    },
+    "firmwareFlasherWifiSSIDDescription": {
+        "message": "Enter WiFi SSID for your receiver."
     },
     "firmwareFlasherReleaseSummaryHead": {
         "message": "Release and Build info"
