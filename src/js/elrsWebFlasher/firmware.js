@@ -35,7 +35,7 @@ const getSettings = async (deviceType) => {
             const beeptype = store.options.tx.melodyType;
             options.beeptype = beeptype > 2 ? 2 : beeptype;
 
-            const melodyModule = await import("../js/melody.js");
+            const melodyModule = await import("./melody.js");
             if (beeptype === 2) {
                 options.melody = melodyModule.MelodyParser.parseToArray("A4 20 B4 20|60|0");
             } else if (beeptype === 3) {

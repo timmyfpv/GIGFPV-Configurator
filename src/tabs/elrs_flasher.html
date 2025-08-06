@@ -53,10 +53,18 @@
 
                         <tr>
                             <td>
-                                <select name="regulatory-domain">
-                                    <option value="0" i18n="firmwareFlasherOptionLoading">Loading ...</option>
+                                <select name="region">
+                                    <option value="">Select region...</option>
                                 </select>
-                                <div class="helpicon cf_tip_wide" i18n_title="firmwareFlasherRegulatoryDomainDescription"></div>
+                                <div class="helpicon cf_tip_wide" i18n_title="firmwareFlasherRegionDescription"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select name="domain">
+                                    <option value="">Select regulatory domain...</option>
+                                </select>
+                                <div class="helpicon cf_tip_wide" i18n_title="firmwareFlasherDomainDescription"></div>
                             </td>
                         </tr>
 
@@ -95,9 +103,71 @@
         <span class="progressLabel"></span>
     </div>
     <div class="btn">
-        <a class="connect_device disabled" href="#" i18n="firmwareFlasherConnectDevice"></a>
-    </div>
-    <div class="btn">
         <a class="flash_firmware disabled" href="#progressbar" i18n="firmwareFlasherFlashFirmware"></a> 
+    </div>
+</div>
+
+<!-- Flashing Interface -->
+<div class="flashing_interface" style="display: none;">
+    <div class="content_wrapper">
+        <div class="gui_box">
+            <div class="gui_box_titlebar">
+                <div class="spacer_box_title">Flash Firmware</div>
+            </div>
+            <div class="spacer">
+                <div class="flashing_content">
+                    <!-- Step 1: Connect -->
+                    <div class="step" data-step="1">
+                        <h3>Step 1: Connect to Serial UART</h3>
+                        <p>Click the Connect button to select your serial device.</p>
+                        <button class="connect_device" style="display: none;">Connect</button>
+                    </div>
+                    
+                    <!-- Step 2: Enter Flashing Mode -->
+                    <div class="step" data-step="2" style="display: none;">
+                        <h3>Step 2: Enter Flashing Mode</h3>
+                        <p>Connecting to device and entering flashing mode...</p>
+                        <div class="flash_options" style="display: none;">
+                            <label>
+                                <input type="checkbox" name="full_erase"> Full chip erase
+                            </label>
+                            <div class="flash_buttons">
+                                <button class="flash_button" style="display: none;">Flash</button>
+                                <button class="flash_anyway_button" style="display: none;">Flash Anyway</button>
+                                <button class="try_again_button" style="display: none;">Try Again</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: Flashing -->
+                    <div class="step" data-step="3" style="display: none;">
+                        <h3>Step 3: Flashing</h3>
+                        <p>Firmware is being flashed to your device. Please wait...</p>
+                        <div class="flash_failed" style="display: none;">
+                            <p>Flash failed</p>
+                            <button class="try_again_button">Try Again</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 4: Done -->
+                    <div class="step" data-step="4" style="display: none;">
+                        <h3>Step 4: Done</h3>
+                        <p>Firmware flashing completed successfully!</p>
+                        <div class="done_buttons">
+                            <button class="flash_another_button">Flash Another</button>
+                            <button class="back_to_start_button">Back to Start</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- No Device Snackbar -->
+<div class="no_device_snackbar" style="display: none;">
+    <div class="snackbar_content">
+        <h4>No Device Selected</h4>
+        <p>A serial device must be selected to perform flashing.</p>
     </div>
 </div>
