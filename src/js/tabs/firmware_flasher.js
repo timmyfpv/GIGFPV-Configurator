@@ -11,7 +11,7 @@ import { gui_log } from "../gui_log";
 import semver from "semver";
 import { urlExists } from "../utils/common";
 import read_hex_file from "../workers/hex_parser.js";
-import Sponsor from "../Sponsor";
+
 import FileSystem from "../FileSystem";
 import STM32 from "../protocols/webstm32";
 import DFU from "../protocols/webusbdfu";
@@ -24,7 +24,6 @@ import FC from "../fc";
 const firmware_flasher = {
     targets: null,
     buildApi: new BuildApi(),
-    sponsor: new Sponsor(),
     localFirmwareLoaded: false,
     selectedBoard: undefined,
     cloudBuildKey: null,
@@ -377,8 +376,6 @@ firmware_flasher.initialize = async function (callback) {
         // translate to user-selected language
         i18n.localizePage();
 
-        await self.sponsor.loadSponsorTile("flash", $("div.tab_sponsor"));
-
         buildType_e.on("change", async function () {
             self.enableLoadRemoteFileButton(false);
 
@@ -725,7 +722,6 @@ firmware_flasher.initialize = async function (callback) {
             }
 
             self.isFlashing = false;
-            GUI.interval_resume("sponsor");
         }
 
         let result = getConfig("erase_chip");
@@ -1166,7 +1162,7 @@ firmware_flasher.initialize = async function (callback) {
                 self.enableFlashButton(true);
                 self.enableLoadRemoteFileButton(true);
                 self.enableLoadFileButton(true);
-                GUI.interval_resume("sponsor");
+
                 self.flashingMessage(i18n.getMessage(message), self.FLASH_MESSAGE_TYPES.INVALID);
             };
 
@@ -1286,7 +1282,6 @@ firmware_flasher.initialize = async function (callback) {
             }
 
             self.isFlashing = true;
-            GUI.interval_pause("sponsor");
 
             self.enableFlashButton(false);
             self.enableDfuExitButton(false);

@@ -182,9 +182,4 @@ export default class BuildApi {
         const url = `${this._url}/api/configurator/releases/${type}`;
         return await this.fetchJson(url);
     }
-
-    async loadSponsorTile(mode, page) {
-        const url = `${this._url}/api/configurator/sponsors/${mode}/${page}`;
-        return await this.fetchText(url);
-    }
 }
