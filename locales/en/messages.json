@@ -752,7 +752,7 @@
         "message": "EEPROM <span class=\"message-positive\">saved</span>"
     },
     "defaultWelcomeIntro": {
-        "message": "Welcome to <strong>Betaflight - Configurator</strong>, a utility designed to simplify updating, configuring and tuning of your flight controller."
+        "message": "Welcome to <strong>GIGFPV - Configurator</strong>, a utility designed to simplify updating, configuring and tuning of your GIGFPV products."
     },
     "defaultWelcomeHead": {
         "message": "Hardware"
