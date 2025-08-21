@@ -28,7 +28,6 @@ import "../tabs/presets/SourcesDialog/SourcePanel.css";
 import "../css/tabs/logging.less";
 import "../css/tabs/onboard_logging.less";
 import "../css/tabs/firmware_flasher.less";
-import "../css/tabs/elrs_flasher.less";
 import "../css/tabs/adjustments.less";
 import "../css/tabs/auxiliary.less";
 import "../css/tabs/failsafe.less";

@@ -19,14 +19,7 @@ class GuiControl {
         this.timeout_array = [];
         this.buttonDisabledClass = "disabled";
 
-        this.defaultAllowedTabsWhenDisconnected = [
-            "landing",
-            "firmware_flasher",
-            "privacy_policy",
-            "options",
-            "help",
-            "elrs_flasher",
-        ];
+        this.defaultAllowedTabsWhenDisconnected = ["landing", "firmware_flasher", "privacy_policy", "options", "help"];
 
         this.defaultAllowedTabs = [
             "setup",

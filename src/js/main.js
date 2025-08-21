@@ -238,11 +238,6 @@ function startProcess() {
                             firmware_flasher.initialize(content_ready),
                         );
                         break;
-                    case "elrs_flasher":
-                        import("./tabs/elrs_flasher").then(({ elrs_flasher }) =>
-                            elrs_flasher.initialize(content_ready),
-                        );
-                        break;
                     case "help":
                         import("./tabs/help").then(({ help }) => help.initialize(content_ready));
                         break;

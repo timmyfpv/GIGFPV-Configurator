@@ -20,6 +20,15 @@ import { EventBus } from "../../components/eventBus";
 import { ispConnected } from "../utils/connection.js";
 import FC from "../fc";
 
+// ELRS Flasher imports
+import { compareSemanticVersions } from "../elrsWebFlasher/version.js";
+import { uidBytesFromText } from "../elrsWebFlasher/phrase.js";
+import { resetState, store as elrsStore } from "../elrsWebFlasher/state.js";
+import { generateFirmware } from "../elrsWebFlasher/firmware.js";
+import { XmodemFlasher } from "../elrsWebFlasher/xmodem.js";
+import { ESPFlasher } from "../elrsWebFlasher/espflasher.js";
+import { MismatchError, WrongMCU } from "../elrsWebFlasher/error.js";
+
 const firmware_flasher = {
     targets: null,
     buildApi: new BuildApi(),
@@ -36,7 +45,122 @@ const firmware_flasher = {
     config: {},
     developmentFirmwareLoaded: false, // Is the firmware to be flashed from the development branch?
     cancelBuild: false,
+
+    // ELRS Flasher state variables
+    firmware: null,
+    flashBranch: false,
+    hardware: null,
+    versions: [],
+    vendors: [],
+    radios: [],
+    targets: [],
+    luaUrl: null,
+
+    // Store object for ELRS compatibility
+    store: {
+        currentStep: 1,
+        firmware: null,
+        folder: "",
+        targetType: null,
+        version: null,
+        vendor: null,
+        vendor_name: "",
+        radio: null,
+        target: null,
+        name: "",
+        options: {
+            uid: null,
+            region: "FCC",
+            domain: 1,
+            ssid: null,
+            password: null,
+            wifiOnInternal: 60,
+            flashMethod: null,
+            tx: {
+                telemetryInterval: 240,
+                uartInverted: true,
+                fanMinRuntime: 30,
+                higherPower: false,
+                melodyType: 3,
+                melodyTune: null,
+            },
+            rx: {
+                uartBaud: 420000,
+                lockOnFirstConnect: true,
+                r9mmMiniSBUS: false,
+                fanMinRuntime: 30,
+                rxAsTx: false,
+                rxAsTxType: 0, // 0 = Internal (Full-duplex), 1 = External (Half-duplex)
+            },
+        },
+    },
+
+    // ELRS Flashing state variables
+    step: 1,
+    enableFlash: false,
+    allowErase: true,
+    fullErase: false,
+    flashComplete: false,
+    failed: false,
+    log: [],
+    newline: false,
+    noDevice: false,
+    flasher: null,
+    device: null,
+    progress: 0,
+    progressText: "",
+
+    // ELRS Files object
+    files: {
+        firmwareFiles: [],
+        config: null,
+        firmwareUrl: "",
+        options: {},
+        deviceType: null,
+        radioType: undefined,
+        txType: undefined,
+    },
 };
+
+// ELRS Constants and helper functions
+const radioTitles = {
+    tx_2400: "2.4GHz Transmitter",
+    tx_900: "900MHz Transmitter",
+    tx_dual: "Dual 2.4GHz/900MHz Transmitter",
+    rx_2400: "2.4GHz Receiver",
+    rx_900: "900MHz Receiver",
+    rx_dual: "Dual 2.4GHz/900MHz Receiver",
+};
+
+// Flash method titles mapping
+const flashMethodTitles = {
+    download: "Local Download",
+    uart: "Serial UART",
+    betaflight: "Betaflight Passthrough",
+    etx: "EdgeTX Passthrough",
+    passthru: "Passthrough",
+    wifi: "WiFi",
+    stlink: "STLink",
+    dfu: "DFU",
+    stock: "Stock Bootloader",
+};
+
+// Flash methods available in ELRS
+const flashMethods = [
+    { value: "download", title: "Local Download" },
+    { value: "uart", title: "Serial UART" },
+    { value: "betaflight", title: "Betaflight Passthrough" },
+    { value: "etx", title: "EdgeTX Passthrough" },
+    { value: "passthru", title: "Passthrough" },
+    { value: "wifi", title: "WiFi" },
+    { value: "stlink", title: "STLink" },
+    { value: "dfu", title: "DFU" },
+    { value: "stock", title: "Stock Bootloader" },
+];
+
+function getFlashMethods(methods) {
+    return flashMethods.filter((v) => v.value === "download" || (methods && methods.includes(v.value)));
+}
 
 firmware_flasher.initialize = async function (callback) {
     const self = this;
@@ -59,6 +183,38 @@ firmware_flasher.initialize = async function (callback) {
     self.logHead = "[FIRMWARE_FLASHER]";
 
     async function onDocumentLoad() {
+        // Initialize firmware type switching
+        function initializeFirmwareTypeSwitching() {
+            console.log("Initializing firmware type switching...");
+            $('select[name="firmware_type"]').on("change", function () {
+                const selectedType = $(this).val();
+                console.log("Firmware type changed to:", selectedType);
+
+                if (selectedType === "betaflight") {
+                    console.log("Showing betaflight content");
+                    $(".betaflight_firmware_content").show();
+                    $(".elrs_firmware_content").hide();
+                    $(".elrs_flashing_interface").hide();
+                    // Reset ELRS state
+                    firmware_flasher.resetELRSState();
+                } else if (selectedType === "elrs") {
+                    console.log("Showing ELRS content");
+                    $(".betaflight_firmware_content").hide();
+                    $(".elrs_firmware_content").show();
+                    // Initialize ELRS flasher
+                    firmware_flasher.initializeELRSFlasher();
+                }
+            });
+
+            // Set default to betaflight
+            $('select[name="firmware_type"]').val("betaflight").trigger("change");
+        }
+
+        // Initialize firmware type switching after DOM is ready
+        setTimeout(() => {
+            initializeFirmwareTypeSwitching();
+        }, 100);
+
         function parseHex(str, callback) {
             read_hex_file(str).then((data) => {
                 callback(data);
@@ -1280,6 +1436,26 @@ firmware_flasher.initialize = async function (callback) {
                 return;
             }
 
+            // Check if we're in ELRS mode
+            if ($('select[name="firmware_type"]').val() === "elrs") {
+                // Check if we have all required data
+                if (!self.store.target || !self.store.options.flashMethod) {
+                    alert("Please select a target and flash method first.");
+                    return;
+                }
+
+                // Handle different flash methods
+                if (self.store.options.flashMethod === "download") {
+                    // Handle local download
+                    self.downloadELRSFirmware();
+                } else {
+                    // Handle device flashing
+                    self.handleELRSDeviceFlashing();
+                }
+                return;
+            }
+
+            // Original Betaflight firmware handling
             self.isFlashing = true;
 
             self.enableFlashButton(false);
@@ -1373,6 +1549,951 @@ firmware_flasher.enableCancelBuildButton = function (enabled) {
 
 firmware_flasher.enableFlashButton = function (enabled) {
     $("a.flash_firmware").toggleClass("disabled", !enabled);
+};
+
+// ELRS Flasher Functions
+firmware_flasher.initializeELRSFlasher = function () {
+    console.log("Initializing ELRS flasher...");
+
+    // Initialize with default values
+    this.store.firmware = "firmware"; // Default firmware type
+    this.store.targetType = "rx"; // Default target type
+
+    // Initialize the UI - only populate firmware versions initially
+    this.populateELRSFirmwareVersions();
+    this.populateELRSVendors();
+    this.populateELRSRadios();
+    this.populateELRSTargets();
+    this.populateELRSFlashMethods();
+    this.populateELRSRegulatoryDomains();
+
+    // Set up event handlers
+    this.setupELRSEventHandlers();
+    this.setupELRSBindPhraseInput();
+    const updateWiFiVisibility = this.setupELRSWiFiSettings();
+
+    // Store the update function for later use
+    window.updateWiFiVisibility = updateWiFiVisibility;
+
+    console.log("ELRS flasher initialized");
+};
+
+firmware_flasher.resetELRSState = function () {
+    // Reset ELRS state variables
+    this.firmware = null;
+    this.flashBranch = false;
+    this.hardware = null;
+    this.versions = [];
+    this.vendors = [];
+    this.radios = [];
+    this.targets = [];
+    this.luaUrl = null;
+
+    // Reset store
+    this.store = {
+        currentStep: 1,
+        firmware: null,
+        folder: "",
+        targetType: null,
+        version: null,
+        vendor: null,
+        vendor_name: "",
+        radio: null,
+        target: null,
+        name: "",
+        options: {
+            uid: null,
+            region: "FCC",
+            domain: 1,
+            ssid: null,
+            password: null,
+            wifiOnInternal: 60,
+            flashMethod: null,
+            tx: {
+                telemetryInterval: 240,
+                uartInverted: true,
+                fanMinRuntime: 30,
+                higherPower: false,
+                melodyType: 3,
+                melodyTune: null,
+            },
+            rx: {
+                uartBaud: 420000,
+                lockOnFirstConnect: true,
+                r9mmMiniSBUS: false,
+                fanMinRuntime: 30,
+                rxAsTx: false,
+                rxAsTxType: 0,
+            },
+        },
+    };
+
+    // Reset flashing state
+    this.step = 1;
+    this.enableFlash = false;
+    this.allowErase = true;
+    this.fullErase = false;
+    this.flashComplete = false;
+    this.failed = false;
+    this.log = [];
+    this.newline = false;
+    this.noDevice = false;
+    this.flasher = null;
+    this.device = null;
+    this.progress = 0;
+    this.progressText = "";
+
+    // Reset files
+    this.files = {
+        firmwareFiles: [],
+        config: null,
+        firmwareUrl: "",
+        options: {},
+        deviceType: null,
+        radioType: undefined,
+        txType: undefined,
+    };
+};
+
+firmware_flasher.updateELRSVersions = function () {
+    if (this.firmware) {
+        this.hardware = null;
+        this.store.version = null;
+        this.versions = [];
+        if (this.flashBranch) {
+            Object.entries(this.firmware.branches).forEach(([key, value]) => {
+                this.versions.push({ title: key, value: value });
+                if (!this.store.version) this.store.version = value;
+            });
+            Object.entries(this.firmware.tags).forEach(([key, value]) => {
+                if (key.indexOf("-") !== -1) this.versions.push({ title: key, value: value });
+            });
+            this.versions = this.versions.sort((a, b) => a.title.localeCompare(b.title));
+        } else {
+            let first = true;
+            Object.keys(this.firmware.tags)
+                .sort(compareSemanticVersions)
+                .reverse()
+                .forEach((key) => {
+                    if (key.indexOf("-") === -1 || first) {
+                        this.versions.push({ title: key, value: this.firmware.tags[key] });
+                        if (!this.store.version && key.indexOf("-") === -1)
+                            this.store.version = this.firmware.tags[key];
+                        first = false;
+                    }
+                });
+        }
+        this.updateELRSVendors();
+    }
+};
+
+firmware_flasher.populateELRSFirmwareVersions = function () {
+    console.log("Populating ELRS firmware versions...");
+    const select = $('select[name="elrs_firmware_version"]');
+    console.log("Found select element:", select.length);
+    select.empty();
+    select.append('<option value="">Loading...</option>');
+
+    // Load firmware data from local assets
+    console.log("Fetching from:", `./assets/${this.store.firmware}/index.json`);
+    fetch(`./assets/${this.store.firmware}/index.json`)
+        .then((r) => r.json())
+        .then((r) => {
+            console.log("Firmware data loaded:", r);
+            this.firmware = r;
+            this.updateELRSVersions();
+
+            select.empty();
+            this.versions.forEach((version) => {
+                select.append(`<option value="${version.value}">${version.title}</option>`);
+            });
+            console.log("Versions populated:", this.versions.length);
+        })
+        .catch((error) => {
+            console.error("Error loading firmware versions:", error);
+            select.empty();
+            select.append('<option value="">Error loading versions</option>');
+        });
+};
+
+firmware_flasher.updateELRSVendors = function () {
+    if (this.store.version) {
+        this.store.folder = `./assets/${this.store.firmware}`;
+
+        fetch(`./assets/${this.store.firmware}/hardware/targets.json`)
+            .then((r) => r.json())
+            .then((r) => {
+                this.hardware = r;
+                this.store.vendor = null;
+                this.vendors = [];
+                for (const [k, v] of Object.entries(this.hardware)) {
+                    let hasTargets = false;
+                    Object.keys(v).forEach((type) => (hasTargets |= type.startsWith(this.store.targetType)));
+                    if (hasTargets && v.name) this.vendors.push({ title: v.name, value: k });
+                }
+                this.vendors.sort((a, b) => a.title.localeCompare(b.title));
+
+                // Try to set default vendor if available
+                const defaultVendor = "hdzero";
+                if (this.vendors.some((v) => v.value === defaultVendor)) {
+                    this.store.vendor = defaultVendor;
+                }
+
+                // Update the UI
+                this.populateELRSVendors();
+                this.updateELRSRadios();
+            })
+            .catch((_ignore) => {
+                // Handle error silently
+                this.vendors = [];
+                this.populateELRSVendors();
+            });
+    } else {
+        this.vendors = [];
+        this.populateELRSVendors();
+    }
+};
+
+firmware_flasher.populateELRSVendors = function () {
+    const select = $('select[name="hardware-vendor"]');
+    select.empty();
+
+    if (this.vendors.length === 0) {
+        select.append('<option value="">Select firmware version first</option>');
+    } else {
+        select.append('<option value="">Select vendor...</option>');
+        this.vendors.forEach((vendor) => {
+            select.append(`<option value="${vendor.value}">${vendor.title}</option>`);
+        });
+
+        // Set the selected value if we have a default vendor
+        if (this.store.vendor) {
+            select.val(this.store.vendor);
+        }
+    }
+};
+
+firmware_flasher.updateELRSRadios = function () {
+    this.radios = [];
+    let keepTarget = false;
+    if (this.store.vendor && this.hardware) {
+        Object.keys(this.hardware[this.store.vendor]).forEach((k) => {
+            if (k.startsWith(this.store.targetType)) this.radios.push({ title: radioTitles[k], value: k });
+            if (this.store.target && this.store.target.vendor === this.store.vendor && this.store.target.radio === k)
+                keepTarget = true;
+        });
+        if (this.radios.length === 1) {
+            this.store.radio = this.radios[0].value;
+            keepTarget = true;
+        }
+    }
+    if (!keepTarget) this.store.radio = null;
+
+    // Update the UI
+    this.populateELRSRadios();
+    this.updateELRSTargets();
+};
+
+firmware_flasher.populateELRSRadios = function () {
+    const select = $('select[name="radio-frequency"]');
+    select.empty();
+
+    if (this.radios.length === 0) {
+        select.append('<option value="">Select vendor first</option>');
+    } else {
+        select.append('<option value="">Select radio type...</option>');
+        this.radios.forEach((radio) => {
+            select.append(`<option value="${radio.value}">${radio.title}</option>`);
+        });
+    }
+};
+
+firmware_flasher.updateELRSTargets = function () {
+    this.targets = [];
+    let keepTarget = false;
+    if (this.store.version && this.hardware) {
+        const version = this.versions.find((x) => x.value === this.store.version).title;
+        for (const [vk, v] of Object.entries(this.hardware)) {
+            if (vk === this.store.vendor || this.store.vendor === null) {
+                for (const [rk, r] of Object.entries(v)) {
+                    if (
+                        rk.startsWith(this.store.targetType) &&
+                        (rk === this.store.radio || this.store.radio === null)
+                    ) {
+                        for (const [ck, c] of Object.entries(r)) {
+                            if (this.flashBranch || compareSemanticVersions(version, c.min_version) >= 0) {
+                                this.targets.push({
+                                    title: c.product_name,
+                                    value: { vendor: vk, radio: rk, target: ck, config: c },
+                                });
+                                if (
+                                    this.store.target &&
+                                    this.store.target.vendor === vk &&
+                                    this.store.target.radio === rk &&
+                                    this.store.target.target === ck
+                                )
+                                    keepTarget = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    this.targets.sort((a, b) => a.title.localeCompare(b.title));
+    if (!keepTarget) this.store.target = null;
+
+    // Update the UI
+    this.populateELRSTargets();
+    this.updateELRSLuaUrl();
+};
+
+firmware_flasher.populateELRSTargets = function () {
+    const select = $('select[name="hardware-target"]');
+    select.empty();
+
+    if (this.targets.length === 0) {
+        select.append('<option value="">Select radio type first</option>');
+    } else {
+        select.append('<option value="">Select hardware target...</option>');
+        this.targets.forEach((target) => {
+            select.append(`<option value="${target.value.target}">${target.title}</option>`);
+        });
+    }
+};
+
+firmware_flasher.updateELRSLuaUrl = function () {
+    this.luaUrl = this.store.version ? `./assets/${this.store.firmware}/${this.store.version}/lua/elrsV3.lua` : null;
+};
+
+firmware_flasher.populateELRSFlashMethods = function () {
+    const select = $('select[name="flashing-method"]');
+    select.empty();
+    select.append('<option value="">Select flashing method...</option>');
+
+    // Get available methods from target configuration
+    const availableMethods = this.store.target?.config?.upload_methods || [];
+    const methods = getFlashMethods(availableMethods);
+
+    methods.forEach((method) => {
+        select.append(`<option value="${method.value}">${method.title}</option>`);
+    });
+
+    // Set default value if available
+    if (methods.length > 0) {
+        select.val("download");
+        this.store.options.flashMethod = "download";
+    }
+};
+
+firmware_flasher.hasHighFrequency = function () {
+    return this.store.radio && (this.store.radio.endsWith("2400") || this.store.radio.endsWith("dual"));
+};
+
+firmware_flasher.hasLowFrequency = function () {
+    return this.store.radio && (this.store.radio.endsWith("900") || this.store.radio.endsWith("dual"));
+};
+
+firmware_flasher.populateELRSRegulatoryDomains = function () {
+    const regionSelect = $('select[name="region"]');
+    const domainSelect = $('select[name="domain"]');
+
+    // Clear existing options
+    regionSelect.empty();
+    domainSelect.empty();
+
+    // Add region options if high frequency
+    if (this.hasHighFrequency()) {
+        regionSelect.append('<option value="">Select region...</option>');
+        const regions = [
+            { value: "FCC", title: "FCC" },
+            { value: "LBT", title: "LBT" },
+        ];
+        regions.forEach((region) => {
+            regionSelect.append(`<option value="${region.value}">${region.title}</option>`);
+        });
+        regionSelect.val(this.store.options.region);
+        regionSelect.closest("tr").show();
+    } else {
+        regionSelect.closest("tr").hide();
+    }
+
+    // Add domain options if low frequency
+    if (this.hasLowFrequency()) {
+        domainSelect.append('<option value="">Select regulatory domain...</option>');
+        const domains = [
+            { value: 0, title: "AU915" },
+            { value: 1, title: "FCC915" },
+            { value: 2, title: "EU868" },
+            { value: 3, title: "IN866" },
+            { value: 4, title: "AU433" },
+            { value: 5, title: "EU433" },
+            { value: 6, title: "US433" },
+            { value: 7, title: "US433-Wide" },
+        ];
+        domains.forEach((domain) => {
+            domainSelect.append(`<option value="${domain.value}">${domain.title}</option>`);
+        });
+        domainSelect.val(this.store.options.domain);
+        domainSelect.closest("tr").show();
+    } else {
+        domainSelect.closest("tr").hide();
+    }
+};
+
+firmware_flasher.setupELRSEventHandlers = function () {
+    // Firmware version change
+    $('select[name="elrs_firmware_version"]').on("change", function () {
+        firmware_flasher.store.version = $(this).val();
+        firmware_flasher.updateELRSVendors();
+    });
+
+    // Vendor change
+    $('select[name="hardware-vendor"]').on("change", function () {
+        firmware_flasher.store.vendor = $(this).val();
+        firmware_flasher.updateELRSRadios();
+    });
+
+    // Radio change
+    $('select[name="radio-frequency"]').on("change", function () {
+        firmware_flasher.store.radio = $(this).val();
+        firmware_flasher.updateELRSTargets();
+    });
+
+    // Target change
+    $('select[name="hardware-target"]').on("change", function () {
+        const targetValue = $(this).val();
+        firmware_flasher.store.target =
+            firmware_flasher.targets.find((t) => t.value.target === targetValue)?.value || null;
+        if (firmware_flasher.store.target) {
+            firmware_flasher.store.vendor = firmware_flasher.store.target.vendor;
+            firmware_flasher.store.radio = firmware_flasher.store.target.radio;
+
+            // Update flash methods based on target capabilities
+            firmware_flasher.populateELRSFlashMethods();
+
+            // Update regulatory domains based on radio type
+            firmware_flasher.populateELRSRegulatoryDomains();
+
+            // Update WiFi settings visibility
+            if (window.updateWiFiVisibility) {
+                window.updateWiFiVisibility();
+            }
+
+            // Update button state - enable when target is selected
+            firmware_flasher.updateELRSFlashButton();
+        } else {
+            // If no target selected, reset flash methods
+            firmware_flasher.populateELRSFlashMethods();
+
+            // Update regulatory domains
+            firmware_flasher.populateELRSRegulatoryDomains();
+
+            // Update WiFi settings visibility
+            if (window.updateWiFiVisibility) {
+                window.updateWiFiVisibility();
+            }
+
+            // Update button state - disable when no target
+            firmware_flasher.updateELRSFlashButton();
+        }
+    });
+
+    // Flash method change
+    $('select[name="flashing-method"]').on("change", function () {
+        const selectedMethod = $(this).val();
+        firmware_flasher.store.options.flashMethod = selectedMethod;
+        firmware_flasher.updateELRSFlashButton();
+    });
+
+    // Region change
+    $('select[name="region"]').on("change", function () {
+        const selectedRegion = $(this).val();
+        firmware_flasher.store.options.region = selectedRegion;
+    });
+
+    // Domain change
+    $('select[name="domain"]').on("change", function () {
+        const selectedDomain = parseInt($(this).val());
+        firmware_flasher.store.options.domain = selectedDomain;
+    });
+
+    // Connect device button
+    $(".connect_device").on("click", function (e) {
+        e.preventDefault();
+        firmware_flasher.handleELRSDeviceFlashing();
+    });
+
+    // Flashing interface event handlers
+    $(".flash_button").on("click", function () {
+        firmware_flasher.fullErase = $('input[name="full_erase"]').is(":checked");
+        firmware_flasher.flashELRSFirmware();
+    });
+
+    $(".flash_anyway_button").on("click", function () {
+        firmware_flasher.fullErase = $('input[name="full_erase"]').is(":checked");
+        firmware_flasher.flashELRSFirmware();
+    });
+
+    $(".try_again_button").on("click", function () {
+        firmware_flasher.closeELRSDevice();
+    });
+
+    $(".flash_another_button").on("click", function () {
+        firmware_flasher.elrsAnother();
+    });
+
+    $(".back_to_start_button").on("click", function () {
+        firmware_flasher.elrsReset();
+    });
+};
+
+firmware_flasher.generateUID = function (bindPhrase) {
+    if (!bindPhrase || bindPhrase === "") {
+        this.store.options.uid = null;
+        return "Bind Phrase";
+    } else {
+        try {
+            const uidBytes = uidBytesFromText(bindPhrase);
+            const uidHex = Array.from(uidBytes)
+                .map((b) => b.toString(16).padStart(2, "0"))
+                .join("");
+            this.store.options.uid = uidBytes;
+            return `UID: ${uidHex}`;
+        } catch (error) {
+            console.error("Error generating UID:", error);
+            this.store.options.uid = null;
+            return "Bind Phrase";
+        }
+    }
+};
+
+firmware_flasher.setupELRSBindPhraseInput = function () {
+    const input = $('input[name="bind-phrase"]');
+    const label = input.attr("placeholder") || "Bind Phrase";
+
+    // Set initial placeholder
+    input.attr("placeholder", label);
+
+    // Handle input changes
+    input.on("input", function () {
+        const bindPhrase = $(this).val();
+        const uidLabel = firmware_flasher.generateUID(bindPhrase);
+
+        // Update the placeholder to show the UID
+        if (uidLabel.startsWith("UID: ")) {
+            $(this).attr("placeholder", uidLabel);
+        } else {
+            $(this).attr("placeholder", label);
+        }
+    });
+};
+
+firmware_flasher.setupELRSWiFiSettings = function () {
+    const ssidInput = $('input[name="wifi-ssid"]');
+    const passwordInput = $('input[name="wifi-password"]');
+
+    // Check if WiFi settings should be shown (not for STM32 platforms)
+    function updateWiFiVisibility() {
+        const shouldShow =
+            firmware_flasher.store.target &&
+            firmware_flasher.store.target.config &&
+            firmware_flasher.store.target.config.platform !== "stm32";
+        const wifiRow = ssidInput.closest("tr");
+
+        if (shouldShow) {
+            wifiRow.show();
+        } else {
+            wifiRow.hide();
+            // Clear values when hidden
+            firmware_flasher.store.options.ssid = null;
+            firmware_flasher.store.options.password = null;
+            ssidInput.val("");
+            passwordInput.val("");
+        }
+    }
+
+    // Handle SSID input changes
+    ssidInput.on("input", function () {
+        firmware_flasher.store.options.ssid = $(this).val() || null;
+    });
+
+    // Handle password input changes
+    passwordInput.on("input", function () {
+        firmware_flasher.store.options.password = $(this).val() || null;
+    });
+
+    // Add password visibility toggle
+    const passwordToggle = $(
+        '<button type="button" class="password-toggle" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px;">👁</button>',
+    );
+
+    // Wrap password input in a relative container for the toggle button
+    const passwordContainer = $('<div style="position: relative;"></div>');
+    passwordInput.wrap(passwordContainer);
+    passwordContainer.append(passwordToggle);
+
+    let showPassword = false;
+
+    passwordToggle.on("click", function () {
+        showPassword = !showPassword;
+        passwordInput.attr("type", showPassword ? "text" : "password");
+        $(this).text(showPassword ? "🙈" : "👁");
+    });
+
+    // Initial visibility check
+    updateWiFiVisibility();
+
+    // Update visibility when target changes
+    return updateWiFiVisibility;
+};
+
+firmware_flasher.updateELRSFlashButton = function () {
+    const button = $(".flash_firmware");
+
+    // Check if we have required data - only need target for download
+    const hasTarget = this.store.target && this.store.target.config;
+
+    if (hasTarget) {
+        button.removeClass("disabled");
+
+        // Update button text based on flash method
+        if (this.store.options.flashMethod === "download") {
+            button.text("Local download");
+        } else {
+            button.text("Flash Firmware");
+        }
+    } else {
+        button.addClass("disabled");
+        button.text("Flash Firmware");
+    }
+};
+
+firmware_flasher.downloadELRSFirmware = function () {
+    try {
+        // Build firmware first
+        this.buildELRSFirmware()
+            .then(() => {
+                try {
+                    let data, filename;
+
+                    if (this.store.target.config.platform === "esp8285") {
+                        // For ESP8285, create gzipped firmware
+                        // Note: In a real implementation, you'd use pako.gzip here
+                        const bin = this.files.firmwareFiles[this.files.firmwareFiles.length - 1].data;
+                        data = new Blob([bin], { type: "application/octet-stream" });
+                        filename = "firmware.bin.gz";
+                    } else if (
+                        this.store.target.config.upload_methods &&
+                        this.store.target.config.upload_methods.includes("zip")
+                    ) {
+                        // For ZIP upload method, create a ZIP file
+                        // Note: In a real implementation, you'd use zip.js here
+                        const bin = this.files.firmwareFiles[this.files.firmwareFiles.length - 1].data;
+                        data = new Blob([bin], { type: "application/octet-stream" });
+                        filename = "firmware.zip";
+                    } else {
+                        // Standard binary firmware
+                        const bin = this.files.firmwareFiles[this.files.firmwareFiles.length - 1].data;
+                        data = new Blob([bin], { type: "application/octet-stream" });
+                        filename = "firmware.bin";
+                    }
+
+                    // Create download link
+                    const url = URL.createObjectURL(data);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+
+                    // Clean up
+                    URL.revokeObjectURL(url);
+                } catch (error) {
+                    console.error("Error downloading firmware:", error);
+                    alert(`Error downloading firmware: ${error.message}`);
+                }
+            })
+            .catch((error) => {
+                alert(`Error building firmware: ${error.message}`);
+            });
+    } catch (error) {
+        alert(`Error building firmware: ${error.message}`);
+    }
+};
+
+firmware_flasher.handleELRSDeviceFlashing = function () {
+    // Build firmware and connect to device
+    this.buildELRSFirmware()
+        .then(() => {
+            this.connectELRSDevice();
+        })
+        .catch((error) => {
+            alert(`Error building firmware: ${error.message}`);
+        });
+};
+
+firmware_flasher.buildELRSFirmware = async function () {
+    // Validate that we have all required data
+    if (!this.store.target) {
+        throw new Error("No target selected. Please select a hardware target first.");
+    }
+
+    if (!this.store.target.config) {
+        throw new Error("Target configuration is missing. Please select a valid target.");
+    }
+
+    if (!this.store.options.flashMethod) {
+        throw new Error("No flash method selected. Please select a flashing method.");
+    }
+
+    // Set currentStep to 3 to indicate we're ready to build firmware
+    this.store.currentStep = 3;
+
+    // Sync our store with the ELRS web flasher's store
+    this.syncELRSStoreWithELRS();
+
+    try {
+        // Debug: Log the current store state
+        console.log("Current store state:", {
+            target: this.store.target,
+            targetType: this.store.targetType,
+            firmware: this.store.firmware,
+            version: this.store.version,
+            radio: this.store.radio,
+            options: this.store.options,
+        });
+
+        const [binary, { config, firmwareUrl, options, deviceType, radioType, txType }] = await generateFirmware();
+
+        this.files.firmwareFiles = binary;
+        this.files.firmwareUrl = firmwareUrl;
+        this.files.config = config;
+        this.files.options = options;
+        this.files.deviceType = deviceType;
+        this.files.radioType = radioType;
+        this.files.txType = txType;
+
+        this.fullErase = false;
+        this.allowErase = !(
+            this.store.target.config.platform.startsWith("esp32") && this.store.options.flashMethod === "betaflight"
+        );
+    } catch (error) {
+        console.error("Error building firmware:", error);
+        throw error; // Re-throw to let calling function handle it
+    }
+};
+
+firmware_flasher.syncELRSStoreWithELRS = function () {
+    // Sync our store data with the ELRS web flasher's store
+    elrsStore.currentStep = this.store.currentStep;
+    elrsStore.firmware = this.store.firmware;
+    elrsStore.folder = this.store.folder;
+    elrsStore.targetType = this.store.targetType;
+    elrsStore.version = this.store.version;
+    elrsStore.vendor = this.store.vendor;
+    elrsStore.vendor_name = this.store.vendor_name;
+    elrsStore.radio = this.store.radio;
+    elrsStore.target = this.store.target;
+    elrsStore.name = this.store.name;
+
+    // Sync options
+    elrsStore.options.uid = this.store.options.uid;
+    elrsStore.options.region = this.store.options.region;
+    elrsStore.options.domain = this.store.options.domain;
+    elrsStore.options.ssid = this.store.options.ssid;
+    elrsStore.options.password = this.store.options.password;
+    elrsStore.options.wifiOnInternal = this.store.options.wifiOnInternal;
+    elrsStore.options.flashMethod = this.store.options.flashMethod;
+
+    // Sync TX options
+    elrsStore.options.tx.telemetryInterval = this.store.options.tx.telemetryInterval;
+    elrsStore.options.tx.uartInverted = this.store.options.tx.uartInverted;
+    elrsStore.options.tx.fanMinRuntime = this.store.options.tx.fanMinRuntime;
+    elrsStore.options.tx.higherPower = this.store.options.tx.higherPower;
+    elrsStore.options.tx.melodyType = this.store.options.tx.melodyType;
+    elrsStore.options.tx.melodyTune = this.store.options.tx.melodyTune;
+
+    // Sync RX options
+    elrsStore.options.rx.uartBaud = this.store.options.rx.uartBaud;
+    elrsStore.options.rx.lockOnFirstConnect = this.store.options.rx.lockOnFirstConnect;
+    elrsStore.options.rx.r9mmMiniSBUS = this.store.options.rx.r9mmMiniSBUS;
+    elrsStore.options.rx.fanMinRuntime = this.store.options.rx.fanMinRuntime;
+    elrsStore.options.rx.rxAsTx = this.store.options.rx.rxAsTx;
+    elrsStore.options.rx.rxAsTxType = this.store.options.rx.rxAsTxType;
+};
+
+firmware_flasher.connectELRSDevice = async function () {
+    try {
+        this.device = await navigator.serial.requestPort();
+        this.device.ondisconnect = async (_p, _e) => {
+            console.log("disconnected");
+            await this.closeELRSDevice();
+        };
+    } catch {
+        await this.closeELRSDevice();
+        this.noDevice = true;
+        this.updateELRSNoDeviceSnackbar();
+        return;
+    }
+
+    if (this.device) {
+        this.step++;
+        this.updateELRSFlashingUI();
+
+        const method = this.store.options.flashMethod;
+        let term = {
+            write: (e) => {
+                // Log to console only
+                console.log("Device:", e);
+            },
+            writeln: (e) => {
+                // Log to console only
+                console.log("Device:", e);
+            },
+        };
+
+        if (this.store.target.config.platform === "stm32") {
+            this.flasher = new XmodemFlasher(
+                this.device,
+                this.files.deviceType,
+                method,
+                this.files.config,
+                this.files.options,
+                this.files.firmwareUrl,
+                term,
+            );
+        } else {
+            this.flasher = new ESPFlasher(
+                this.device,
+                this.files.deviceType,
+                method,
+                this.files.config,
+                this.files.options,
+                this.files.firmwareUrl,
+                term,
+            );
+        }
+
+        try {
+            await this.flasher.connect();
+            this.enableFlash = true;
+            this.updateELRSFlashingUI();
+        } catch (e) {
+            if (e instanceof MismatchError) {
+                term.writeln("Target mismatch, flashing cancelled");
+                this.failed = true;
+                this.enableFlash = true;
+            } else if (e instanceof WrongMCU) {
+                term.writeln(e.message);
+                this.failed = true;
+            } else {
+                console.log(e);
+                term.writeln("Failed to connect to device, restart device and try again");
+                this.failed = true;
+            }
+            this.updateELRSFlashingUI();
+        }
+    }
+};
+
+firmware_flasher.closeELRSDevice = async function () {
+    if (this.flasher) {
+        try {
+            await this.flasher.close();
+        } catch (error) {
+            // Ignore errors on close
+        }
+        this.flasher = null;
+        this.device = null;
+    }
+    if (this.device != null) {
+        try {
+            await this.device.close();
+        } catch (error) {
+            // Ignore errors on close
+        }
+    }
+    this.device = null;
+    this.enableFlash = false;
+    this.flashComplete = false;
+    this.failed = false;
+    this.step = 1;
+    this.log = [];
+    this.progress = 0;
+
+    this.updateELRSFlashingUI();
+};
+
+firmware_flasher.updateELRSFlashingUI = function () {
+    // Show/hide flashing interface
+    const flashingInterface = $(".elrs_flashing_interface");
+    const mainInterface = $(".elrs_firmware_content");
+
+    if (this.step > 1) {
+        flashingInterface.show();
+        mainInterface.hide();
+    } else {
+        flashingInterface.hide();
+        mainInterface.show();
+    }
+
+    // Update step visibility
+    $(".step").hide();
+    $(`.step[data-step="${this.step}"]`).show();
+
+    // Update step-specific content
+    if (this.step === 1) {
+        $(".connect_device").show();
+    } else if (this.step === 2) {
+        // Show flash options if enabled
+        if (this.enableFlash) {
+            $(".flash_options").show();
+            if (this.allowErase) {
+                $('input[name="full_erase"]').show();
+            } else {
+                $('input[name="full_erase"]').hide();
+            }
+
+            if (!this.failed) {
+                $(".flash_button").show();
+            } else {
+                $(".flash_anyway_button").show();
+            }
+            $(".try_again_button").show();
+        }
+    } else if (this.step === 3) {
+        // Update the existing progress bar in the toolbar
+        $(".content_toolbar .progress").val(this.progress);
+        $(".content_toolbar .progressLabel").text(this.progressText || "Erasing flash, please wait...");
+
+        if (this.failed) {
+            $(".flash_failed").show();
+        }
+    } else if (this.step === 4) {
+        // Done step - buttons are already in HTML
+    }
+};
+
+firmware_flasher.updateELRSNoDeviceSnackbar = function () {
+    if (this.noDevice) {
+        $(".no_device_snackbar").show();
+        setTimeout(() => {
+            $(".no_device_snackbar").hide();
+            this.noDevice = false;
+        }, 5000);
+    }
+};
+
+firmware_flasher.elrsAnother = async function () {
+    await this.closeELRSDevice();
+    await this.connectELRSDevice();
+};
+
+firmware_flasher.elrsReset = async function () {
+    await this.closeELRSDevice();
+    resetState();
 };
 
 firmware_flasher.enableLoadRemoteFileButton = function (enabled) {
@@ -1470,6 +2591,31 @@ firmware_flasher.injectTargetInfo = function (targetConfig, targetName, manufact
     const lines = config.split("\n");
     lines.splice(1, 0, targetInfo);
     return lines.join("\n");
+};
+
+firmware_flasher.flashELRSFirmware = async function () {
+    this.failed = false;
+    this.step++;
+    this.updateELRSFlashingUI();
+
+    try {
+        this.progressText = "";
+        await this.flasher.flash(this.files.firmwareFiles, this.fullErase, (fileIndex, written, total) => {
+            this.progressText = `${fileIndex + 1} of ${this.files.firmwareFiles.length}`;
+            this.progress = Math.round((written / total) * 100);
+            this.updateELRSFlashingUI();
+        });
+        await this.flasher.close();
+        this.flasher = null;
+        this.device = null;
+        this.flashComplete = true;
+        this.step++;
+        this.updateELRSFlashingUI();
+    } catch (e) {
+        console.log(e);
+        this.failed = true;
+        this.updateELRSFlashingUI();
+    }
 };
 
 TABS.firmware_flasher = firmware_flasher;
