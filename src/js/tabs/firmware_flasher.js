@@ -185,20 +185,16 @@ firmware_flasher.initialize = async function (callback) {
     async function onDocumentLoad() {
         // Initialize firmware type switching
         function initializeFirmwareTypeSwitching() {
-            console.log("Initializing firmware type switching...");
             $('select[name="firmware_type"]').on("change", function () {
                 const selectedType = $(this).val();
-                console.log("Firmware type changed to:", selectedType);
 
                 if (selectedType === "betaflight") {
-                    console.log("Showing betaflight content");
                     $(".betaflight_firmware_content").show();
                     $(".elrs_firmware_content").hide();
                     $(".elrs_flashing_interface").hide();
                     // Reset ELRS state
                     firmware_flasher.resetELRSState();
                 } else if (selectedType === "elrs") {
-                    console.log("Showing ELRS content");
                     $(".betaflight_firmware_content").hide();
                     $(".elrs_firmware_content").show();
                     // Initialize ELRS flasher
@@ -210,10 +206,8 @@ firmware_flasher.initialize = async function (callback) {
             $('select[name="firmware_type"]').val("betaflight").trigger("change");
         }
 
-        // Initialize firmware type switching after DOM is ready
-        setTimeout(() => {
-            initializeFirmwareTypeSwitching();
-        }, 100);
+        // Initialize firmware type switching
+        initializeFirmwareTypeSwitching();
 
         function parseHex(str, callback) {
             read_hex_file(str).then((data) => {
@@ -1553,8 +1547,6 @@ firmware_flasher.enableFlashButton = function (enabled) {
 
 // ELRS Flasher Functions
 firmware_flasher.initializeELRSFlasher = function () {
-    console.log("Initializing ELRS flasher...");
-
     // Initialize with default values
     this.store.firmware = "firmware"; // Default firmware type
     this.store.targetType = "rx"; // Default target type
@@ -1574,8 +1566,6 @@ firmware_flasher.initializeELRSFlasher = function () {
 
     // Store the update function for later use
     window.updateWiFiVisibility = updateWiFiVisibility;
-
-    console.log("ELRS flasher initialized");
 };
 
 firmware_flasher.resetELRSState = function () {
@@ -1688,18 +1678,14 @@ firmware_flasher.updateELRSVersions = function () {
 };
 
 firmware_flasher.populateELRSFirmwareVersions = function () {
-    console.log("Populating ELRS firmware versions...");
     const select = $('select[name="elrs_firmware_version"]');
-    console.log("Found select element:", select.length);
     select.empty();
     select.append('<option value="">Loading...</option>');
 
     // Load firmware data from local assets
-    console.log("Fetching from:", `./assets/${this.store.firmware}/index.json`);
     fetch(`./assets/${this.store.firmware}/index.json`)
         .then((r) => r.json())
         .then((r) => {
-            console.log("Firmware data loaded:", r);
             this.firmware = r;
             this.updateELRSVersions();
 
@@ -1707,7 +1693,6 @@ firmware_flasher.populateELRSFirmwareVersions = function () {
             this.versions.forEach((version) => {
                 select.append(`<option value="${version.value}">${version.title}</option>`);
             });
-            console.log("Versions populated:", this.versions.length);
         })
         .catch((error) => {
             console.error("Error loading firmware versions:", error);

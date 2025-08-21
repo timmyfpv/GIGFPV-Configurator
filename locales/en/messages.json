@@ -356,9 +356,6 @@
     "tabFirmwareFlasher": {
         "message": "Firmware Flasher"
     },
-    "tabElrsFlasher": {
-        "message": "ELRS Flasher"
-    },
     "tabLanding": {
         "message": "Welcome"
     },
