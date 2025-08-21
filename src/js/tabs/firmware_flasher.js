@@ -148,18 +148,12 @@ const flashMethodTitles = {
 // Flash methods available in ELRS
 const flashMethods = [
     { value: "download", title: "Local Download" },
-    { value: "uart", title: "Serial UART" },
     { value: "betaflight", title: "Betaflight Passthrough" },
-    { value: "etx", title: "EdgeTX Passthrough" },
-    { value: "passthru", title: "Passthrough" },
-    { value: "wifi", title: "WiFi" },
-    { value: "stlink", title: "STLink" },
-    { value: "dfu", title: "DFU" },
-    { value: "stock", title: "Stock Bootloader" },
 ];
 
 function getFlashMethods(methods) {
-    return flashMethods.filter((v) => v.value === "download" || (methods && methods.includes(v.value)));
+    // Only allow Local Download and Betaflight Passthrough
+    return flashMethods.filter((v) => v.value === "download" || v.value === "betaflight");
 }
 
 firmware_flasher.initialize = async function (callback) {
@@ -1645,7 +1639,7 @@ firmware_flasher.resetELRSState = function () {
     };
 };
 
-firmware_flasher.updateELRSVersions = function () {
+firmware_flasher.updateELRSVersions = function (skipVendorUpdate = false) {
     if (this.firmware) {
         this.hardware = null;
         this.store.version = null;
@@ -1673,7 +1667,9 @@ firmware_flasher.updateELRSVersions = function () {
                     }
                 });
         }
-        this.updateELRSVendors();
+        if (!skipVendorUpdate) {
+            this.updateELRSVendors();
+        }
     }
 };
 
@@ -1687,12 +1683,19 @@ firmware_flasher.populateELRSFirmwareVersions = function () {
         .then((r) => r.json())
         .then((r) => {
             this.firmware = r;
-            this.updateELRSVersions();
+            this.updateELRSVersions(true); // Skip vendor update during initial population
 
             select.empty();
             this.versions.forEach((version) => {
                 select.append(`<option value="${version.value}">${version.title}</option>`);
             });
+
+            // Set the selected value if we have a default version
+            if (this.store.version) {
+                select.val(this.store.version);
+                // Trigger the change event to populate other dropdowns
+                select.trigger("change");
+            }
         })
         .catch((error) => {
             console.error("Error loading firmware versions:", error);
@@ -1796,8 +1799,14 @@ firmware_flasher.populateELRSRadios = function () {
 firmware_flasher.updateELRSTargets = function () {
     this.targets = [];
     let keepTarget = false;
-    if (this.store.version && this.hardware) {
-        const version = this.versions.find((x) => x.value === this.store.version).title;
+    if (this.store.version && this.hardware && this.versions) {
+        const versionObj = this.versions.find((x) => x.value === this.store.version);
+        if (!versionObj) {
+            this.populateELRSTargets();
+            this.updateELRSLuaUrl();
+            return;
+        }
+        const version = versionObj.title;
         for (const [vk, v] of Object.entries(this.hardware)) {
             if (vk === this.store.vendor || this.store.vendor === null) {
                 for (const [rk, r] of Object.entries(v)) {
@@ -1837,12 +1846,14 @@ firmware_flasher.populateELRSTargets = function () {
     const select = $('select[name="hardware-target"]');
     select.empty();
 
-    if (this.targets.length === 0) {
+    if (!this.targets || this.targets.length === 0) {
         select.append('<option value="">Select radio type first</option>');
     } else {
         select.append('<option value="">Select hardware target...</option>');
         this.targets.forEach((target) => {
-            select.append(`<option value="${target.value.target}">${target.title}</option>`);
+            if (target && target.value && target.value.target) {
+                select.append(`<option value="${target.value.target}">${target.title}</option>`);
+            }
         });
     }
 };
