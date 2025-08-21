@@ -1,7 +1,7 @@
 #!/bin/bash
 
-mkdir -p public/assets
-cd public/assets
+mkdir -p src/assets
+cd src/assets
 
 # Remove old firmware files
 rm -rf firmware backpack

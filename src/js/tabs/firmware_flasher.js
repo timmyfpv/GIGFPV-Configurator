@@ -11,7 +11,6 @@ import { gui_log } from "../gui_log";
 import semver from "semver";
 import { urlExists } from "../utils/common";
 import read_hex_file from "../workers/hex_parser.js";
-
 import FileSystem from "../FileSystem";
 import STM32 from "../protocols/webstm32";
 import DFU from "../protocols/webusbdfu";

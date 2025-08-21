@@ -100,6 +100,13 @@ function updateVersions() {
     }
 }
 
+function testy() {
+    console.log("testy");
+    $("span.progressLabel").attr("i18n", "firmwareFlasherFirmwareNotLoaded").removeClass("i18n-replaced");
+    i18n.localizePage();
+}
+window.testy = testy;
+
 function updateVendors() {
     if (store.version) {
         store.folder = `./assets/${store.firmware}`;
@@ -564,7 +571,7 @@ function generateUID(bindPhrase) {
                 .map((b) => b.toString(16).padStart(2, "0"))
                 .join("");
             store.options.uid = uidBytes;
-            return `UID: ${  uidHex}`;
+            return `UID: ${uidHex}`;
         } catch (error) {
             console.error("Error generating UID:", error);
             store.options.uid = null;
@@ -752,7 +759,7 @@ async function downloadFirmware() {
         // Build firmware first
         await buildFirmware();
     } catch (error) {
-        alert(`Error building firmware: ${  error.message}`);
+        alert(`Error building firmware: ${error.message}`);
         return;
     }
 
@@ -791,7 +798,7 @@ async function downloadFirmware() {
         URL.revokeObjectURL(url);
     } catch (error) {
         console.error("Error downloading firmware:", error);
-        alert(`Error downloading firmware: ${  error.message}`);
+        alert(`Error downloading firmware: ${error.message}`);
     }
 }
 
@@ -915,7 +922,7 @@ async function flash() {
     try {
         progressText = "";
         await flasher.flash(files.firmwareFiles, fullErase, (fileIndex, written, total) => {
-            progressText = `${fileIndex + 1  } of ${  files.firmwareFiles.length}`;
+            progressText = `${fileIndex + 1} of ${files.firmwareFiles.length}`;
             progress = Math.round((written / total) * 100);
             updateFlashingUI();
         });
@@ -1039,7 +1046,7 @@ function handleDeviceFlashing() {
             connect();
         })
         .catch((error) => {
-            alert(`Error building firmware: ${  error.message}`);
+            alert(`Error building firmware: ${error.message}`);
         });
 }
 
