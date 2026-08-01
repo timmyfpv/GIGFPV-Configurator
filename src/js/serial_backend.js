@@ -32,6 +32,10 @@ import { switchTab } from "./tab_switch";
 import { useConnectionStore } from "../stores/connection";
 import { useDialogStore } from "../stores/dialog";
 import { isMspCancelled } from "./msp/mspErrors.js";
+import {
+    isDrivenRebootTarget as isDrivenRebootTargetShared,
+    setRebootReconnectHandlers,
+} from "./rebootReconnectBridge.js";
 
 const logHead = "[SERIAL-BACKEND]";
 
@@ -100,7 +104,7 @@ let rebootHandshakeSawTraffic = false;
  * @returns {boolean}
  */
 export function isDrivenRebootTarget(port) {
-    return typeof port === "string" && (port.startsWith("bluetooth") || port === "manual");
+    return isDrivenRebootTargetShared(port);
 }
 
 /**
@@ -1493,6 +1497,11 @@ export function scheduleRebootReconnect() {
     getConnectionState().requestReboot(rebootConnectWindowMs());
     rebootReconnect();
 }
+
+setRebootReconnectHandlers({
+    disconnect,
+    scheduleRebootReconnect,
+});
 
 // Drive the disconnect/reconnect cycle for a BLE/manual reboot. The link bounces (or survives)
 // as the FC restarts, and no single disconnect event marks "FC ready". Runs whether or not the

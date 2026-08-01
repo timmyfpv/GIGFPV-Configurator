@@ -3,9 +3,13 @@ import semver from "semver";
 import MSP from "../js/msp";
 import GUI from "../js/gui";
 import FC from "../js/fc";
-import { disconnect, isDrivenRebootTarget, scheduleRebootReconnect } from "../js/serial_backend";
 import DeviceHandler from "../js/device_handler";
 import { getConnectionState, State } from "../js/connection_state";
+import {
+    disconnectForCliReconnect,
+    isDrivenRebootTarget,
+    scheduleDrivenCliReconnect,
+} from "../js/rebootReconnectBridge.js";
 
 const DEFAULT_COMMAND_TIMEOUT_MS = 2000;
 const SAVE_COMMAND_TIMEOUT_MS = 5000;
@@ -77,7 +81,7 @@ export function scheduleReconnect() {
     // same machinery a BLE/manual Save & Reboot uses. It reads Auto-Connect live, so with it
     // off the cycle still ends in a clean disconnect.
     if (isDrivenRebootTarget(target)) {
-        scheduleRebootReconnect();
+        scheduleDrivenCliReconnect();
         return;
     }
 
@@ -99,7 +103,7 @@ export function scheduleReconnect() {
         () => {
             // Drop the stale link only. disconnect() is a no-op if the reboot already closed the
             // port; reconnection (if any) is auto-connect's job on device re-enumeration.
-            disconnect();
+            disconnectForCliReconnect();
         },
         RECONNECT_DELAY_MS,
     );

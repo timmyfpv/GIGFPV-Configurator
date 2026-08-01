@@ -58,6 +58,13 @@ vi.mock("../../src/js/serial_backend", () => ({
     // Mirror the real predicate — scheduleReconnect branches on it.
     isDrivenRebootTarget: (port) => typeof port === "string" && (port.startsWith("bluetooth") || port === "manual"),
 }));
+vi.mock("../../src/js/serial_backend.js", () => ({
+    __esModule: true,
+    connectDisconnect,
+    disconnect,
+    scheduleRebootReconnect,
+    isDrivenRebootTarget: (port) => typeof port === "string" && (port.startsWith("bluetooth") || port === "manual"),
+}));
 
 // Keep the rest of the import graph light — useMspCliSession also imports MSP and FC.
 vi.mock("../../src/js/msp", () => ({
@@ -73,12 +80,19 @@ import { scheduleReconnect, cancelScheduledReconnect, saveAndReconnect } from ".
 import MSP from "../../src/js/msp";
 import DeviceHandler from "../../src/js/device_handler";
 import { getConnectionState, __resetConnectionStateForTests, State } from "../../src/js/connection_state.js";
+import { setRebootReconnectHandlers } from "../../src/js/rebootReconnectBridge.js";
+
+async function flushLazyImport() {
+    await Promise.resolve();
+    await Promise.resolve();
+}
 
 describe("useMspCliSession.scheduleReconnect (characterization)", () => {
     beforeEach(() => {
         vi.useFakeTimers();
         vi.clearAllMocks();
         GUI._timers.clear();
+        setRebootReconnectHandlers({ disconnect, scheduleRebootReconnect });
         __resetConnectionStateForTests();
         // Auto-Connect on is the reconnect path these cases characterize; the off case is
         // covered explicitly below. A real selected port is needed for the reconnect window.
@@ -90,7 +104,7 @@ describe("useMspCliSession.scheduleReconnect (characterization)", () => {
         vi.useRealTimers();
     });
 
-    it("drops the stale link once after 500ms (one-shot, not a retry loop; reconnect is auto-connect's job)", () => {
+    it("drops the stale link once after 500ms (one-shot, not a retry loop; reconnect is auto-connect's job)", async () => {
         scheduleReconnect();
 
         // Nothing fires before the 500ms delay.
@@ -99,6 +113,7 @@ describe("useMspCliSession.scheduleReconnect (characterization)", () => {
 
         // Fires exactly once at the delay boundary.
         vi.advanceTimersByTime(1);
+        await flushLazyImport();
         expect(disconnect).toHaveBeenCalledTimes(1);
 
         // No further calls — it is a single timeout, not an interval. And it never connects
@@ -108,7 +123,7 @@ describe("useMspCliSession.scheduleReconnect (characterization)", () => {
         expect(connectDisconnect).not.toHaveBeenCalled();
     });
 
-    it("de-bounces: a second scheduleReconnect replaces the pending one (still one disconnect)", () => {
+    it("de-bounces: a second scheduleReconnect replaces the pending one (still one disconnect)", async () => {
         scheduleReconnect();
         vi.advanceTimersByTime(300);
 
@@ -123,6 +138,7 @@ describe("useMspCliSession.scheduleReconnect (characterization)", () => {
 
         // Only the second timer fires, exactly once.
         vi.advanceTimersByTime(300);
+        await flushLazyImport();
         expect(disconnect).toHaveBeenCalledTimes(1);
     });
 
@@ -147,7 +163,7 @@ describe("useMspCliSession.scheduleReconnect (characterization)", () => {
         expect(getConnectionState().isReconnecting).toBe(false);
     });
 
-    it("a late cancel (after the timer fired) does NOT abort a live connect", () => {
+    it("a late cancel (after the timer fired) does NOT abort a live connect", async () => {
         DeviceHandler.devicePicker.selectedDevice = "serial_0";
 
         scheduleReconnect();
@@ -157,6 +173,7 @@ describe("useMspCliSession.scheduleReconnect (characterization)", () => {
         // re-enumerated device, advancing the phase (RECONNECTING -> CONNECTING -> HANDSHAKING).
         // Simulate that transition here.
         vi.advanceTimersByTime(500);
+        await flushLazyImport();
         expect(disconnect).toHaveBeenCalledTimes(1);
         getConnectionState().setPhase(State.CONNECTING);
 
@@ -166,7 +183,7 @@ describe("useMspCliSession.scheduleReconnect (characterization)", () => {
         expect(getConnectionState().state).toBe(State.CONNECTING);
     });
 
-    it("bluetooth target: delegates to serial_backend's driven reboot cycle (BLE never re-enumerates)", () => {
+    it("bluetooth target: delegates to serial_backend's driven reboot cycle (BLE never re-enumerates)", async () => {
         // Regression (#5209 follow-up): a BLE device stays on the port list across an FC
         // reboot — no removedDevice/addedDevice cycle fires — so the passive drop-and-wait
         // path would never reconnect. scheduleReconnect must hand BLE to the driven
@@ -174,6 +191,7 @@ describe("useMspCliSession.scheduleReconnect (characterization)", () => {
         DeviceHandler.devicePicker.selectedDevice = "bluetooth_x81jPGap0DdYcGTJyKZWyw==";
 
         scheduleReconnect();
+        await flushLazyImport();
 
         expect(scheduleRebootReconnect).toHaveBeenCalledTimes(1);
 
@@ -184,7 +202,7 @@ describe("useMspCliSession.scheduleReconnect (characterization)", () => {
         expect(connectDisconnect).not.toHaveBeenCalled();
     });
 
-    it("with Auto-Connect OFF: drops the stale link and does NOT reconnect (no reconnect window)", () => {
+    it("with Auto-Connect OFF: drops the stale link and does NOT reconnect (no reconnect window)", async () => {
         DeviceHandler.devicePicker.autoConnect = false;
 
         scheduleReconnect();
@@ -192,6 +210,7 @@ describe("useMspCliSession.scheduleReconnect (characterization)", () => {
         expect(getConnectionState().isReconnecting).toBe(false);
 
         vi.advanceTimersByTime(500);
+        await flushLazyImport();
         // It disconnects the stale link but must NOT attempt a reconnect (which would race the
         // reboot and pop a spurious "failed to open" dialog).
         expect(disconnect).toHaveBeenCalledTimes(1);
