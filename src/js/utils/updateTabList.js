@@ -1,19 +1,14 @@
-import $ from "jquery";
-import FC from "../fc";
+import { betaflightModel } from "../../components/init.js";
+import { isExpertModeEnabled } from "./isExpertModeEnabled";
 
-export function updateTabList(features) {
-    const isExpertModeEnabled = $('input[name="expertModeCheckbox"]').is(":checked");
-
-    $("#tabs ul.mode-connected li.tab_failsafe").toggle(isExpertModeEnabled);
-    $("#tabs ul.mode-connected li.tab_adjustments").toggle(isExpertModeEnabled);
-    $("#tabs ul.mode-connected li.tab_sensors").toggle(isExpertModeEnabled);
-    $("#tabs ul.mode-connected li.tab_logging").toggle(isExpertModeEnabled);
-    $("#tabs ul.mode-connected li.tab_servos").toggle(
-        isExpertModeEnabled && FC.CONFIG?.buildOptions?.includes("USE_SERVOS"),
-    );
-
-    $("#tabs ul.mode-connected li.tab_gps").toggle(FC.CONFIG?.buildOptions?.includes("USE_GPS"));
-    $("#tabs ul.mode-connected li.tab_led_strip").toggle(features.isEnabled("LED_STRIP"));
-    $("#tabs ul.mode-connected li.tab_transponder").toggle(features.isEnabled("TRANSPONDER"));
-    $("#tabs ul.mode-connected li.tab_osd").toggle(features.isEnabled("OSD"));
+// Delegate tab visibility to Vue via template v-show bindings. This function now
+// only syncs the expert mode state to the global Vue model if present.
+export function updateTabList(_features) {
+    try {
+        if (typeof betaflightModel.expertMode !== "undefined") {
+            betaflightModel.expertMode = isExpertModeEnabled();
+        }
+    } catch {
+        // noop: if Vue model not available, do nothing
+    }
 }

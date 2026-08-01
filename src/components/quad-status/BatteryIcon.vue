@@ -1,5 +1,5 @@
 <template>
-    <div class="battery-icon">
+    <div class="battery-icon shrink-0" :class="{ 'battery-icon--compact': compact }">
         <div class="quad-status-contents">
             <div class="battery-status" :class="classes" :style="{ width: batteryWidth + '%' }" />
         </div>
@@ -8,13 +8,12 @@
 
 <script>
 import { defineComponent, computed } from "vue";
-
-const NO_BATTERY_VOLTAGE_MAXIMUM = 1.8;
+import { NO_BATTERY_VOLTAGE_MAXIMUM, estimateCellCount } from "../../js/utils/battery";
 
 export default defineComponent({
     props: {
         batteryState: {
-            type: String,
+            type: [String, Number],
             default: "",
         },
         voltage: {
@@ -29,15 +28,13 @@ export default defineComponent({
             type: Number,
             default: 1,
         },
+        compact: {
+            type: Boolean,
+            default: false,
+        },
     },
     setup(props) {
-        const nbCells = computed(() => {
-            let cells = Math.floor(props.voltage / props.vbatmaxcellvoltage) + 1;
-            if (props.voltage === 0) {
-                cells = 1;
-            }
-            return cells;
-        });
+        const nbCells = computed(() => estimateCellCount(props.voltage, props.vbatmaxcellvoltage));
 
         const min = computed(() => {
             return props.vbatwarningcellvoltage * nbCells.value;
@@ -56,13 +53,14 @@ export default defineComponent({
         });
 
         const classes = computed(() => {
-            if (props.batteryState) {
+            const state = String(props.batteryState ?? "");
+            if (state) {
                 return {
-                    "state-ok": props.batteryState === "0",
-                    "state-warning": props.batteryState === "1",
-                    "state-empty": props.batteryState === "2",
-                    // TODO: BATTERY_NOT_PRESENT
-                    // TODO: BATTERY_INIT
+                    "state-ok": state === "0",
+                    "state-warning": state === "1",
+                    "state-empty": state === "2",
+                    "state-not-present": state === "3",
+                    "state-init": state === "4",
                 };
             }
             const isWarning = props.voltage < warn.value;
@@ -74,6 +72,10 @@ export default defineComponent({
         });
 
         const batteryWidth = computed(() => {
+            const state = String(props.batteryState ?? "");
+            if (state === "3" || state === "4") {
+                return 100;
+            }
             return isEmpty.value ? 100 : ((props.voltage - min.value) / (max.value - min.value)) * 100;
         });
 
@@ -92,23 +94,15 @@ export default defineComponent({
 
 <style scoped>
 .quad-status-contents {
-    display: inline-block;
-    margin-top: 10px;
-    margin-left: 14px;
+    position: absolute;
+    top: 10px;
+    left: 14px;
     height: 10px;
     width: 31px;
 }
 
-.quad-status-contents progress::-webkit-progress-bar {
-    height: 12px;
-    background-color: var(--surface-300);
-}
-
-.quad-status-contents progress::-webkit-progress-value {
-    background-color: #bcf;
-}
-
 .battery-icon {
+    position: relative;
     background-image: url(../../images/icons/cf_icon_bat_grey.svg);
     background-size: contain;
     background-position: center;
@@ -123,6 +117,7 @@ export default defineComponent({
 
 .battery-status {
     height: 11px;
+    max-width: 100%;
 }
 
 @keyframes error-blinker {
@@ -143,5 +138,31 @@ export default defineComponent({
 
 .battery-status.state-empty {
     animation: error-blinker 1s linear infinite;
+}
+
+.battery-status.state-not-present {
+    background-color: transparent;
+}
+
+.battery-status.state-init {
+    background-color: var(--surface-500);
+}
+
+.battery-icon--compact {
+    margin-top: 0;
+    margin-left: 0;
+    height: 24px;
+    width: 48px;
+}
+
+.battery-icon--compact .quad-status-contents {
+    top: 8px;
+    left: 11px;
+    width: 26px;
+    height: 8px;
+}
+
+.battery-icon--compact .battery-status {
+    height: 9px;
 }
 </style>

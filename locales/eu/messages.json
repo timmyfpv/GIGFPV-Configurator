@@ -61,9 +61,6 @@
     "cancel": {
         "message": "Ezeztatu"
     },
-    "autoConnectEnabled": {
-        "message": "Konexio-Automatikoa: Gaituta - Konfiguratzaileak ataka berria hautematen denean automatikoki konektatzen saiatzen da"
-    },
     "autoConnectDisabled": {
         "message": "Konexio-Automatikoa: desgaituta - Erabiltzaileak serieko portu egokia hautatu behar du eta \"Konektatu\" botoia sakatu behar du"
     },
@@ -88,9 +85,6 @@
     },
     "language_default": {
         "message": "Sistema Lehenetsia"
-    },
-    "language_default_pretty": {
-        "message": "Sistema Lehenetsia ($t(detectedLanguage))"
     },
     "sensorDataFlashNotFound": {
         "message": "Flash memoria <br> ez dago erabilgarri",
@@ -141,12 +135,6 @@
     "sensorStatusSonarShort": {
         "message": "Sonar",
         "description": "Text of the image in the top sensors icons. Please keep it short."
-    },
-    "checkForConfiguratorUnstableVersions": {
-        "message": "Erakutsi konfiguratzailearen bertsio ezegonkorretarako eguneratze jakinarazpenak"
-    },
-    "configuratorUpdateNotice": {
-        "message": "<b>Betaflight Konfiguratzailearen<\/b> bertsio zaharkitua erabiltzen ari zara.<br>$t(configuratorUpdateHelp.message)"
     },
     "configuratorUpdateWebsite": {
         "message": "Bertsio agirien webgunera joan"
@@ -205,9 +193,6 @@
     "tabFailsafe": {
         "message": "Segurtasun Modua"
     },
-    "tabTransponder": {
-        "message": "Laizterketarako Transpondedorea"
-    },
     "tabOsd": {
         "message": "OSD"
     },
@@ -225,9 +210,6 @@
     },
     "tabLedStrip": {
         "message": "LED Zerrenda"
-    },
-    "tabRawSensorData": {
-        "message": "Sensoreak"
     },
     "tabCLI": {
         "message": "CLI"
@@ -373,14 +355,8 @@
     "noConfigurationReceived": {
         "message": "Ez zaio heldu konfigurazioa <span class=\"message-negative\">10 segunduko<\/span> epean, komunikazioa <span class=\"message-negative\">HUTS<\/span> egin du"
     },
-    "firmwareVersionNotSupported": {
-        "message": "Firmware bertsio hau <span class=\"message-negative\">EZ dago onartua<\/span>. Mezedez firmwarea eguneratu, API bertsioa <strong>$1<\/strong> edo berriagora. CLI-a erabili backupa egiteko flasheatu aurretik. CLI backupa gorde edo beripintzeko modua dokumentazioan aurkitu dezakezu.<br \/>Baita ere Konfiguratzailearen aurreko bertsio bat dezkargatu eta erabili dezakezu ezin baduzu edo ez bazaude eguneratzeko prest."
-    },
     "firmwareTypeNotSupported": {
         "message": "Betaflight ez den firmwarea <span class=\"message-negative\">ez da onartzen<\/span>, CLI moduan izan ezik."
-    },
-    "firmwareUpgradeRequired": {
-        "message": "Firmware bertsio hau EZ dago onartua. Mezedez firmwarea eguneratu, API bertsioa edo berriagora. CLI-a erabili backupa egiteko flasheatu aurretik. CLI backupa gorde edo beripintzeko modua dokumentazioan aurkitu dezakezu. <br\/>Baita ere Konfiguratzailearen aurreko bertsio bat dezkargatu eta erabili dezakezu ezin baduzu edo ez bazaude eguneratzeko prest."
     },
     "resetToCustomDefaultsDialog": {
         "message": "Lehenetsi pertsonalizatuak daude eskuragarri kontrolatzaile honetarako. Normalki, kontrolatzailea ez da behar bezela ibiliko ez badinba zaizkiao bere lehenetsi pertsonalizatuak ipintzen.<br \/>Nahi duzu kontroladore honi bere lehenetsi pertsonalizatuak ipintzea?"
@@ -448,12 +424,6 @@
     "versionLabelTarget": {
         "message": "Target"
     },
-    "versionLabelFirmware": {
-        "message": "Firmwarea"
-    },
-    "versionLabelConfigurator": {
-        "message": "Konfiguratzailea"
-    },
     "notifications_app_just_updated_to_version": {
         "message": "Aplikazioa:$1 bertsiora eguneratu da"
     },
@@ -503,12 +473,6 @@
     "eeprom_saved_ok": {
         "message": "EEPROM <span class=\"message-positive\">gordeta<\/span>"
     },
-    "defaultWelcomeIntro": {
-        "message": "Ongi etorri <strong>Betaflight-Konfiguratzailea<\/strong> ra, zure hegaldi kontroladorea eguneratu, konfiguratu eta sintonizatzeko diseinatutako tresna."
-    },
-    "defaultWelcomeHead": {
-        "message": "Hardware"
-    },
     "defaultContributingHead": {
         "message": "Hartu parte"
     },
@@ -517,12 +481,6 @@
     },
     "defaultButtonFirmwareFlasher": {
         "message": "Firmware Flasheatzailea"
-    },
-    "defaultDonateHead": {
-        "message": "Kode Irekia \/ dohaintza abisua"
-    },
-    "defaultDonateText": {
-        "message": "<p><strong>Betafligth<\/strong><strong> kode irekiko<\/strong>, egaldi kontroladore softwarea da eta dohainik eskuragarri dago, <strong>berme barik<\/strong> erabiltzaile guztientzako.<\/p><p> Betaflight edo Betaflight Konfiguratzailea, erabilgarri aurkitu baduzu, mesedez kontuan euki <strong>laguntzea<\/strong> bere garapenera, dohaintza bat emoten.<\/p>"
     },
     "defaultDonateBottom": {
         "message": "<p>Era erregular baten ekonomikoki laguntzeko idea baduzu, kontuan euki beharko zenuen \"Patron\" bilakatzea gure Patreon portalean $t(patreonLink.message)<\/p>"
@@ -566,12 +524,6 @@
     },
     "initialSetupButtonCalibrateAccel": {
         "message": "Azelerometroa kalibratu"
-    },
-    "initialSetupCalibrateAccelText": {
-        "message": "Kontroladoreak edo markoa gainazale <strong>berdintutan<\/strong> jarri, jarraitu kalibrazioarekin, ziurtatu plataforma ez dela kalibrazio aldian mugitzen"
-    },
-    "initialSetupButtonCalibrateMag": {
-        "message": "Magnetometroa kalibratu"
     },
     "initialSetupCalibrateMagText": {
         "message": "Mugi multirotorea gutxienez <strong>360<\/strong> gradu rotazio eje guztietan, 30 segundu dituzu hau egiteko"
@@ -715,10 +667,6 @@
         "message": "Black Sheep Telemetry gailua (TBS Core Pro adibidez) desarmatu egin da eta armatzea eragozten du",
         "description": "Message that pops up to describe the BST arming disable flag"
     },
-    "initialSetupArmingDisableFlagsTooltipMSP": {
-        "message": "MSP konexioa aktiboa da, seguruenik Betaflight Configurator honekin",
-        "description": "Message that pops up to describe the MSP arming disable flag"
-    },
     "initialSetupArmingDisableFlagsTooltipPARALYZE": {
         "message": "Paralyze modua aktibatu da",
         "description": "Message that pops up to describe the PARALYZE arming disable flag"
@@ -768,9 +716,6 @@
     },
     "initialSetupSettingsRestored": {
         "message": "<strong>Lehenetsita<\/strong> ezarpenak ezarrita"
-    },
-    "initialSetupEepromSaved": {
-        "message": "EEPROM <span class=\"message-positive\">gordeta<\/span>"
     },
     "featureNone": {
         "message": "&lt;Bat aukeratu&gt;"
@@ -826,9 +771,6 @@
     "featureTRANSPONDER": {
         "message": "Laizterketarako Transpondedorea"
     },
-    "featureTRANSPONDERTip": {
-        "message": "Gaitu ondoren, laizterketarako transpondedore atala konfiguratu."
-    },
     "featureAIRMODE": {
         "message": "Airmode etengabe gaitu"
     },
@@ -862,9 +804,6 @@
     "configurationReceiverMode": {
         "message": "Hartzaile modua"
     },
-    "configurationRSSI": {
-        "message": "RSSI (seinalearen indarra)"
-    },
     "configurationRSSIHelp": {
         "message": "RSSI seinalearen indarraren neurketa da eta oso erabilgarria da, aireontziak noiz irtengo diren barrutitik kanpora edo RF interferentziak jasaten ari den jakiteko."
     },
@@ -877,26 +816,8 @@
     "configurationSpiRxHelp": {
         "message": "<strong>Oharra:<\/strong> SPI RX hornitzaileak funtzionatuko du beharrezko hardwarea taula gainean badago edo SPI bus batera konektatuta badago."
     },
-    "configurationOtherFeaturesHelp": {
-        "message": "<strong>Oharra:<\/strong> Aukera guztiak ez dira kontrolatzaile guztiek onartzen. Aukera jakin bat gaitzen baduzu eta 'Gorde eta berrabiarazi' sakatu ondoren itzaltzen bada, aukera hau ez da zure kontroladorean onartzen."
-    },
-    "configurationBoardAlignmentRoll": {
-        "message": "Roll graduak"
-    },
-    "configurationBoardAlignmentPitch": {
-        "message": "Pitch graduak"
-    },
-    "configurationBoardAlignmentYaw": {
-        "message": "Yaw graduak"
-    },
-    "configurationSensorAlignmentGyro": {
-        "message": "GIRO Lerrokatzea"
-    },
     "configurationSensorGyroToUse": {
         "message": "GIRO\/AZEL"
-    },
-    "configurationSensorGyroToUseNotFound": {
-        "message": "Abisua: ez da Giro\/Azel aurkitu"
     },
     "configurationSensorGyroToUseFirst": {
         "message": "Lehen"
@@ -913,14 +834,8 @@
     "configurationSensorAlignmentGyro2": {
         "message": "Bigarren GIRO"
     },
-    "configurationSensorAlignmentAcc": {
-        "message": "AZEL Lerrokatzea"
-    },
     "configurationSensorAlignmentDefaultOption": {
         "message": "Lehenetsia"
-    },
-    "configurationAccelTrims": {
-        "message": "Trimatu azelerometroa"
     },
     "configurationAccelTrimRoll": {
         "message": "Azelerometroaren Roll Trim"
@@ -1113,9 +1028,6 @@
     "configurationSpiRX": {
         "message": "SPI Bus Hartzaileen Hornitzailea"
     },
-    "configurationEepromSaved": {
-        "message": "EEPROM <span class=\"message-positive\">gorde<\/span>"
-    },
     "configurationButtonSave": {
         "message": "Gorde eta berrabiarazi"
     },
@@ -1229,9 +1141,6 @@
     },
     "pidTuningSubTabPid": {
         "message": "PID profilaren ezarpenak"
-    },
-    "pidTuningSubTabRates": {
-        "message": "Rate profilaren ezarpenak"
     },
     "pidTuningSubTabFilter": {
         "message": "Iragazkiak"
@@ -1406,9 +1315,6 @@
     "pidTuningDataRefreshed": {
         "message": "PID datuak <strong>berritu<\/strong>"
     },
-    "pidTuningEepromSaved": {
-        "message": "EEPROM <span class=\"message-positive\">gorde<\/span>"
-    },
     "tuningHelp": {
         "message": "<b>Eguneratzeko aholkuak<\/b><br\/><span class=\"message-negative\">GARRANTZITSUA:<\/span> Garrantzitsua da lehen hegaldietan motorren tenperatura egiaztatzea. Iragazkiaren balioa zenbat eta handiagoa izan, orduan eta handiagoa izango da hegan egiteko, baina zarata gehiago lortuko duzu motorretan. <br>100Hz-ko balio lehenetsia ezin hobea da, baina zaratagarrien konfigurazioetarako Dterm iragazkia 50Hz-era jaistea probatu dezakezu eta, agian, giro iragazkia ere."
     },
@@ -1493,9 +1399,6 @@
     "receiverDataRefreshed": {
         "message": "RC sintonizatzeko datuak <strong>berritu<\/strong>"
     },
-    "receiverEepromSaved": {
-        "message": "EEPROM <span class=\"message-positive\">gorde<\/span>"
-    },
     "receiverModelPreview": {
         "message": "Aurrebista"
     },
@@ -1516,7 +1419,7 @@
     },
     "auxiliaryDisabled": {
         "message": "(OFF)",
-        "descripton": "Text to add to the ARM mode (maybe others in the future) in the MODES TAB when it has been disabled for some external reason"
+        "description": "Text to add to the ARM mode (maybe others in the future) in the MODES TAB when it has been disabled for some external reason"
     },
     "auxiliaryAddRange": {
         "message": "Barrutia erantzi"
@@ -1665,72 +1568,6 @@
     "adjustmentsSave": {
         "message": "Gorde"
     },
-    "adjustmentsEepromSaved": {
-        "message": "EEPROM <span class=\"message-positive\">gorde<\/span>"
-    },
-    "transponderNotSupported": {
-        "message": "Hegaldi-kontroladorearen firmwareak ez du transpondedor funtzionaltasunik onartzen."
-    },
-    "transponderInformation": {
-        "message": "Transponder sistemek lasterketen antolatzaileek zure bueltak kronometratzea ahalbidetzen dute. Transpondorea aireontziari egokituta dago eta aireontziak denbora-atea pasatzen duenean pista-alboko hartzaileak zure kodea erregistratzen du eta buelta denbora grabatzen du. IR oinarritutako transponder bat egokitzean zure hegazkinetik pista-alboko hargailuetara zuzentzen dela ziurtatu behar duzu, eta argi-izpiak zure egitura, bateria-uhalak, kableak, helizeak eta abar ez duela oztopatzen."
-    },
-    "transponderConfigurationType": {
-        "message": "Transponder mota"
-    },
-    "transponderType0": {
-        "message": "Bat ere ez"
-    },
-    "transponderType1": {
-        "message": "iLap"
-    },
-    "transponderType2": {
-        "message": "aRCiTimer"
-    },
-    "transponderType3": {
-        "message": "ERLT"
-    },
-    "transponderConfiguration1": {
-        "message": "iLap Konfigurazioa"
-    },
-    "transponderConfiguration2": {
-        "message": "aRCitimer konfigurazioa"
-    },
-    "transponderConfiguration3": {
-        "message": "ERLT Konfigurazioa"
-    },
-    "transponderData1": {
-        "message": "Datuak"
-    },
-    "transponderData2": {
-        "message": "Transponder IDa"
-    },
-    "transponderData3": {
-        "message": "Transponder IDa"
-    },
-    "transponderDataHelp1": {
-        "message": "Zenbaki hexadekimalak bakarrik, 0-9, AF"
-    },
-    "transponderHelp1": {
-        "message": "Hemen konfiguratu zure transpondedore kodea. Oharra: lasterketen krono-sistemek bakarrik aitortuko dituzte baliozko kodeak. Baliozko transpondedor kodeak <a href=\"http:\/\/seriouslypro.com\/transponder-codes\" target=\"_blank\" rel=\"noopener noreferrer\">Seriously Pro<\/a> bidez lor daitezke."
-    },
-    "transponderHelp2": {
-        "message": "Informazio gehiago <a href=\"http:\/\/www.arcitimer.com\/\" title=\"aRCiTimer\" target=\"_blank\" rel=\"noopener noreferrer\">aRCiTimer web-orrian<\/a>"
-    },
-    "transponderDataHelp3": {
-        "message": "ERLT ID 0-63 aukeratu"
-    },
-    "transponderHelp3": {
-        "message": "Informazio gehiago <a href=\"https:\/\/github.com\/polyvision\/EasyRaceLapTimer\" title=\"aRCiTimer\" target=\"_blank\" rel=\"noopener noreferrer\">EasyRaceLapTimer web-orrian<\/a>"
-    },
-    "transponderButtonSave": {
-        "message": "Gorde"
-    },
-    "transponderButtonSaveReboot": {
-        "message": "Gorde eta berrabiarazi"
-    },
-    "transponderDataInvalid": {
-        "message": "Transpondedore datuak <span class=\"message-negative\">baliogabeak dira<\/span>"
-    },
     "servosFirmwareUpgradeRequired": {
         "message": "Serboek &gt;=1.10.0. firmwarea eta kontroladoreak onartzea behar du."
     },
@@ -1767,15 +1604,6 @@
     "servosReverse": {
         "message": "Alderantzikatu"
     },
-    "servosEepromSave": {
-        "message": "EEPROM <span class=\"message-positive\">gorde<\/span>"
-    },
-    "gpsHead": {
-        "message": "GPSa"
-    },
-    "gpsMapHead": {
-        "message": "GPSaren uneko kokapena"
-    },
     "gpsMapMessage1": {
         "message": "Mesedez, egiaztatu zure Interneteko konexioa"
     },
@@ -1793,9 +1621,6 @@
     },
     "gpsDistToHome": {
         "message": "Dist. Etxera:"
-    },
-    "gpsSignalStrHead": {
-        "message": "GPS seinalearen indarra"
     },
     "gpsSignalStr": {
         "message": "Seinalearen indarra"
@@ -2013,9 +1838,6 @@
     "cliConfirmSnippetBtn": {
         "message": "Exekutatu"
     },
-    "loggingNote": {
-        "message": "Fitxa honetan <span class=\"message-negative\">bakarrik erregistratuko da<\/span>, eta fitxan <span class=\"message-negative\">bertan behera utziko du<\/span> erregistroa eta aplikazioa bere ohiko egoerara itzuliko da <strong>\"konfiguratzailea\"<\/strong> egoera.<br \/> Eguneratze-aldi globala aukeratzeko askatasuna duzu. Datuak erregistroko fitxategian idatziko dira <strong> 1 <\/strong> segundo guztietan errendimendu arrazoiengatik."
-    },
     "loggingSamplesSaved": {
         "message": "Laginak gordeta:"
     },
@@ -2094,14 +1916,8 @@
     "dataflashNotPresentNote": {
         "message": "Zure hegaldi kontrolatzaileak ez dauka flash integratuta erabilgarri."
     },
-    "dataflashFirmwareUpgradeRequired": {
-        "message": "Dataflashek &gt;= 1,8,0 firmwarea behar du."
-    },
     "dataflashButtonSaveFile": {
         "message": "Flash memoria fitxategira gorde..."
-    },
-    "dataflashButtonSaveFileDeprecated": {
-        "message": "Flash memoria fitzategira gorde...(ez da onartzen)"
     },
     "dataflashSavetoFileNote": {
         "message": "Flash memoria fitxategian gordetzea motela da eta berez akatsak \/ fitxategiak hondatzeko joera du.<br>Zenbait kasutan fitxategi txikientzat funtzionatuko du, baina hori ez da onartzen eta laguntza eskaerak itxi egingo dira iruzkinik egin gabe - erabili Biltegiratze Masiboa modua ordez."
@@ -2306,9 +2122,6 @@
     },
     "firmwareFlasherMessage": {
         "message": "Mezua:"
-    },
-    "firmwareFlasherRecoveryHead": {
-        "message": "<strong>Berreskuratutako\/Galdutako komunikazioa<\/strong>"
     },
     "firmwareFlasherButtonLeave": {
         "message": "Firmware Flasheatzailea Utzi"
@@ -2717,14 +2530,6 @@
         "message": "Iragazketa Gehiago",
         "description": "Filter tuning slider high header"
     },
-    "pidTuningGyroFilterSlider": {
-        "message": "Giro Iragazkien Biderkatzailea:",
-        "description": "Gyro filter tuning slider label"
-    },
-    "pidTuningDTermFilterSlider": {
-        "message": "D Term Iragazki Biderkatzailea:",
-        "description": "D Term filter tuning slider label"
-    },
     "pidTuningSlidersDisabled": {
         "message": "<strong>Oharra:<\/strong> Graduatzaileak desgaituta daude balioak eskuz aldatu direlako. '$t(pidTuningSliderEnableButton.message)' botoia sakatzen, balioak berrezarriko dira eta gorde gabeko aldaketa guztiak galduko dira.",
         "description": "Tuning sliders disabled note when manual changes are detected"
@@ -2768,9 +2573,6 @@
     "pidTuningDynamicNotchRange": {
         "message": "Notch Dinamikoa Iragazkiaren Barrutia"
     },
-    "pidTuningDynamicNotchQHelp": {
-        "message": "Q faktorea Notch Iragazki Dinamikoak estu edo zabal egokitzeko erabiltzen da. Balio altuagoak estuagoak eta zehatzagoak dira eta balio baxuagoak zabalagoak eta zabalagoak egiten ditu. Benetan balio txikia izateak asko handituko du iragazkien atzerapena."
-    },
     "pidTuningDynamicNotchMinHzHelp": {
         "message": "Notch dinamikoa kontrolatu behar duen zarata maiztasun txikienean ezarri."
     },
@@ -2780,14 +2582,6 @@
     "pidTuningRpmFilterGroup": {
         "message": "Giro RPM Iragazkia",
         "description": "Header text for the RPM Filter group"
-    },
-    "pidTuningRpmHarmonics": {
-        "message": "Giro RPM Iragazkiaren Armoniko Zenbakia",
-        "description": "Text for one of the parameters of the RPM Filter"
-    },
-    "pidTuningRpmMinHz": {
-        "message": "Giro RPM Iragazkiaren Min Frekuentzia [Hz]",
-        "description": "Text for one of the parameters of the RPM Filter"
     },
     "pidTuningRpmMinHzHelp": {
         "message": "RPM iragazkiak erabiliko duen gutxieneko frekuentzia.",
@@ -2805,26 +2599,14 @@
     "pidTuningVbatPidCompensationHelp": {
         "message": "PID balioak handitzen ditu Vbat jaisten denean konpentsatzeko. Horrek hegaldi ezaugarri konstanteagoak emango ditu hegaldi osoan. Aplikatzen den kalte-ordaina zenbatekoa kalkulatuko da $t(powerBatteryMaximum.message) aren arabera $t(tabPower.message) horrian konfiguraturik, beraz, ziurtatu egokia dela."
     },
-    "pidTuningVbatSagCompensation": {
-        "message": "Vbat Sag Konpentsazioa"
-    },
     "pidTuningVbatSagValue": {
         "message": "%"
-    },
-    "pidTuningThrustLinearization": {
-        "message": "Bultzada Linealizazioa"
     },
     "pidTuningThrustLinearValue": {
         "message": "%"
     },
     "pidTuningItermRotation": {
         "message": "I Term Biraketa"
-    },
-    "pidTuningSmartFeedforward": {
-        "message": "Adimendun Feedforward"
-    },
-    "pidTuningSmartFeedforwardHelp": {
-        "message": "F terminoak PIDen eragina murrizten du. P terminoa eta F terminoa aldi berean aktiboak direnean, bakarrik bietako handienak erabiltzen du, gainezka egiteak D igo beharrik izan gabe, baina F terminoak sortutako erantzun efektua murrizten du ere P gehitzen denean."
     },
     "pidTuningItermRelax": {
         "message": "I Term Erlaxatu"
@@ -3409,8 +3191,9 @@
         "message": "RSSI balioa",
         "description": "One of the elements of the OSD"
     },
-    "osdDescElementRssiValue": {
-        "message": "Berehalako RSSI balioa (alarmaren atalasearen azpitik agertzen da)"
+    "osdTextElementRssiDbmValue": {
+        "message": "RSSI dBm balioa",
+        "description": "One of the elements of the OSD"
     },
     "osdTextElementTimer": {
         "message": "Tenporizadorea",
@@ -3680,13 +3463,6 @@
     "osdDescElementEscRpm": {
         "message": "RPM ESCren telemetriaren bidez jakinarazi da"
     },
-    "osdTextElementRemaningTimeEstimate": {
-        "message": "Tenporizadorea: zenbat denbora geratzen den",
-        "description": "One of the elements of the OSD"
-    },
-    "osdDescElementRemaningTimeEstimate": {
-        "message": "Geratzen den hegaldiaren denbora"
-    },
     "osdTextElementRtcDateTime": {
         "message": "RTC data eta ordua",
         "description": "One of the elements of the OSD"
@@ -3755,9 +3531,6 @@
         "message": "Loturaren kalitatea",
         "description": "One of the elements of the OSD"
     },
-    "osdDescElementLinkQuality": {
-        "message": "Markoaren galera oinarritutako 'lotura kalitatearen' adierazle alternatiboa. Kontuz erabili"
-    },
     "osdTextElementFlightDist": {
         "message": "Hegaldiaren distantzia",
         "description": "One of the elements of the OSD"
@@ -3810,13 +3583,6 @@
     },
     "osdDescElementOsdProfileName": {
         "message": "OSD profilaren izena \"osd_profile_1_name\", \"osd_profile_2_name\" eta \"osd_profile_3_name\" CLI aldagaietan konfiguratuta dago"
-    },
-    "osdTextElementRssiDbmValue": {
-        "message": "RSSI dBm balioa",
-        "description": "One of the elements of the OSD"
-    },
-    "osdDescElementRssiDbmValue": {
-        "message": "RSSI seinalearen dBm-ko balioa erabilgarri badago"
     },
     "osdTextElementRcChannels": {
         "message": "RC kanalak",
@@ -4237,9 +4003,6 @@
     "osdSectionHelpAlarms": {
         "message": "OSD alarmaren atalasea ezarri."
     },
-    "osdSectionHelpStats": {
-        "message": "Post-hegaldien estatistiken pantailan baleratutako balioak ezarri."
-    },
     "osdSectionHelpWarnings": {
         "message": "OHARRAK elementuan agertzen diren mezuak aktibatu edo desaktibatu."
     },
@@ -4271,10 +4034,6 @@
     "vtxFrequencyChannel": {
         "message": "Frekuentzia sartu",
         "description": "Text of one of the fields of the VTX tab"
-    },
-    "vtxFrequencyChannelHelp": {
-        "message": "Hau gaitzen baduzu, konfiguratzaileak ohiko banda\/kanalaren frekuentzia hautatzeko aukera emango dio. Horretarako, zure VTX funtzio hau onartu behar du.",
-        "description": "Help text for the frequency or channel select field of the VTX tab"
     },
     "vtxSelectedMode": {
         "message": "Aukeratutako modua",
@@ -4514,9 +4273,6 @@
         "message": "ESC datuak hegaldi-kontroladoreari bidali DShot telemetriaren bidez. Funtzio hau RPM iragazkia eta Idle Dinamikoa erabiltzeko beharrezkoa da. <br> <br>Oharra: ESC firmware egokia behar duzu, adibidez JESC, JazzMac, BLHeli_32.",
         "description": "Description of the Bidirectional DShot feature of the ESC\/Motor"
     },
-    "configurationGyroSyncDenom": {
-        "message": "Giroa eguneratzeko frekuentzia"
-    },
     "configurationPidProcessDenom": {
         "message": "PID, zikloaren frekuentzia"
     },
@@ -4531,12 +4287,6 @@
     },
     "configurationAccHardware": {
         "message": "Azelerometroa"
-    },
-    "configurationBaroHardware": {
-        "message": "Barometroa (onartzen bada)"
-    },
-    "configurationMagHardware": {
-        "message": "Magnetometroa (onartzen bada)"
     },
     "configurationSmallAngle": {
         "message": "Gehieneko ARM Angelua [degrees]"
@@ -4689,9 +4439,6 @@
     "pidTuningRatesType": {
         "message": "Rate Mota"
     },
-    "pidTuningRatesTypeTip": {
-        "message": "Rate mota aldatzeak rateen kurba aldatuko du eta ezartzen duzun modua ere"
-    },
     "pidTuningRcRateRaceflight": {
         "message": "Rate"
     },
@@ -4758,9 +4505,6 @@
     "cordovaIncompatibleWebview": {
         "message": "Webview bateraezina"
     },
-    "cordovaWebviewTroubleshootingMsg": {
-        "message": "Zure gailuraren webview aplikazioa eguneratu behar duzu konfiguratzailea erabili ahal izateko."
-    },
     "cordovaWebviewTroubleshootingMsg2": {
         "message": "Beheko tresna webview berria instalatzeko edo instalatutako webview-a eguneratzen laguntzeko balio du."
     },
@@ -4788,9 +4532,6 @@
     "cordovaWebviewUpdateBtn": {
         "message": "Google Play Store-tik eguneratu"
     },
-    "cordovaWebviewEnable": {
-        "message": "Gailuaren inguruko informazio ezarpenak fitxara sartu eta eraikitako bertsioaren zenbakian 10 aldiz ukitu 'Garatzaileentzako aukerak' gaitzeko. Horren ondoren, bilatu eta joan garatzaileen aukeretara eta <b>{{app}}<\/b> hautatu webview hornitzaile gisa."
-    },
     "cordovaWebviewEnableBtn": {
         "message": "Ezarpenak ireki"
     },
@@ -4805,8 +4546,5 @@
     },
     "cordovaExitAppTitle": {
         "message": "Baieztatzea"
-    },
-    "cordovaExitAppMessage": {
-        "message": "Benetan konfiguratzailea itxi nahi duzu?"
     }
 }

@@ -1,5 +1,5 @@
 {
-  "appId": "betaflight.configurator",
-  "appName": "Betaflight Configurator",
-  "webDir": "src/dist"
+  "appId": "betaflight.app",
+  "appName": "Betaflight App",
+  "webDir": "dist"
 }

@@ -58,8 +58,6 @@ const MSPCodes = {
     MSP_SDCARD_SUMMARY: 79,
     MSP_BLACKBOX_CONFIG: 80,
     MSP_SET_BLACKBOX_CONFIG: 81,
-    MSP_TRANSPONDER_CONFIG: 82,
-    MSP_SET_TRANSPONDER_CONFIG: 83,
     MSP_OSD_CONFIG: 84,
     MSP_SET_OSD_CONFIG: 85,
     MSP_OSD_CHAR_READ: 86,
@@ -128,6 +126,7 @@ const MSPCodes = {
 
     MSP_UID: 160,
     MSP_GPS_SV_INFO: 164,
+    MSP_ATTITUDE_QUATERNION: 167,
 
     MSP_DISPLAYPORT: 182,
 
@@ -173,7 +172,11 @@ const MSPCodes = {
     MSP_ACC_TRIM: 240,
     MSP_SERVO_MIX_RULES: 241,
     MSP_SET_SERVO_MIX_RULE: 242, // Not used
-    MSP_SET_4WAY_IF: 245, // Not used
+    // Betaflight MSP_SET_PASSTHROUGH. The payload selects an ESC 4-way interface
+    // or a configured serial-port function (for example RX_SERIAL / ExpressLRS).
+    MSP_SET_PASSTHROUGH: 245,
+    // Kept for compatibility with legacy callers.
+    MSP_SET_4WAY_IF: 245,
     MSP_SET_RTC: 246,
     MSP_RTC: 247, // Not used
     MSP_SET_BOARD_INFO: 248, // Not used
@@ -200,13 +203,14 @@ const MSPCodes = {
     MSP2_SET_LED_STRIP_CONFIG_VALUES: 0x3009,
     MSP2_SENSOR_CONFIG_ACTIVE: 0x300a,
     MSP2_MCU_INFO: 0x300c,
-
+    MSP2_GYRO_SENSOR: 0x300d,
     // MSP2_GET_TEXT and MSP2_SET_TEXT variable types
     PILOT_NAME: 1,
     CRAFT_NAME: 2,
     PID_PROFILE_NAME: 3,
     RATE_PROFILE_NAME: 4,
     BUILD_KEY: 5,
+    BATTERY_PROFILE_NAME: 11,
 };
 
 export default MSPCodes;

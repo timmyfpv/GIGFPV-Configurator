@@ -54,7 +54,7 @@
         "message": "Nie można wykonać tej operacji na twoim urządzeniu."
     },
     "storageDeviceNotReady": {
-        "message": "Urządzenie pamięci masowej jest niegotowe do użycia. Jeśli korzystasz z karty microSD, sprawdź, czy kontroler lotu ją poprawnie rozpoznaje."
+        "message": "Urządzenie pamięci nie jest gotowe. Jeśli używasz karty microSD, sprawdź, czy kontroler lotu prawidłowo ją wykrywa."
     },
     "connect": {
         "message": "Połącz"
@@ -80,11 +80,11 @@
         "description": "Configure a Virtual Flight Controller without the need of a physical FC."
     },
     "portsSelectPermission": {
-        "message": "--- Nie można znaleźć urządzenia USB ---",
+        "message": "--- Nie mogę znaleźć mojego urządzenia USB ---",
         "description": "Option in the port selection dropdown to allow the user to give permissions to the system to access the device."
     },
     "portsSelectPermissionBluetooth": {
-        "message": "--- Nie można znaleźć urządzenia Bluetooth---",
+        "message": "--- Nie mogę znaleźć mojego urządzenia Bluetooth---",
         "description": "Option in the port selection dropdown to allow the user to give permissions to the system to access a Bluetooth device."
     },
     "portsSelectPermissionDFU": {
@@ -106,11 +106,23 @@
     "portOverrideText": {
         "message": "Port:"
     },
+    "connectVirtualDescription": {
+        "message": "Symulacja kontrolera lotu bez sprzętu.",
+        "description": "Helper text in the connect dialog when choosing the virtual FC mode."
+    },
+    "connectManualDescription": {
+        "message": "Wprowadź ścieżkę szeregową lub adres URL do połączenia.",
+        "description": "Helper text in the connect dialog when choosing the manual port mode."
+    },
     "autoConnect": {
         "message": "Automatyczne połączenie"
     },
     "close": {
         "message": "Zamknij"
+    },
+    "openSidebarMenu": {
+        "message": "Otwórz menu paska bocznego",
+        "description": "Accessible label for the floating hamburger button shown on narrow viewports."
     },
     "OK": {
         "message": "OK"
@@ -121,8 +133,23 @@
     "submit": {
         "message": "Prześlij"
     },
+    "delete": {
+        "message": "Usuń"
+    },
+    "edit": {
+        "message": "Edytuj"
+    },
+    "add": {
+        "message": "Dodaj"
+    },
+    "update": {
+        "message": "Aktualizuj"
+    },
+    "save": {
+        "message": "Zapisz"
+    },
     "autoConnectEnabled": {
-        "message": "Automatyczne połączenie: Włączone - Konfigurator automatycznie spróbuje połączyć się, gdy wykryje nowy port."
+        "message": "Automatyczne połączenie: Włączone - Aplikacja automatycznie próbuje połączyć się po wykryciu nowego portu"
     },
     "autoConnectDisabled": {
         "message": "Automatyczne połączenie: Wyłączone - Użytkownik samodzielnie musi wybrać prawidłowy port i kliknąć \"Połącz\""
@@ -140,30 +167,46 @@
         "message": "Po wykryciu połączenia otwórz ostatnio używaną kartę"
     },
     "meteredConnection": {
-        "message": "Wyłącz dostęp do internetu (za pomocą liczników lub powolnych połączeń)",
+        "message": "Wyłącz dostęp do internetu (połączenia taryfowe lub zbyt wolne)",
         "description": "Text for the option to disable internet access for metered connection or to disable data over slow connections"
     },
     "analyticsOptOut": {
-        "message": "Zrezygnuj ze zbierania anonimowych danych statystycznych"
+        "message": "Wyłącz anonimowe zbieranie statystyk"
     },
     "connectionTimeout": {
         "message": "Ustaw limit czasu połączenia, aby umożliwić dłuższą inicjalizację podłączenia urządzenia lub ponownego uruchomienia",
         "description": "Change timeout on auto-connect and reboot so the bus has more time to initialize after being detected by the system"
     },
+    "languageAndAppearanceSettings": {
+        "message": "Język i Wygląd",
+        "description": "Title for the language and appearance settings section"
+    },
+    "developmentSettings": {
+        "message": "Ustawienia deweloperskie",
+        "description": "Title for the development settings section"
+    },
     "showAllSerialDevices": {
         "message": "Pokaż wszystkie urządzenia szeregowe (dla producentów lub deweloperów)",
         "description": "Do not filter serial devices using VID\/PID values (for manufacturers or development)"
     },
+    "cliOnlyMode": {
+        "message": "Włącz tryb tylko CLI",
+        "description": "Text for the option to enable or disable CLI only mode"
+    },
+    "automaticDevOptions": {
+        "message": "Automatycznie włącz ustawienia deweloperskie dla wersji podglądowych",
+        "description": "Text for the option to automatically enable development settings for preview builds"
+    },
     "showManualMode": {
-        "message": "Włącz tryb ręczny połączenia",
+        "message": "Włącz tryb ręcznego połączenia",
         "description": "Text for the option to enable or disable manual connection mode"
     },
     "showVirtualMode": {
-        "message": "Włącz tryb połączenia wirtualnego",
+        "message": "Włącz tryb wirtualnego połączenia",
         "description": "Text for the option to enable or disable the virtual FC"
     },
     "useLegacyRenderingModel": {
-        "message": "Włącz starsze renderowanie dla modelu 3D (dla urządzeń o niskiej wydajności)",
+        "message": "Włącz klasyczne renderowanie modelu 3D (dla urządzeń o niskiej wydajności)",
         "description": "Text for the option to enable or disable legacy rendering of the 3D model"
     },
     "cordovaForceComputerUI": {
@@ -180,10 +223,11 @@
         "message": "Wybierz język domyślny"
     },
     "language_default": {
-        "message": "Domyślny systemowy"
+        "message": "domyślny systemowy"
     },
-    "language_default_pretty": {
-        "message": "Domyślny systemowy ($t(detectedLanguage))"
+    "language_DEFAULT": {
+        "message": "$t(language_default.message)",
+        "description": "Don't translate!!!"
     },
     "language_pl": {
         "message": "Polski",
@@ -199,6 +243,9 @@
     },
     "sensorStatusGyro": {
         "message": "Żyroskop"
+    },
+    "configurationGyroRequired": {
+        "message": "Co najmniej jeden żyroskop musi być włączony"
     },
     "sensorStatusGyroShort": {
         "message": "Gyro",
@@ -240,10 +287,10 @@
         "description": "Text of the image in the top sensors icons. Please keep it short."
     },
     "checkForConfiguratorUnstableVersions": {
-        "message": "Pokaż powiadomienia o aktualizacji dla niestabilnych wersji konfiguratora."
+        "message": "Pokaż powiadomienia o aktualizacji dla niestabilnych wersji aplikacji"
     },
     "configuratorUpdateNotice": {
-        "message": "Używasz przestarzałej wersji <b>Konfiguratora Betaflight<\/b>.<br>$t(configuratorUpdateHelp.message)"
+        "message": "Używasz nieaktualnej wersji <b>Aplikacji Betaflight <\/b>.<br>$t(configuratorUpdateHelp.message)"
     },
     "configuratorUpdateHelp": {
         "message": "Gdy masz dostęp do internetu, aplikacja powinna automatycznie sprawdzić dostępne aktualizacje."
@@ -284,11 +331,29 @@
     "tabOptions": {
         "message": "Ustawienia"
     },
+    "sidebarOpenOptions": {
+        "message": "Opcje",
+        "description": "Tooltip for the options icon button in the sidebar footer."
+    },
+    "sidebarToggleDarkMode": {
+        "message": "Przełącz tryb ciemny \/ jasny",
+        "description": "Tooltip for the dark mode toggle icon button in the sidebar footer."
+    },
+    "sidebarToggleExpertMode": {
+        "message": "Przełącz tryb eksperta",
+        "description": "Tooltip for the expert mode toggle icon button in the sidebar footer."
+    },
     "tabSetup": {
         "message": "Ustawienia"
     },
     "tabSetupOSD": {
         "message": "Ustawienia OSD"
+    },
+    "tabSensorConfig": {
+        "message": "Czujniki"
+    },
+    "sensorConfigGyroLabel": {
+        "message": "Gyro $1"
     },
     "tabConfiguration": {
         "message": "Konfiguracja"
@@ -298,6 +363,27 @@
     },
     "tabPidTuning": {
         "message": "Regulacja PID"
+    },
+    "tabAutotune": {
+        "message": "Autotune"
+    },
+    "autotuneImportTitle": {
+        "message": "Analiza czarnej skrzynki"
+    },
+    "autotuneImportButton": {
+        "message": "Importuj dziennik czarnej skrzynki"
+    },
+    "autotuneImportDescription": {
+        "message": "Importuj dziennik czarnej skrzynki zapisany z debug_mode = CHIRP, aby analizować odpowiedź częstotliwości i obliczać zalecenia PID."
+    },
+    "autotuneSelectingFile": {
+        "message": "Wybranie pliku..."
+    },
+    "autotuneBandwidth": {
+        "message": "Pasmo"
+    },
+    "autotuneParameter": {
+        "message": "Parametr"
     },
     "tabReceiver": {
         "message": "Odbiornik"
@@ -311,9 +397,6 @@
     "tabFailsafe": {
         "message": "Procedura Fail-Safe"
     },
-    "tabTransponder": {
-        "message": "Transponder"
-    },
     "tabOsd": {
         "message": "OSD"
     },
@@ -326,26 +409,26 @@
     "tabGPS": {
         "message": "GPS"
     },
+    "tabFlightPlan": {
+        "message": "Plan lotu"
+    },
     "tabMotorTesting": {
         "message": "Silniki"
     },
     "tabLedStrip": {
         "message": "Paski LED\/RGB"
     },
-    "tabRawSensorData": {
-        "message": "Czujniki"
-    },
     "tabCLI": {
         "message": "Wiersz Poleceń CLI"
     },
     "tabLogging": {
-        "message": "Logowanie powiązane"
+        "message": "Rejestrowanie przewodowe"
     },
     "tabOnboardLogging": {
         "message": "Czarna Skrzynka"
     },
     "tabAdjustments": {
-        "message": "Modyfikacje"
+        "message": "Korekty"
     },
     "tabAuxiliary": {
         "message": "Tryby Lotu"
@@ -356,9 +439,25 @@
     "logActionShow": {
         "message": "Pokaż logi"
     },
+    "tabLog": {
+        "message": "Log"
+    },
+    "i2cErrorDetected": {
+        "message": "Wykryto błąd I2C (+{{delta}}, łącznie {{total}})",
+        "description": "Logged when the flight controller reports new I2C bus errors. {{delta}} is how many errors since the last poll; {{total}} is the running total."
+    },
+    "logActionClear": {
+        "message": "Wyczyść"
+    },
+    "logAutoScroll": {
+        "message": "Automatyczne przewijanie"
+    },
     "fileSystemPickerFiles": {
         "message": "{{typeof}} pliki",
         "description": "Text for the file picker dialog, showing the type of files selected. The parameter can be HEX, TXT, etc."
+    },
+    "fileSystemPickerFirmwareFiles": {
+        "message": "Pliki oprogramowania"
     },
     "serialErrorFrameError": {
         "message": "Błąd połączenia szeregowego: nieprawidłowe ramkowanie"
@@ -401,6 +500,9 @@
     },
     "stm32UsbDfuNotFound": {
         "message": "Nie znaleziono USB DFU"
+    },
+    "stm32DfuPermissionRequired": {
+        "message": "Urządzenie zostało ponownie uruchomione w trybie DFU.<br><br>Twoja przeglądarka wymaga uprawnień USB, aby uzyskać dostęp do urządzenia DFU. Kliknij poniższy przycisk, aby wybrać je z selektora urządzeń."
     },
     "stm32RebootingToBootloader": {
         "message": "Inicjowanie uruchomienia ponownego do bootloadera..."
@@ -484,13 +586,10 @@
         "message": "Nie udało się połączyć przez <span class=\"message-negative\">10 sekund<\/span>, komunikacja <span class=\"message-negative\">zawiodła<\/span>"
     },
     "firmwareVersionNotSupported": {
-        "message": "Ta wersja oprogramowania kontrolera lotu <span class=\"message-negative\">nie jest wspierana<\/span>. Proszę uaktualnij oprogramowanie do wersji, która wspiera API <strong>$1<\/strong>, lub wyższej. Użyj CLI, aby zgrać bieżącą konfigurację. Opis zgrywania oraz przywrócenia konfiguracji opisany jest w dokumentacji.<br \/>Możesz również pobrać starszą wersję konfiguratora, jeżeli nie chcesz aktualizować oprogramowania kontrolera lotu."
+        "message": "Ta wersja oprogramowania jest <span class=\"message-negative\">nie obsługiwana<\/span>. Uaktualnij do oprogramowania, które obsługuje api w wersji <strong>$1<\/strong> lub wyższej. Użyj CLI do tworzenia kopii zapasowej przed wgraniem. Procedura tworzenia kopii zapasowej\/przywracania CLI znajduje się w dokumentacji.<br \/>Alternatywnie pobierz i użyj starej wersji aplikacji, jeśli nie jesteś gotowy do aktualizacji."
     },
     "firmwareTypeNotSupported": {
         "message": "Oprogramowanie inne niż Betaflight <span class=\"message-negative\">nie jest wspierane<\/span>, z wyjątkiem trybu CLI."
-    },
-    "firmwareUpgradeRequired": {
-        "message": "Oprogramowanie na tym urządzeniu wymaga aktualizacji do nowszej wersji. Najpierw użyj Wiersza Poleceń CLI, aby zapisać do pliku bieżącą konfigurację. Procedura zapisu\/odczytu konfiguracji opisana jest w dokumentacji.<br \/>Alternatywnie pobierz starszą wersję konfiguratora, jeśli nie chcesz aktualizować oprogramowania urządzenia."
     },
     "resetToCustomDefaultsDialog": {
         "message": "Dostępne są wstępne ustawienia domyślne dla tego kontrolera lotu. Zwykle kontroler lotu będzie działał  nie prawidłowo, jeśli nie zostaną one zastosowane.<br \/> Czy chcesz zastosować wstępne ustawienia domyślne dla tego kontrolera?"
@@ -505,7 +604,7 @@
         "message": "<span class=\"message-negative\"><strong>Musisz rozwiązać te problemy zanim spróbujesz latać swoją jednostką latająca.<\/span><\/strong>."
     },
     "reportProblemsDialogAPI_VERSION_MAX_SUPPORTED": {
-        "message": "<span class=\"message-negative\"><strong>Użyta wersja konfiguratora ($3) nie obsługuje oprogramowania $4<\/strong><\/span>.<br>$t(configuratorUpdateHelp.message)"
+        "message": "<span class=\"message-negative\"><strong>Używana wersja aplikacji ($1) nie obsługuje oprogramowania $2<\/strong><\/span>.<br>$t(configuratorUpdateHelp.message)"
     },
     "reportProblemsDialogMOTOR_PROTOCOL_DISABLED": {
         "message": "<strong>Nie wybrano protokołu sterowania silnikami<\/strong>.<br>Wybierz protokół sterowania odpowiedni dla twoich ESC wybierając '$t(configurationEscFeatures.message)' w zakładce  '$t(tabMotorTesting.message)'. <br>$t(escProtocolDisabledMessage.message)"
@@ -518,8 +617,8 @@
         "description": "Message that appears in the GUI log panel indicating operating system"
     },
     "infoVersionConfigurator": {
-        "message": "Konfigurator: <strong>{{configuratorVersion}}<\/strong>",
-        "description": "Message that appears in the GUI log panel indicating Configurator version"
+        "message": "Wersja aplikacji: <strong>{{configuratorVersion}}<\/strong>",
+        "description": "Message that appears in the GUI log panel indicating application version"
     },
     "buildServerSuccess": {
         "message": "Ukończono: $1"
@@ -531,7 +630,7 @@
         "message": "Użycie informacji o kompilacji z bufora dla $1."
     },
     "buildServerSupportRequestSubmission": {
-        "message": "<br>*** Zgłoszono problem *** <br>Id: $1<br><br><br># skopiuj identyfikator i prześlij zespołowi betaflight."
+        "message": "<br>*** Zgłoszono problem *** <br>ID: $1<br><br><br># skopiuj identyfikator i prześlij zespołowi betaflight."
     },
     "buildKey": {
         "message": "Zbuduj klucz: <strong>$1<\/strong>"
@@ -602,11 +701,8 @@
     "versionLabelTarget": {
         "message": "Kontroler lotu"
     },
-    "versionLabelFirmware": {
-        "message": "Oprogramowanie"
-    },
     "versionLabelConfigurator": {
-        "message": "Konfigurator"
+        "message": "Wersja aplikacji"
     },
     "notifications_app_just_updated_to_version": {
         "message": "Aplikacja właśnie została zaktualizowana do wersji: $1"
@@ -631,7 +727,7 @@
         "description": "Packet error text shown in the status bar"
     },
     "statusbar_i2c_error": {
-        "message": "Błąd I2C:",
+        "message": "Błąd I²C:",
         "description": "CPU load text shown in the status bar"
     },
     "statusbar_cycle_time": {
@@ -641,6 +737,10 @@
     "statusbar_cpu_load": {
         "message": "Obciążenie CPU:",
         "description": "CPU load text shown in the status bar"
+    },
+    "statusbar_connection_time": {
+        "message": "Połączenie:",
+        "description": "Connection time text shown in the status bar"
     },
     "dfu_connect_message": {
         "message": "Użyć zakładki Wgraj Oprogramowanie, aby połączyć się z urządzeniem w trybie DFU"
@@ -661,19 +761,19 @@
         "message": "<span class=\"message-positive\">Zapisano<\/span> zmiany w EEPROM"
     },
     "defaultWelcomeIntro": {
-        "message": "Witaj w <strong>Betaflight Configurator<\/strong>, narzędziu zaprojektowanym, aby uprościć aktualizację, konfigurację oraz tuning twojego kontrolera lotu."
+        "message": "Witamy w aplikacji <strong>Betaflight<\/strong>, narzędziu opracowanym w celu uproszczenia aktualizacji, konfiguracji i dostrajania kontrolera lotu."
     },
-    "defaultWelcomeHead": {
+    "defaultHardwareHead": {
         "message": "Sprzęt"
     },
-    "defaultWelcomeText": {
-        "message": "Ten program obsługuje każdy sprzęt komputerowy, pracujący na Betaflight. Pełną listę sprzętu znajdziesz w zakładce Wgraj Oprogramowanie.<br \/><br \/> <a href=\"https:\/\/github.com\/betaflight\/blackbox-log-viewer\/releases\" target=\"_blank\" rel=\"noopener noreferrer \">Pobierz program Betaflight Blackbox Log Viewer<\/a><br \/><br \/><a href=\"https:\/\/github.com\/betaflight\/betaflight-tx-lua-scripts\/releases\" target=\"_blank\" rel =\"noopener noreferrer\">Pobierz Lua skrypt Betaflight dla nadajnika<\/a><br \/><br \/>Kod źródłowy oprogramowania układowego można pobrać <a href=\"https:\/\/github.com\/betaflight\/betaflight\" target= \"_blank\" rel=\"noopener noreferrer\">tutaj<\/a><br \/><br \/>Dla starszego sprzętu korzystającego z portu szeregowego USB CP210x:<br \/>Najnowsze <b>sterowniki CP210x<\/b> można pobrać <a href=\"https:\/\/www.silabs.com\/products\/development-tools\/software\/usb-to-uart-bridge-vcp-drivers\" target=\"_blank\" rel=\"noopener noreferrer\"> tutaj<\/a><br \/>Najnowsze sterowniki USB <b>Zadig<\/b> dla systemu Windows można pobrać <a href=\"http:\/\/zadig.akeo.ie\/\" target=\"_blank\" rel =\"noopener noreferrer\">tutaj<\/a><br \/><b>ImpulseRC Driver Fixer<\/b> można pobrać <a href=\"https:\/\/impulserc.com\/pages\/downloads\" target=\"blank\" rel=\"noopener noreferrer\">tutaj<\/a>"
+    "defaultSoftwareHead": {
+        "message": "Oprogramowanie"
+    },
+    "defaultSoftwareText": {
+        "message": "Nasz <a href=\"https:\/\/blackbox.betaflight.com\" target=\"_blank\" rel=\"noopener noreferrer\">Blackbox Log Viewer<\/a> jest dostępny jako aplikacja online.<br \/><br \/>Kolekcja naszych <a href=\"https:\/\/github.com\/betaflight\/betaflight-tx-lua-scripts\/releases\" target=\"_blank\" rel=\"noopener noreferrer\">Lua Scripts dla nadajników<\/a> znajduje się na GitHub.<br \/><br \/>Nasz <a href=\"https:\/\/github.com\/betaflight\" target=\"_blank\" rel=\"noopener noreferrer\">kod źródłowy<\/a> oprogramowania układowego, tej aplikacji oraz Blackbox Log Viewera można pobrać z GitHub."
     },
     "defaultContributingHead": {
         "message": "Współtworzenie"
-    },
-    "defaultContributingText": {
-        "message": "Jeśli chcesz pomagać w rozwijaniu Betaflight, możesz to robić na wiele sposobów:<br \/><ul><li> Wykorzystując swoją wiedzę o Betaflight, twórz lub aktualizuj treści na <a href=\"https:\/\/betaflight.com\/docs\/wiki\" target=\"_blank\" rel=\"noopener noreferrer\">naszej Wiki<\/a> lub odpowiadaj na pytania innych użytkowników na forach internetowych.<\/li><li><a href=\"https:\/\/betaflight.com\/docs\/development\" target=\"_blank\" rel=\"noopener noreferrer\">Bierz udział w tworzeniu kodu<\/a> oprogramowania układowego oraz Konfiguratora. Kreuj nowe funkcje, poprawki i ulepszenia.<\/li><li>Testuj <a href=\"https:\/\/github.com\/Betaflight\/betaflight\/pulls\" target=\"_blank\" rel=\"noopener noreferrer\">nowe funkcje i poprawki<\/a>, nie zapominając o pozostawieniu nam feedbacku.<\/li><li> Pomagaj innym użytkownikom w rozwiązywaniu problemów, które zgłosili w <a href=\"https:\/\/github.com\/betaflight\/betaflight\/issues\" target=\"_blank\" rel=\"noopener noreferrer\"> systemie zgłaszania problemów<\/a> oraz bierz udział w dyskusjach dotyczących wniosków o nowe funkcjonalności.<\/li><li><a href=\"https:\/\/crowdin.com\/project\/betaflight-configurator#Translators\" target=\"_blank\" rel=\"noopener noreferrer\">Zostań tłumaczem<\/a> Konfiguratora Betaflight na nowy język lub pomóż w poprawianiu istniejących tłumaczeń.<\/li><\/ul>"
     },
     "defaultFacebookText": {
         "message": "Mamy również <a href=\"https:\/\/www.facebook.com\/groups\/betaflightgroup\/\" target=\"_blank\" rel=\"noopener noreferrer\">grupę na Facebooku<\/a>.<br \/>Dołącz do nas aby porozmawiać o Betaflight, spytać o konfigurację lub po prostu spędzić czas z innymi pilotami."
@@ -681,17 +781,26 @@
     "defaultDiscordText": {
         "message": "Betaflight <a href=\"https:\/\/discord.betaflight.com\/invite\" target=\"_blank\" rel=\"noopener noreferrer\">Serwer na Discordzie<\/a>.<br \/> Podziel się doświadczeniami z lotów, porozmawiaj o Betaflight i pomóż innym osobom albo sam uzyskaj pomoc."
     },
+    "defaultRedditText": {
+        "message": "Dołącz do naszego <a href=\"https:\/\/www.reddit.com\/r\/Betaflight\/\" target=\"_blank\" rel=\"noopener noreferrer\">Subreddita<\/a>.<br \/>Rozmawiaj o funkcjach, zadawaj pytania i buduj relacje ze społecznością Betaflight na Reddicie."
+    },
+    "defaultCommunityHead": {
+        "message": "Społeczność"
+    },
+    "statisticsDisclaimerHead": {
+        "message": "Twoja prywatność"
+    },
     "statisticsDisclaimer": {
-        "message": "Betaflight Configurator gromadzi anonimowe statystyki użytkowania. Dane te obejmują (ale nie ograniczają się do): liczbę uruchomień, region geograficzny użytkownika, rodzaje kontrolerów lotu, wybierane wersje oprogramowania, korzystanie z elementów interfejsu, otwieranych zakładek itd. Dane są gromadzone <a href=\"https:\/\/datastudio.google.com\/u\/0\/reporting\/1pK1PFw0eWmsgl2npvuzwAqscVzlhJvuF\" target=\"_blank\" rel=\"noopener noreferrer\">tutaj<\/a>. Informacje te pomagają lepiej zrozumieć, jak jest używany Betaflight Configurator, by wprowadzać ulepszenia interfejsu a także w celu poznania trendów, jakie panują w społeczności. Użytkownik może wyłączyć zbieranie danych w zakładce Opcje Ustawień."
+        "message": "Aplikacja Betaflight zbiera anonimowe dane o użytkowaniu. Mogą one obejmować liczbę uruchomień, region geograficzny użytkownika, typ kontrolera lotu, wersję oprogramowania oraz korzystanie z elementów interfejsu i zakładek. Dane te pomagają nam lepiej zrozumieć, jak aplikacja jest używana, śledzić trendy w społeczności oraz ulepszać interfejs i ogólne doświadczenie użytkownika. Użytkownicy mogą wyłączyć zbieranie danych w zakładce Ustawienia. Więcej informacji o tym, jak zbieramy i wykorzystujemy Twoje dane, znajdziesz w naszej <a href=\"https:\/\/www.betaflight.com\/privacy\" rel=\"noopener noreferrer\" target=\"_blank\">polityce prywatności<\/a>."
     },
     "defaultButtonFirmwareFlasher": {
         "message": "Wgraj Oprogramowanie"
     },
     "defaultDonateHead": {
-        "message": "Informacja o Open Source \/ Darowiznach"
+        "message": "Darowizny na rozwój Open Source"
     },
     "defaultDonateText": {
-        "message": "<p><strong>Betaflight<\/strong> to oprogramowanie kontrolera lotu , udostępniane za darmo na zasadach licencji <strong>open source<\/strong> i jest dostępne <strong>za darmo<\/strong> dla wszystkich użytkowników.<\/p><p>Jeśli używasz oprogramowania Betaflight oraz uważasz je za przydatne, rozważ <strong>wsparcie<\/strong> jego rozwoju poprzez darowiznę.<\/p>"
+        "message": "<p><strong>Betaflight<\/strong> to oprogramowanie <strong>open source<\/strong>, dostępne dla wszystkich użytkowników bezpłatnie i <strong>bez gwarancji<\/strong>.<\/p><p>Jeśli uważasz Betaflight za przydatne, możesz <strong>wesprzeć<\/strong> jego rozwój, dokonując dobrowolnej darowizny.<\/p>"
     },
     "defaultDonateBottom": {
         "message": "<p>Jeśli chcesz nas regularnie wspierać finansowo, rozważ zostanie naszym patronem na $t(patreonLink.message).<\/p>"
@@ -748,12 +857,6 @@
     "initialSetupButtonCalibrateAccel": {
         "message": "Kalibracja akcelerometru"
     },
-    "initialSetupCalibrateAccelText": {
-        "message": "Połóż kontroler lotu lub jednostke latającą na <strong>płaskiej<\/strong> powierzchni i kontynuuj kalibrację. Zwróć uwagę by płytka kontrolera lotu nie ruszała się podczas trwania kalibracji"
-    },
-    "initialSetupButtonCalibrateMag": {
-        "message": "Kalibracja magnetometru"
-    },
     "initialSetupCalibrateMagText": {
         "message": "Obróć model przynajmniej <strong>360<\/strong> stopni wokół każdej osi, masz 30 sekund, aby wykonać to zadanie"
     },
@@ -792,7 +895,7 @@
     },
     "initialSetupHeading": {
         "message": "Yaw:",
-        "description": "Heading [yaw] attitude value shown on Setup tab"
+        "description": "Heading [yaw] attitude value shown on Setup tab when no magnetometer is active"
     },
     "initialSetupMixerHead": {
         "message": "Typ Modelu"
@@ -1003,7 +1106,7 @@
         "description": "Message that pops up to describe the BST arming disable flag"
     },
     "initialSetupArmingDisableFlagsTooltipMSP": {
-        "message": "Połączenie MSP jest aktywne, prawdopodobnie z tym konfiguratorem Betafligh",
+        "message": "Połączenie MSP jest aktywne, prawdopodobnie z aplikacją Betaflight",
         "description": "Message that pops up to describe the MSP arming disable flag"
     },
     "initialSetupArmingDisableFlagsTooltipPARALYZE": {
@@ -1161,9 +1264,6 @@
     "initialSetupSettingsRestored": {
         "message": "Ustawienia przywrócone do <strong>domyślnych<\/strong>"
     },
-    "initialSetupEepromSaved": {
-        "message": "EEPROM <span class=\"message-positive\">zapisany<\/span>"
-    },
     "initialSetupNetworkInfo": {
         "message": "Informacje o sieci"
     },
@@ -1242,10 +1342,10 @@
         "message": "Włącz wyjście telemetryczne, aby wysyłać dane do nadajnika"
     },
     "feature3D": {
-        "message": "Tryb 3D (do użytku tylko z ESC pozwalającym na odwracanie kierunku obrotów)"
+        "message": "Tryb 3D (przeznaczony dla odwracalnych regulatorów ESC)"
     },
     "feature3DTip": {
-        "message": "Włącz tryb 3D do użytku z  ESC które pozwalają na zmianę kierunku obrotów silnika. Skonfiguruj tę opcję w zakładce Silniki"
+        "message": "Włącza tryb 3D dla regulatorów ESC z możliwością odwracania kierunku obrotu. Konfiguracja dostępna w zakładce Silniki."
     },
     "featureRX_PARALLEL_PWM": {
         "message": "PWM (jeden przewód na kanał)"
@@ -1281,7 +1381,7 @@
         "message": "Transponder"
     },
     "featureTRANSPONDERTip": {
-        "message": "Po uruchomieniu skonfiguruj w zakładce Transponder."
+        "message": "Włącz obsługę oprogramowania transpondera. Skonfiguruj dostawcę (<code>ustaw transponder_provider = [ILAP|ARCITIMER|ERLT]<\/code>) i dane (<code>ustaw transponder_data = &lt;bytes&gt;<\/code>) za pomocą CLI, następnie <code>zaoszczędź<\/code>. Uruchom <code>pobiera transponder<\/code>, aby sprawdzić aktualne wartości."
     },
     "featureAIRMODE": {
         "message": "Uruchom Airmode na stałe."
@@ -1320,6 +1420,9 @@
     "configurationFeatures": {
         "message": "Pozostałe funkcje"
     },
+    "configurationFeatureHelp": {
+        "message": "Pomoc"
+    },
     "configurationReceiver": {
         "message": "Odbiornik"
     },
@@ -1333,7 +1436,7 @@
         "message": "Wyjście telemetrii z odbiornika"
     },
     "configurationRSSI": {
-        "message": "RSSI (Siła sygnału)"
+        "message": "RSSI"
     },
     "configurationRSSIHelp": {
         "message": "Siła sygnału RSSI jest bardzo pomocna, bo pokazuje, gdy Twój model traci zasięg lub występują zakłócenia sygnału."
@@ -1350,8 +1453,8 @@
     "configurationSpiRxHelp": {
         "message": "<strong>Uwaga:<\/strong> Odbiornik typu SPI RX będzie działa tylko gdy odbiornik jest zintegrowany z kontrolerem lotu lub jest podłączony do magistrali SPI."
     },
-    "configurationOtherFeaturesHelp": {
-        "message": "<strong>Uwaga:<\/strong> Nie każda funkcja jest obsługiwana przez każdy kontroler lotu. Jeśli włączysz daną funkcję a po wciśnięciu 'Zapisz i uruchom ponownie' nie zostanie ona włączona to oznacza, że funkcja ta jest nieobsługiwana przez twój kontroler lotu."
+    "configurationActiveImu": {
+        "message": "Aktywny IMU"
     },
     "configurationMagAlignmentHelp": {
         "message": "Ustawienie magnetometru to orientacja czujnika magnetometru na płycie kontrolera lotu. Wartość domyślna jest zwykle poprawna, ale jeśli masz niestandardową konstrukcję lub kontroler lotu z inną orientacją magnetometru, może być konieczne dostosowanie tego ustawienia."
@@ -1366,7 +1469,7 @@
         "message": "Deklinacja magnetyczna jest kątem pomiędzy północą geograficzną a magnetyczną. Jest różna dla każdej lokalizacji na ziemi. Deklinację magnetyczną dla swojej lokalizacji możesz znaleźć w Internecie"
     },
     "configurationRangefinder": {
-        "message": "$t(initialSetupSensorSonar.message)",
+        "message": "Dalmierz laserowy",
         "description": "Don't translate!!!"
     },
     "configurationRangefinderHelp": {
@@ -1376,7 +1479,7 @@
         "message": "Typ"
     },
     "configurationOpticalflow": {
-        "message": "$t(initialSetupSensorOpticalflow.message)",
+        "message": "Czujnik optyczny",
         "description": "Don't translate!!!"
     },
     "configurationOpticalflowHelp": {
@@ -1388,33 +1491,6 @@
     },
     "configurationBoardAlignment": {
         "message": "Ułożenie kontrolera lotu"
-    },
-    "configurationBoardAlignmentRoll": {
-        "message": "Roll (stopnie)"
-    },
-    "configurationBoardAlignmentPitch": {
-        "message": "Pitch (stopnie)"
-    },
-    "configurationBoardAlignmentYaw": {
-        "message": "Yaw (stopnie)"
-    },
-    "configurationGyroAlignment": {
-        "message": "Ułożenie żyroskopu"
-    },
-    "configurationGyroAlignmentHelp": {
-        "message": "Ułożenie żyroskopu jest jego orientacją na płytce kontrolera lotu. Domyślna konfiguracja zwykle jest odpowiednia, jednak w przypadku niestandardowych konstrukcji lub płytek z nietypowym ułożeniem żyroskopu konieczna może być ręczna korekta tego ustawienia."
-    },
-    "configurationGyroAlignmentRoll": {
-        "message": "$t(configurationBoardAlignmentRoll.message)",
-        "description": "Don't translate!!!"
-    },
-    "configurationGyroAlignmentPitch": {
-        "message": "$t(configurationBoardAlignmentPitch.message)",
-        "description": "Don't translate!!!"
-    },
-    "configurationGyroAlignmentYaw": {
-        "message": "$t(configurationBoardAlignmentYaw.message)",
-        "description": "Don't translate!!!"
     },
     "configurationMagAlignment": {
         "message": "Ułożenie magnetometru"
@@ -1434,14 +1510,32 @@
         "message": "$t(configurationBoardAlignmentYaw.message)",
         "description": "Don't translate!!!"
     },
-    "configurationSensorAlignmentGyro": {
-        "message": "Ułożenie żyroskopu"
+    "configurationGyro1AlignmentRoll": {
+        "message": "$t(configurationBoardAlignmentRoll.message)",
+        "description": "Don't translate!!!"
+    },
+    "configurationGyro1AlignmentPitch": {
+        "message": "$t(configurationBoardAlignmentPitch.message)",
+        "description": "Don't translate!!!"
+    },
+    "configurationGyro1AlignmentYaw": {
+        "message": "$t(configurationBoardAlignmentYaw.message)",
+        "description": "Don't translate!!!"
+    },
+    "configurationGyro2AlignmentRoll": {
+        "message": "$t(configurationBoardAlignmentRoll.message)",
+        "description": "Don't translate!!!"
+    },
+    "configurationGyro2AlignmentPitch": {
+        "message": "$t(configurationBoardAlignmentPitch.message)",
+        "description": "Don't translate!!!"
+    },
+    "configurationGyro2AlignmentYaw": {
+        "message": "$t(configurationBoardAlignmentYaw.message)",
+        "description": "Don't translate!!!"
     },
     "configurationSensorGyroToUse": {
         "message": "GYRO\/AKCEL"
-    },
-    "configurationSensorGyroToUseNotFound": {
-        "message": "Ostrzeżenie: Nie znaleziono Gyro\/Accel"
     },
     "configurationSensorGyroToUseFirst": {
         "message": "Pierwszy"
@@ -1452,30 +1546,17 @@
     "configurationSensorGyroToUseBoth": {
         "message": "Oba"
     },
-    "configurationSensorGyroEnable": {
-        "message": "$t(sensorStatusGyroShort.message)",
-        "description": "Don't translate!!!"
-    },
-    "configurationSensorAlignment": {
-        "message": "Wyrównanie czujnika"
-    },
-    "configurationGyroRequiredWarning": {
-        "message": "Przynajmniej jeden żyroskop musi pozostać włączony. Jeśli wyłączysz wszystkie żyroskopy, kontroler lotu nie będzie działał prawidłowo."
-    },
     "configurationSensorAlignmentGyro1": {
         "message": " GYRO 1"
     },
     "configurationSensorAlignmentGyro2": {
         "message": "GYRO 2"
     },
-    "configurationSensorAlignmentAcc": {
-        "message": "Ułożenie akcelerometru"
-    },
     "configurationSensorAlignmentDefaultOption": {
         "message": "Domyślne"
     },
-    "configurationAccelTrims": {
-        "message": "Dostrajanie akcelerometru"
+    "configurationSensorAlignmentCustom": {
+        "message": "Własne"
     },
     "configurationAccelTrimRoll": {
         "message": "Dostrajanie w osi Roll"
@@ -1504,6 +1585,9 @@
     "configurationGyroCalOnFirstArm": {
         "message": "Skalibruj żyroskop przy pierwszym uzbrojeniu"
     },
+    "configurationGyroCalOnFirstArmHelp": {
+        "message": "Gdy włączone, żyroskop zostanie skalibrowany przy pierwszym uzbrojeniu po włączeniu. Może to pomóc w ograniczeniu znoszenia żyroskopu podczas lotu."
+    },
     "configurationMotorIdle": {
         "message": "Bieg Jałowy Silnika (%)"
     },
@@ -1530,10 +1614,10 @@
         "message": "Minimum przepustnicy (Najniższa wartość ESC gdy uzbrojony)"
     },
     "configurationThrottleMinimumHelp": {
-        "message": "Jest to wartość 'bezczynności', która jest wysyłana do ESC, gdy model jest uzbrojony i drążek przepustnicy jest w najniższym położeniu. Zwiększ wartość, aby uzyskać większą prędkość obrotową. Zwiększ wartość w przypadku desynchronizacji!"
+        "message": "Jest to wartość 'jałowa', która jest wysyłana do ESC, gdy model jest uzbrojony i drążek przepustnicy jest w najniższym położeniu. Zwiększ wartość, aby uzyskać większą prędkość obrotową. Zwiększ wartość w przypadku desynchronizacji!"
     },
     "configurationThrottleMaximum": {
-        "message": "Maksymalna wartość przepustnicy (Kiedy ESC jest uzbrojone)"
+        "message": "Maksymalna wartość przepustnicy (kiedy ESC jest uzbrojone)"
     },
     "configurationThrottleMinimumCommand": {
         "message": "Minimalna wartość przepustnicy( kiedy ESC jest rozbrojone)"
@@ -1548,16 +1632,16 @@
         "message": "<strong>Uwaga:<\/strong> Wybranie protokołu sterowania silnika nieobsługiwanego przez twoje ESC, może doprowadzić do <strong>niekontrolowanego uruchomienia silnika po podłączeniu akumulatora<\/strong>. Dlatego <strong>zawsze po zmianie protokołu sterującego silnikami upewnij się, że śmigła są zdjęte, gdy pierwszy raz podłączasz akumulator<\/strong>."
     },
     "configurationDshotBeeper": {
-        "message": "Konfiguracja sygnału dzwiękowego Dshot"
+        "message": "Konfiguracja sygnału dźwiękowego Dshot"
     },
     "configurationUseDshotBeeper": {
-        "message": "Użyj sygnału radiowego Dhsot (Pozwala użyć silników do generowania sygnału dzwiękowego gdy rozbrojony)"
+        "message": "Użyj sygnału dźwiękowego Dshot (silniki wydają sygnały dźwiękowe po rozbrojeniu)"
     },
     "configurationDshotBeaconTone": {
         "message": "Sygnał dzwiękowy"
     },
     "configurationDshotBeaconHelp": {
-        "message": "Sygnał radiowy Dshot wykorzstuje układy ESC i silniki do generowania dźwięku. Oznacza to, że protokół Dshot nie może być użyty podczas gdy silniki są uruchomione. W Betaflight 3.4 i nowszych, gdy próbuje się uzbroić silniki występuje opóźnienie o 2 sekundy, zanim model zostanie uzbrojony. Ma to zapobiec przed zakłóceniem funkcji sygnału radiowego Dshot podczas wysyłania sygnału<\/strong> wysyłanego podczas uzbrajania. <br\/> <strong> Ostrzeżenie: <\/strong> Ponieważ sygnał Dshot przepływa przez silniki, gdy są aktywne, może to spowodować nadmierne nagrzewanie i uszkodzenie silników lub układów ESC, jeśli siła sygnału ostrzegawczego jest ustawiona zbyt wysoko. Użyj BLHeli Configurator lub BLHeli Suite, aby wyregulować i przetestować siłę sygnału."
+        "message": "Sygnał dźwiękowy Dshot wykorzystuje układy ESC i silniki do generowania dźwięku. Oznacza to, że sygnał dźwiękowy Dshot nie może być użyty podczas gdy silniki są uruchomione. W Betaflight 3.4 i nowszych, przy próbie uzbrojenia w momencie kiedy sygnał dźwiękowy Dshot aktywny, występuje 2 sekundowa zwłoka. Ma to zapobiec przed zakłóceniem głównych funkcji Dshot podczas aktywacji sygnału dźwiękowego podczas ubzrojenia.<br\/><strong>Ostrzeżenie:<\/strong> Ponieważ sygnał dźwiękowy Dshot powoduje przepływ prądy w silnikach, może to spowodować nadmierne nagrzewanie i uszkodzenie silników lub układów ESC, jeśli siła sygnału dźwiękowego jest ustawiona zbyt wysoko. Użyj BLHeli Configurator lub BLHeli Suite, aby wyregulować i przetestować siłę sygnału."
     },
     "configurationBeeper": {
         "message": "Ustawienia buzzer'a"
@@ -1628,20 +1712,26 @@
     "beeperRC_SMOOTHING_INIT_FAIL": {
         "message": "Sygnał dzwiękowy gdy uzbrojono a wygładzanie rc nie zainicjowało filtrów"
     },
+    "configurationBeeperEnableAll": {
+        "message": "Włącz wszystko"
+    },
+    "configurationBeeperDisableAll": {
+        "message": "Wyłącz wszystko"
+    },
     "configuration3d": {
         "message": "Ustawienia ESC\/Silnika do lotów 3D"
     },
     "configuration3dDeadbandLow": {
-        "message": "Niska strefa nieczułości 3D"
+        "message": "Dolny próg martwej strefy 3D"
     },
     "configuration3dDeadbandHigh": {
-        "message": "Wysoka strefa nieczułości 3D"
+        "message": "Górny próg martwej strefy 3D"
     },
     "configuration3dNeutral": {
-        "message": "Neutralny 3D"
+        "message": "Punkt neutralny 3D"
     },
     "configuration3dDeadbandThrottle": {
-        "message": "3D Strefa czułości przepustnicy"
+        "message": "Martwa strefa 3D przepustnicy"
     },
     "configurationSystem": {
         "message": "Konfiguracja systemu"
@@ -1650,7 +1740,7 @@
         "message": "Łączny czas lotu"
     },
     "configurationCalculatedCyclesSec": {
-        "message": "Cykle\/Sekundy [Hz]"
+        "message": "Cykle\/Sekundę [Hz]"
     },
     "configurationSpeedGyroNoGyro": {
         "message": "Brak żyroskopu",
@@ -1668,7 +1758,7 @@
         "message": "<strong>Uwaga:<\/strong> Upewnij się że twój kontroler lotu może działać z wybraną prędkością! Sprawdź CPU i stabilność czasu cyklu. Zmiana tego parametru może wymagać ponownego ustawienia PID. Porada: Wyłącz akcelerometr i inne czujniki aby zyskać na wydajności."
     },
     "configurationGPS": {
-        "message": "Konfiguracja GPS"
+        "message": "Konfiguracja"
     },
     "configurationGPSHelp": {
         "message": "Skonfiguruj protokół dla urządzenia GPS (pamiętaj, aby skonfigurować odpowiedni UART w zakładce Pory), użyj Automatycznej prędkości odświeżania lub wybierz inną prędkość, którą obsługuje twój GPS",
@@ -1717,11 +1807,11 @@
     "configurationSpiRX": {
         "message": "Rodzaj sygnału odbiornika SPI"
     },
-    "configurationEepromSaved": {
-        "message": "Pamięć EEPROM <span class=\"message-positive\">zapisana<\/span>"
-    },
     "configurationButtonSave": {
         "message": "Zapisz i uruchom ponownie"
+    },
+    "dialogClose": {
+        "message": "Zamknij"
     },
     "dialogDynFiltersChangeTitle": {
         "message": "Zakres filtra dynamicznego"
@@ -1843,9 +1933,6 @@
     "pidTuningSubTabPid": {
         "message": "Ustawienia profilu PID"
     },
-    "pidTuningSubTabRates": {
-        "message": "Ustawienia Profilu Rate"
-    },
     "pidTuningSubTabFilter": {
         "message": "Ustawienia filtrów"
     },
@@ -1909,7 +1996,7 @@
         "description": "Title for the options panel for the D Max feature"
     },
     "pidTuningDMaxSettingTitle": {
-        "message": "Dynamiczny<br>Damping",
+        "message": "Dynamiczne Dampowanie",
         "description": "Sidebar title for the options panel for the D Max feature"
     },
     "pidTuningDMaxGain": {
@@ -1951,22 +2038,33 @@
         "message": "Ręcznie"
     },
     "receiverRcSmoothingAutoFactor": {
-        "message": "Współczynnik automatyczny",
-        "description": "Auto Factor parameter for RC smoothing"
+        "message": "Automatyczny współczynnik ustawienia",
+        "description": "Setpoint Auto Factor parameter for RC smoothing"
     },
     "receiverRcSmoothingAutoFactorHelp": {
         "message": "Dostosowuje automatyczne obliczanie współczynnika, 10 jest domyślnym stosunkiem współczynnika do opóźnienia. Zwiększenie liczby bardziej wygładzi wejścia RC, dodając jednocześnie opóźnienie. Może to być przydatne w przypadku zawodnych połączeń RC lub podczas latania z kamerą.<br>Uważaj na liczby zbliżające się do 50, opóźnienie wejściowe będzie zauważalne.<br>Użyj polecenia CLI rc_smoothing_info, gdy TX i RX są zasilane, aby zobaczyć automatycznie obliczone wygładzanie RC odcięcia.",
-        "description": "Auto Factor parameter help message"
+        "description": "Setpoint Auto Factor parameter help message"
     },
     "receiverRcSmoothingAutoFactorHelp2": {
         "message": "Dostosowuje automatyczne wygładzanie RC. 30 jest domyślną wartością. Wyższe wartości wygładzają wejścia RC bardziej - np. 60 dla freestyle HD lub 90-120 dla latania kinowego. Uwaga: wartości powyżej 50 spowodują znaczne opóźnienie drążka. Niższe wartości, np. 20-25, przeniosą niektóre kroki sterowania RC do sygnałów silnika, nieznacznie zwiększając ciepło silnika, ale zmniejszą nieco opóźnienie RC. Może to być przydatne podczas wyścigów.",
-        "description": "Auto Factor parameter help message"
+        "description": "Setpoint Auto Factor parameter help message"
+    },
+    "receiverRcSmoothingAutoFactorThrottle": {
+        "message": "Współczynnik automatycznego sterowania przepustnicą",
+        "description": "Throttle Auto Factor parameter for RC smoothing"
+    },
+    "receiverRcSmoothingAutoFactorThrottleHelp": {
+        "message": "Dostosowuje automatyczne obliczanie współczynnika, 10 jest domyślnym stosunkiem współczynnika do opóźnienia. Zwiększenie liczby bardziej wygładzi wejścia RC, dodając jednocześnie opóźnienie. Może to być przydatne w przypadku zawodnych połączeń RC lub podczas latania z kamerą.<br>Uważaj na liczby zbliżające się do 50, opóźnienie wejściowe będzie zauważalne.<br>Użyj polecenia CLI rc_smoothing_info, gdy TX i RX są zasilane, aby zobaczyć automatycznie obliczone wygładzanie RC odcięcia.",
+        "description": "Throttle Auto Factor parameter help message"
     },
     "receiverRcFeedforwardTypeSelect": {
         "message": "Typ odcięcia Feedforward"
     },
     "receiverRcSetpointTypeSelect": {
         "message": "Typ odcięcia Wartości zadanej"
+    },
+    "receiverThrottleTypeSelect": {
+        "message": "Typ odcięcia przepustnicy"
     },
     "receiverRcSmoothingInterpolation": {
         "message": "Interpolacja"
@@ -1989,8 +2087,17 @@
     "receiverRcSmoothingFeedforwardManual": {
         "message": "Określa, czy częstotliwość odcięcia filtra feedforward jest obliczana automatycznie (zalecane) czy ręcznie wybierana przez użytkownika. Tryb Manual nie jest polecany dla protokołów odbiornika takich jak Crossfire, które mogą dynamicznie zmieniać się w trakcie lotu."
     },
+    "receiverRcSmoothingThrottleManual": {
+        "message": "Wybiera, czy częstotliwość odcięcia filtra wejściowego jest automatycznie obliczana (zalecane) czy wybierana ręcznie przez użytkownika. Używanie \"Ręcznego\" nie jest zalecane dla protokołów odbiorników, takich jak Crossfire które mogą zmieniać się w locie."
+    },
+    "rcSmoothingThrottleCutoffHelp": {
+        "message": "Częstotliwość odcięcia w Hz stosowana przez filtr feedforward. Niższe wartości zapewniają płynniejsze sygnały wejściowe i lepiej sprawdzają się przy wolniejszych protokołach odbiornika. Większość użytkowników powinna pozostawić wartość 0, co odpowiada trybowi Auto."
+    },
     "receiverRcSmoothingSetpointHz": {
         "message": "Częstotliwość odcięcia Wartości zadanej"
+    },
+    "receiverRcSmoothingThrottleCutoffHz": {
+        "message": "Częstotliwość odcięcia przepustnicy"
     },
     "receiverRcSmoothingFeedforwardCutoff": {
         "message": "Częstotliwość odcięcia Feedforward"
@@ -2000,9 +2107,6 @@
     },
     "receiverRcSmoothingFeedforwardTypeAuto": {
         "message": "Auto"
-    },
-    "receiverRcSmoothingMode": {
-        "message": "Tryb wygładzania"
     },
     "pidTuningDtermSetpointTransition": {
         "message": "D przejście do wartości zadanej"
@@ -2014,13 +2118,10 @@
         "message": "Za pomocą tego parametru można zmniejszyć siłę wychylenia w pobliżu środka drążków, co skutkuje gładszym zakończeniem przewrotów i beczek.<br> Wartośći reprezentujące punkt wychylenia drążka: 0 - drążek wyśrodkowany, 1 - pełne wychylenie. Gdy drążek znajduje się powyżej tego punktu, wychylenie jest utrzymywane na stałym poziomie skonfigurowanej wartości. Gdy drążek znajduje się poniżej tego punktu, sila zadana jest proporcjonalnie zmniejszana, osiągając 0 w środkowej pozycji drążka.<br>Wartość 1 zapewnia maksymalny efekt wygładzenia, a wartość 0 utrzymuje ustawioną siłę na ustawionej wartości w całym zakresie wychylenia drążka."
     },
     "pidTuningDtermSetpointHelp": {
-        "message": "Ten parametr określa efekt przyspieszenia drążka w składowej pochodnej.<br> Wartość 0 odpowiada starej metodzie pomiarowej, w której D śledzi tylko żyroskop, natomiast wartość 1 odpowiada starej metodzie błędu z równym współczynnikiem śledzenia żyroskopu i drążka.<br> Niższa wartość odpowiada wolniejszej\/płynniejszej reakcji drążka, podczas gdy wyższa wartość zapewnia lepszą reakcję na przyspieszenie drążka.<br>Pamiętaj, że zaleca się włączenie interpolacji RC przy wyższych wartościach, aby zapobiec szumowi."
+        "message": "Ten parametr określa efekt przyspieszenia drążka w ramach składowej pochodnej. Wartość 0 oznacza starą metodę pomiaru, w której D śledzi tylko żyroskop. Wartość 1 oznacza starą metodę błędu, która wykorzystuje równy współczynnik śledzenia żyroskopu i drążka. Niższe wartości zapewniają wolniejszą, płynniejszą reakcję drążka, natomiast wyższe wartości zapewniają większą reakcję przyspieszenia drążka. <br>Należy pamiętać, że podczas stosowania wyższych wartości zaleca się interpolację RC, aby zapobiec hałasowi spowodowanemu przez skoki sterowania."
     },
     "pidTuningDtermSetpointTransitionWarning": {
         "message": "<span class = \"message-negative\"> <strong> $t(warningTitle.message): <\/strong> Odradza się stosowania wartości zadanej D większej niż 0 i mniejszej niż 0,1. Takie postępowanie może prowadzić do niestabilności i zmniejszenia reakcji drążka, gdy drążki przekroczą punkt środkowy. <\/span>"
-    },
-    "pidTuningFeedforwardGroup": {
-        "message": "Feed-<br>forward"
     },
     "pidTuningFeedforwardGroupHelp": {
         "message": "Feedforward pozwala dostosować responsywność drążków, zapewniając pełną kontrolę nad stylem sterowania.<br \/><br \/> Dzięki tym ustawieniom możesz uzyskać szybkie i precyzyjne reakcje idealne do wyścigów lub płynne, łagodne ruchy doskonałe do nagrań kinowych i w jakości HD."
@@ -2044,7 +2145,7 @@
         "message": "Uśrednianie Feedforward oblicza średnią z ostatnich 2 lub 3 kroków Feedforward, co wygładza jego przebieg, ale jednocześnie wprowadza pewne opóźnienie.<br><br>Najskuteczniej redukuje sekwencyjne zakłocenia w sygnale, które często występują przy szybszych połączeniach RC.<br><br>Uśrednianie 2-punktowe jest zalecane dla 500 Hz, zakłóconych połączeń 250 Hz oraz latania Cinematic\/HD. Uśrednianie 3-punktowe jest wymagane dla Crossfire (przed CRSFShot) w trybie 150 Hz."
     },
     "pidTuningOptionOff": {
-        "message": "Wył"
+        "message": "WYŁ."
     },
     "pidTuningOptionOn": {
         "message": "Wł"
@@ -2131,6 +2232,9 @@
     },
     "pidTuningRcExpo": {
         "message": "RC Expo"
+    },
+    "pidTuningTpaGroup": {
+        "message": "TPA"
     },
     "pidTuningTPAMode": {
         "message": "Tryb TPA"
@@ -2243,9 +2347,6 @@
     "pidTuningDataRefreshed": {
         "message": "Dane PID <strong>Odświeżone <\/strong>"
     },
-    "pidTuningEepromSaved": {
-        "message": "EEPROM <span class=\"message-positive\">zapisano<\/span>"
-    },
     "tuningHelp": {
         "message": "<b>Wskazówki<\/b><br \/><span class=\"message-negative\">WAŻNE:<\/span> Ważne jest sprawdzanie temperatury silnika podczas pierwszych lotów. Im wyższa wartość filtra, tym lepiej (płynniej) może się latać, ale jednocześnie sygnał serujący silnikami będzie bardziej agresywny aby wynikowo maszyna była bardziej stabilizowana (silnik będzie się grzał ponieważ wirnik z śmigłem ma swoją masę i pęd - szybkie zmiany obrotów potrzebują dostarczenia dużej ilości energii aby zmienić pęd). <br>Domyślna wartość 100 Hz jest optymalna, ale dla platformy z drganiami (z śmigła\/ z silnika) można spróbować obniżyć ustawienie filtru Dterm do 50Hz, a być może również ustawienie filtru żyroskopowego."
     },
@@ -2256,21 +2357,21 @@
     "filterWarning": {
         "message": "<span class=\"message-negative\"><b>Uwaga:<\/b><\/span> Aktualne ustawienia filtrowania są niebezpiecznie niskie. Latenie maszyną będzie ciężkie, zachowanie maszyny może być nieprzewidywalnie niebezpieczne (flayaways). Jest wysoko zalecane aby <b>Włączyć przynajmniej jeden filter: Dynamiczny lub pierwszy (1) filter dolnoprzepustowy żyroskopu i przynajmniej jeden \"D-term\" Dynamiczny lub pierwszy (1) filtr dolnoprzepustowy<\/b>."
     },
+    "pidTuningSliders": {
+        "message": "Suwaki dostrajające PID"
+    },
     "pidTuningSliderPidsMode": {
         "message": "Tryb:",
         "description": "Pidtuning slider mode can be OFF, RP or RPY"
     },
     "pidTuningSliderModeHelp": {
-        "message": "<strong>Tryb suwaka Pid Tuning<\/strong><br><br>Tryb suwaka Pid Tuning może być:<br><br>&bull; WYŁĄCZONE - bez suwaków, wprowadź wartości ręcznie<br>&bull; RP – suwaki kontrolują tylko Roll i Pitch, wprowadź wartości Yaw ręcznie<br>&bull; RPY – suwaki kontrolują wszystkie wartości PID<br><br><span class=\"message-negative\"><b>Ostrzeżenie:<\/b><\/span>Przejście z trybu RP do trybu RPY spowoduje nadpisanie ustawień odchylenia z ustawieniami oprogramowania układowego."
+        "message": "<strong>Tryb suwaków regulacji PID<\/strong><br><br>Tryb suwaków regulacji PID może być ustawiony na:<br><br>&bull; WYŁ. - brak suwaków, ręczne wprowadzanie wartości<br>&bull; RP - suwaki sterują osiami Roll i Pitch, dla osi Yaw ręczne wprowadzanie wartości<br>&bull; RPY - suwaki sterują wszystkimi wartościami PID<br><br><span class=\"message-negative\"><b>Uwaga:<\/b><\/span>Przełączenie z trybu RP na tryb RPY spowoduje nadpisanie ustawień osi Yaw wartościami wyliczonymi przez firmware."
     },
     "receiverHelpModelId": {
         "message": "Jeśli ustawisz Model Match na wartość inną niż 255, możesz określić numer odbiornika na stronie ustawień modelu w OpenTX\/EdgeTX i włączyć Model Match w skrypcie ELRS LUA dla tego modelu. Model match mieści się w zakresie od 0 do 63 włącznie.<br \/>Zobacz dokumentację ELRS, aby uzyskać więcej informacji."
     },
     "receiverModelId": {
         "message": "ID zgodności modelu"
-    },
-    "receiverHelp": {
-        "message": "&#8226;  <b><strong><a href=\"https:\/\/betaflight.com\/docs\/wiki\/guides\/current\/Failsafe#testing-failsafe\" target=\"_blank\" rel=\"noopener noreferrer\">Zawsze sprawdź, czy Failsafe działa prawidłowo!<\/a><\/strong><\/b> Ustawienia znajdują się w zakładce Procedura Fail-safe, która wymaga trybu eksperta.<br> &#8226; <b>Użyj najnowszego firmware dla twojego nadajnika Tx!<\/b><br> &#8226; <strong><a href=\"https:\/\/betaflight.com\/docs\/development\/Rx#disabling-the-opentxedgetx-adc-filter\" target=\"_blank\" rel=\"noopener noreferrer\">Wyłącz filtr ADC<\/a><\/strong> w Nadajniku, jeśli używasz OpenTx lub EdgeTx.<br>Podstawowa konfiguracja: poprawnie skonfiguruj ustawienia odbiornika. Wybierz poprawną „Mapę kanałów” dla swojego radia. Sprawdź, czy Roll, Pitch i inne wykresy słupkowe poruszają się poprawnie. Dostosuj wartości punktu końcowego lub zakresu kanału w nadajniku od ~1000 do ~2000 i ustaw punkt środkowy na 1500. Aby uzyskać więcej informacji przeczytaj dokumentację <strong><a href=\"https:\/\/betaflight.com\/docs\/development\/Rx\" target=\"_blank\" rel=\"noopener noreferrer\"><\/a><\/strong>."
     },
     "receiverThrottleMid": {
         "message": "Przepustnica MID"
@@ -2312,19 +2413,19 @@
         "message": "Są to wartości maksymalnego odchyłu sygnału wejściowego RC podawane w mikro sekundach(us), które są akceptowane jako sygnał poprawny. W przypadku nadajników posiadających duży jitter w sygnale, wartość tą można zwiększyć (aby kontroler uznał go za poprawny). <strong>Nastawa ta dotyczy tylko ustawień dla odchylenia \"Yaw\"<\/strong>"
     },
     "recevier3dDeadbandThrottle": {
-        "message": "Strefa Nieczułości Przepustnicy (tylko tryb 3D)"
+        "message": "Martwa strefa 3D przepustnicy"
     },
     "receiverHelp3dDeadbandThrottle": {
-        "message": "Są to wartości podawane w mikro sekundach(us). Aby zwiększyć zakres martwy drążka gazu, zwiększ tą wartość.<strong>Ustawienia tylko dla Gazu w trybie 3D.<\/strong>"
+        "message": "Są to wartości w mikrosekundach (μs). Zwiększenie wartości poszerza strefę neutralną. <strong>Ustawienie dotyczy tylko przepustnicy w trybie 3D.<\/strong>"
     },
     "receiverChannelMap": {
-        "message": "Mapa kanałów"
+        "message": "Kolejność Kanałów"
     },
     "receiverChannelDefaultOption": {
         "message": "Domyślne"
     },
     "receiverChannelMapTitle": {
-        "message": "Możesz zdefiniować własną mapę kanałów klikając w pole"
+        "message": "Możesz zdefiniować własną kolejność kanałów klikając w pole"
     },
     "receiverRssiChannel": {
         "message": "Kanał RSSI"
@@ -2379,9 +2480,6 @@
     "receiverDataRefreshed": {
         "message": "Dane dostrajania RC <strong>odświeżone<\/strong>"
     },
-    "receiverEepromSaved": {
-        "message": "EEPROM <span class=\"message-positive\">zapisano<\/span>"
-    },
     "receiverModelPreview": {
         "message": "Podgląd"
     },
@@ -2405,7 +2503,7 @@
     },
     "auxiliaryDisabled": {
         "message": "(NIESPRAWNY)",
-        "descripton": "Text to add to the ARM mode (maybe others in the future) in the MODES TAB when it has been disabled for some external reason"
+        "description": "Text to add to the ARM mode (maybe others in the future) in the MODES TAB when it has been disabled for some external reason"
     },
     "auxiliaryAddRange": {
         "message": "Dodaj Zakres"
@@ -2419,6 +2517,9 @@
     "auxiliaryAutoChannelSelect": {
         "message": "AUTO"
     },
+    "auxiliaryLinkNone": {
+        "message": "Brak"
+    },
     "auxiliaryModeLogicOR": {
         "message": "LUB"
     },
@@ -2426,7 +2527,7 @@
         "message": "ORAZ"
     },
     "auxiliaryHelpMode_3DDISABLE": {
-        "message": "Umożliwia odwracalny kierunek obrotu silnika, aby zapewnić ujemny ciąg i umożliwić lot do góry nogami. Przepustnica pracuje w zakresie od -100 do +100 zamiast od 0 do 100",
+        "message": "Włącza odwracalny kierunek obrotu silników, umożliwiając uzyskanie ujemnego ciągu i lot do góry nogami. Przepustnica pracuje w zakresie od -100 do +100 zamiast od 0 do 100.",
         "description": "Help text to 3D mode"
     },
     "auxiliaryHelpMode_ACROTRAINER": {
@@ -2445,13 +2546,9 @@
         "message": "Anti Gravity poprzez zwiększenie parametru P oraz I podczas gwałtownego dodania gazu ma spowodować, iż model utrzyma poziom, pochylenie oraz wychylenie w czasie szybkiego wznoszenia",
         "description": "Help text to ANTIGRAVITY mode"
     },
-    "auxiliaryHelpMode_AIRMODE": {
-        "message": "AirMode pozwala na utrzymanie stabilności drona przy niskiej przepustnicy. Więcej informacji znajdziesz w <a href=\"https:\/\/betaflight.com\/docs\/development\/modes#airmode\" target=\"_blank\" rel=\"noopener noreferrer\">AirMode<\/a> na Betaflight.com.",
-        "description": "Help text to AIRMODE mode"
-    },
-    "auxiliaryHelpMode_ALTHOLD": {
-        "message": "<a href=\"https:\/\/betaflight.com\/docs\/wiki\/guides\/current\/position-hold-v4-6#altitude-hold\" target=\"_blank\" rel=\"noopener noreferrer\">Altitude Hold<\/a> Aktywnie utrzymuje wysokość modelu za pomocą zewnętrznych czujników połączonych z trybem stabilizowanym Angle.",
-        "description": "Help text for ALTITUDE HOLD mode"
+    "auxiliaryHelpMode_AUTOPILOT": {
+        "message": "Tryb autopilota umożliwia autonomiczne sterowanie lotem, łączące utrzymywanie i utrzymywanie wysokości bezwzględnej w pozycji umożliwiającej utrzymanie stabilnego zawinięcia lub podążanie planowaną trasą lotu.",
+        "description": "Help text for AUTOPILOT mode"
     },
     "auxiliaryHelpMode_BEEPER": {
         "message": "Włącz sygnał dźwiękowy-przydatne do lokalizowania zaginionej jednostki latającej",
@@ -2466,7 +2563,7 @@
         "description": "Help text to BEEPER ON mode"
     },
     "auxiliaryHelpMode_BEEPGPSSATELLITECOUNT": {
-        "message": "Włącza tryb POBIERANIA GPS SATELITE COUNT",
+        "message": "Włącza trybBEEP GPS SATELLITE COUNT",
         "description": "Help text to BEEP GPS SATELLITE COUNT mode"
     },
     "auxiliaryHelpMode_BLACKBOX": {
@@ -2500,6 +2597,10 @@
     "auxiliaryHelpMode_CAMSTAB": {
         "message": "Włącza tryb stabilizacji kamery",
         "description": "Help text to CAMSTAB mode"
+    },
+    "auxiliaryHelpMode_CHIRP": {
+        "message": "Włącza tryb Chirp",
+        "description": "Help text for CHIRP mode"
     },
     "auxiliaryHelpMode_FAILSAFE": {
         "message": "Wywołuje ręcznie Etap 2 procedury Fail-Safe",
@@ -2617,6 +2718,10 @@
         "message": "Wyłącz kontrolę ustawień VTX poprzez OSD",
         "description": "Help text to VTX CONTROL DISABLE mode"
     },
+    "auxiliaryHelpMode_VTXPOWER": {
+        "message": "Przełączaj się między poziomami mocy VTX (jeśli są obsługiwane przez VTX)",
+        "description": "Help text to VTX POWER mode"
+    },
     "auxiliaryHelpMode_VTXPITMODE": {
         "message": "Przełącz VTX w tryb pit mode (niska moc wyjściowa, jeśli jest obsługiwana)",
         "description": "Help text to VTX PIT MODE mode"
@@ -2638,13 +2743,13 @@
         "message": "kiedy kanał"
     },
     "adjustmentsColumnIsInRange": {
-        "message": "Zakres"
+        "message": "jest w zakresie"
     },
     "adjustmentsColumnThenApplyFunction": {
         "message": "następnie zastosuj"
     },
     "adjustmentsColumnViaChannel": {
-        "message": "przez kanał"
+        "message": "kanałem"
     },
     "adjustmentsSlot0": {
         "message": "Slot 1"
@@ -2668,88 +2773,88 @@
         "message": "Bez zmian"
     },
     "adjustmentsFunction1": {
-        "message": "Regulacja RC Rate"
+        "message": "Korekta RC Rate"
     },
     "adjustmentsFunction2": {
-        "message": "Regulacja RC Expo"
+        "message": "Korekta RC Expo"
     },
     "adjustmentsFunction3": {
-        "message": "Regulacja Throttle Expo"
+        "message": "Korekta Expo przepustnicy"
     },
     "adjustmentsFunction4": {
-        "message": "Regulacja Pitch & Roll Rate"
+        "message": "Korekta Rate w osi Pitch i Roll"
     },
     "adjustmentsFunction5": {
-        "message": "Regulacja Yaw Rate"
+        "message": "Korekta Rate w osi Yaw"
     },
     "adjustmentsFunction6": {
-        "message": "Regulacja Pitch & Roll P"
+        "message": "Korekta P w osi Pitch i Roll"
     },
     "adjustmentsFunction7": {
-        "message": "Regulacja Pitch & Roll I"
+        "message": "Korekta I w osi Pitch i Roll"
     },
     "adjustmentsFunction8": {
-        "message": "Regulacja Pitch & Roll D"
+        "message": "Korekta D w osi Pitch i Roll"
     },
     "adjustmentsFunction9": {
-        "message": "Regulacja Yaw P"
+        "message": "Korekta P w osi Yaw"
     },
     "adjustmentsFunction10": {
-        "message": "Regulacja Yaw I"
+        "message": "Korekta I w osi Yaw"
     },
     "adjustmentsFunction11": {
-        "message": "Regulacja Yaw D"
+        "message": "Korekta D w osi Yaw"
     },
     "adjustmentsFunction12": {
-        "message": "Rate-Wybór Profilu"
+        "message": "Wybór Profilu Rate"
     },
     "adjustmentsFunction13": {
-        "message": "Pitch Rate"
+        "message": "Korekta Rate w osi Pitch"
     },
     "adjustmentsFunction14": {
-        "message": "Roll Rate"
+        "message": "Korekta Rate w osi Roll"
     },
     "adjustmentsFunction15": {
-        "message": "Regulacja P w osi Pitch"
+        "message": "Korekta P w osi Pitch"
     },
     "adjustmentsFunction16": {
-        "message": "Regulacja I w osi Pitch"
+        "message": "Korekta I w osi Pitch"
     },
     "adjustmentsFunction17": {
-        "message": "Regulacja Pitch D"
+        "message": "Korekta D w osi Pitch"
     },
     "adjustmentsFunction18": {
-        "message": "Regulacja Roll P"
+        "message": "Korekta P w osi Roll"
     },
     "adjustmentsFunction19": {
-        "message": "Regulacja Roll I"
+        "message": "Korekta I w osi Roll"
     },
     "adjustmentsFunction20": {
-        "message": "Regulacja Roll D"
+        "message": "Korekta D w osi Roll"
     },
     "adjustmentsFunction21": {
-        "message": "RC Rate Yaw"
+        "message": "Korekta RC Rate w osi Yaw"
     },
     "adjustmentsFunction22": {
-        "message": "Regulacja Pitch & Roll F"
+        "message": "Korekta F w osi Pitch i Roll"
     },
     "adjustmentsFunction23": {
         "message": "Przejście Feedforward"
     },
     "adjustmentsFunction24": {
-        "message": "Horizon-Regulacja siły"
+        "message": "Korekta Horizon Strength"
     },
     "adjustmentsFunction25": {
         "message": "Wybór PID-Audio"
     },
     "adjustmentsFunction26": {
-        "message": "Regulacja Pitch F"
+        "message": "Korekta F w osi Pitch"
     },
     "adjustmentsFunction27": {
-        "message": "Regulacja Roll F"
+        "message": "Korekta F w osi Roll"
     },
     "adjustmentsFunction28": {
-        "message": "Regulacja Yaw F"
+        "message": "Korekta F w osi Yaw"
     },
     "adjustmentsFunction29": {
         "message": "Wybór profilu OSD"
@@ -2758,76 +2863,23 @@
         "message": "Wybór profilu LED"
     },
     "adjustmentsFunction31": {
-        "message": "Regulacja jasności LED"
+        "message": "Korekta jasności LED"
+    },
+    "adjustmentsFunction32": {
+        "message": "Główny Mnożnik"
+    },
+    "adjustmentsFunction33": {
+        "message": "Wybór profilu baterii",
+        "description": "Allows switching battery profiles via RC channel"
     },
     "adjustmentsSave": {
         "message": "Zapisz"
     },
-    "adjustmentsEepromSaved": {
-        "message": "EEPROM <span class=\"message-positive\">zapisana<\/span>"
+    "adjustmentsShowAll": {
+        "message": "Pokaż wszystkie sloty"
     },
-    "transponderNotSupported": {
-        "message": "Firmowe oprogramowanie kontrolera lotu nie obsługuje funkcji transpondera."
-    },
-    "transponderInformation": {
-        "message": "Systemy transponderów pozwalają organizatorom wyścigu mierzyć czas Twoich okrążeń. Transponder jest zamontowany na twoim modelu, kiedy twój model mija bramkę pomiaru czasu, odbiornik przytorowy rejestruje numer startowy i czas okrążenia. Instalując transponder na podczerwień, należy upewnić się, że wiązka podczerwieni jest skierowana na zewnątrz modelu w kierunku odbiorników przytorowych, oraz że  nie jest zasłonięta przez kadłub, paski akumulatora, kable, śmigła itp."
-    },
-    "transponderConfigurationType": {
-        "message": "Typ transpondera"
-    },
-    "transponderType0": {
-        "message": "Brak"
-    },
-    "transponderType1": {
-        "message": "iLap"
-    },
-    "transponderType2": {
-        "message": "aRCiTimer"
-    },
-    "transponderType3": {
-        "message": "ERLT"
-    },
-    "transponderConfiguration1": {
-        "message": "Konfiguracja iLap"
-    },
-    "transponderConfiguration2": {
-        "message": "Konfiguracja aRCiTimer"
-    },
-    "transponderConfiguration3": {
-        "message": "Konfiguracja ERLT"
-    },
-    "transponderData1": {
-        "message": "Dane"
-    },
-    "transponderData2": {
-        "message": "ID transpondera"
-    },
-    "transponderData3": {
-        "message": "ID transpondera"
-    },
-    "transponderDataHelp1": {
-        "message": "Tylko cyfry szesnastkowe, 0-9, A-F"
-    },
-    "transponderHelp1": {
-        "message": "Skonfiguruj swój kod transpondera tutaj. Uwaga:  Tylko poprawne kody będą rozpoznane przez system mierzenia czasu podczas wyścigu. Poprawne kody można uzyskać na stronie <a href=\"http:\/\/seriouslypro.com\/transponder-codes\" target=\"_blank\" rel=\"noopener noreferrer\">Seriously Pro<\/a>."
-    },
-    "transponderHelp2": {
-        "message": "Aby uzyskać więcej informacji odwiedź stronę <a href=\"http:\/\/www.arcitimer.com\/\" title=\"aRCiTimer\" target=\"_blank\" rel=\"noopener noreferrer\">aRCiTimer<\/a>"
-    },
-    "transponderDataHelp3": {
-        "message": "Wybierz ERLT ID 0-63"
-    },
-    "transponderHelp3": {
-        "message": "Aby uzyskać więcej informacji odwiedź stronę <a href=\"https:\/\/github.com\/polyvision\/EasyRaceLapTimer\" title=\"aRCiTimer\" target=\"_blank\" rel=\"noopener noreferrer\">EasyRaceLapTimer<\/a>"
-    },
-    "transponderButtonSave": {
-        "message": "Zapisz"
-    },
-    "transponderButtonSaveReboot": {
-        "message": "Zapisz i uruchom ponownie"
-    },
-    "transponderDataInvalid": {
-        "message": "Dane transpondera są <span class=\"message-negative\">nieprawidłowe<\/span>"
+    "adjustmentsHideEmpty": {
+        "message": "Ukryj puste sloty"
     },
     "servosFirmwareUpgradeRequired": {
         "message": "Do działania serwomechanizmów wymagane jest oprogramowanie układowe &gt;= 1.10.0. oraz wsparcie dla urządzenia docelowego."
@@ -2872,27 +2924,45 @@
     "servosReverse": {
         "message": "Odwrócone"
     },
-    "servosEepromSave": {
-        "message": "EEPROM <span class=\"message-positive\">zapisano<\/span>"
-    },
     "gpsHead": {
-        "message": "GPS"
+        "message": "Ogólne"
     },
     "gpsHeadHelp": {
-        "message": "Pokaż różne informacje związane z GPS. Kierunki są wyświetlane tylko wtedy, gdy używany jest magnetometr",
+        "message": "Pokaż różne informacje GPS. Kierunki są wyświetlane tylko wtedy, gdy używany jest magnetometr.",
         "description": "Help text for gpsHead"
     },
     "gpsMapHead": {
-        "message": "Aktualna lokalizacja GPS"
+        "message": "Obecna lokalizacja"
+    },
+    "gpsMapSatelliteView": {
+        "message": "Widok satelitarny"
+    },
+    "gpsMapHybridView": {
+        "message": "Widok hybrydowy"
+    },
+    "gpsMapStreetView": {
+        "message": "Widok ulicy"
+    },
+    "gpsMapZoomIn": {
+        "message": "Powiększ"
+    },
+    "gpsMapZoomOut": {
+        "message": "Pomniejsz"
+    },
+    "gpsMapToggleFullscreen": {
+        "message": "Przełącz na pełny ekran"
+    },
+    "gpsMapRetry": {
+        "message": "Ponów"
     },
     "gpsMapMessage1": {
         "message": "Sprawdź swoje połączenie internetowe"
     },
     "gpsMapMessage2": {
-        "message": "Oczekiwanie na poprawę zasięgu GPS…"
+        "message": "Oczekiwanie na ustalenie pozycji GPS…"
     },
     "gps3dFix": {
-        "message": "Fix 3D:"
+        "message": "Ustalona pozycja GPS:"
     },
     "gpsFixTrue": {
         "message": "Ok"
@@ -2937,7 +3007,7 @@
         "description": "Do not translate"
     },
     "gpsSignalStrHead": {
-        "message": "Siła sygnału GPS"
+        "message": "Informacje o sygnale"
     },
     "gpsSignalStrHeadHelp": {
         "message": "Pokaż siłę sygnału oraz jakość i status dla każdego wykrytego połączenia GPS",
@@ -2954,9 +3024,6 @@
     },
     "gpsSignalSatId": {
         "message": "Sat ID"
-    },
-    "gpsSignalStatus": {
-        "message": "Status"
     },
     "gpsSignalQuality": {
         "message": "Jakość"
@@ -2993,6 +3060,27 @@
     },
     "gnssHealthyUnhealthy": {
         "message": "nie poprawny"
+    },
+    "flightPlanClear": {
+        "message": "Wyczyść"
+    },
+    "flightPlanLoad": {
+        "message": "Załaduj"
+    },
+    "flightPlanSaveToFC": {
+        "message": "Zapisz w FC"
+    },
+    "flightPlanDeleteWaypointTitle": {
+        "message": "Usuń waypoint"
+    },
+    "flightPlanLoadPromptTitle": {
+        "message": "Załadować plan lotu z kontrolera lotu?"
+    },
+    "flightPlanLoadPromptBody": {
+        "message": "Podłączono kontroler lotu. Czy chcesz zastąpić bieżący plan lotu tym zapisanym w kontrolerze lotu? Wybór Nie zachowuje aktualnego planu, więc możesz zapisać go w kontrolerze lotu."
+    },
+    "flightPlanKeepLocal": {
+        "message": "Zostaw jak jest"
     },
     "motorsVoltage": {
         "message": "Napięcie:"
@@ -3078,6 +3166,10 @@
     },
     "motorsSensorAccelSelect": {
         "message": "accel"
+    },
+    "motorsTelemetryHelp": {
+        "message": "Liczby te pokazują informacje o telemetrii otrzymane od ESC, jeśli są dostępne. Mogą również pokazywać rzeczywistą prędkość silników (R) w RPM, wskaźnik błędu łącza telemetrycznego (E) oraz temperatury ESC (T).",
+        "description": "Help text for the telemetry values in the motors tab."
     },
     "motorsRPM": {
         "message": "R: {{motorsRpmValue}}",
@@ -3203,13 +3295,10 @@
         "message": "Silniki będą obracać się podczas ustawiania kierunku!"
     },
     "escDshotDirectionDialog-SettingsAutoSaved": {
-        "message": "Kierunek obrotu silnika jest zapisywany po dokonaniu wyboru"
+        "message": "Kierunek obrotu jest zapisywany po dokonaniu wyboru"
     },
     "escDshotDirectionDialog-WrongProtocolText": {
         "message": "Funkcja działa tylko z ESC z protokołem DSHOT.<br \/> Sprawdź, czy ESC (elektroniczny kontroler prędkości) którego używasz obsługuje protokół DSHOT i zmień go w ustawieniach $t(tabMotorTesting.message)."
-    },
-    "escDshotDirectionDialog-WrongMixerText": {
-        "message": "Liczba silników wynosi 0.<br \/>Zweryfikuj aktualny Mixer w $t(tabMotorTesting.message) lub zmień ustawienia w Wierszu Poleceń CLI. Po więcej informacji przejdź do tej strony: <a href=\"https:\/\/betaflight.com\/docs\/development\/Mixer\" target=\"_blank\" rel=\"noopener noreferrer\">Wiki<\/a>."
     },
     "escDshotDirectionDialog-WrongFirmwareText": {
         "message": "Zaktualizuj oprogramowanie.<br \/> Upewnij się, że używasz najnowszego oprogramowania: Betaflight 4.3 lub nowszego."
@@ -3286,6 +3375,9 @@
     "cliEnter": {
         "message": "Wykryto tryb Wiersza Poleceń CLI"
     },
+    "cliDevEnter": {
+        "message": "Wykryto tryb programisty tylko dla CLI"
+    },
     "cliReboot": {
         "message": "Wykryto ponowne uruchomienie Wiersza Poleceń CLI"
     },
@@ -3323,7 +3415,13 @@
         "message": "Tutaj wprowadź polecenie"
     },
     "loggingNote": {
-        "message": "Dane będą zbierane <span class=\"message-negative\">wyłącznie w tym oknie<\/span>, opuszczenie tego okna <span class=\"message-negative\">zatrzyma<\/span> zbieranie danych, a program przejdzie w <strong>tryb standardowej pracy<\/strong>.<br \/>Możesz zmieniać globalne ustawienia aktualizacji, dane będą zapisywane do pliku co <strong>1<\/strong> sekundę."
+        "message": "Dane będą rejestrowane <span class=\"message-negative\">tylko<\/span> w tej zakładce. Opuszczenie tej zakładki <span class=\"message-negative\">przerwie<\/span> rejestrowanie, a aplikacja powróci do normalnego działania.<br \/> Możesz wybrać globalny okres aktualizacji; jednak ze względów wydajnościowych dane będą zapisywane do pliku dziennika co <strong>1<\/strong> sekundę."
+    },
+    "loggingPropertiesTitle": {
+        "message": "Właściwości dziennika"
+    },
+    "loggingSamplingInterval": {
+        "message": "Częstotliwość pobierania próbek:"
     },
     "loggingSamplesSaved": {
         "message": "Zapisane próbki:"
@@ -3332,19 +3430,19 @@
         "message": "Rozmiar dziennika:"
     },
     "loggingLogName": {
-        "message": "Nazwa zdarzenia:"
+        "message": "Nazwa dziennika:"
     },
     "loggingButtonLogFile": {
-        "message": "Wybierz zapis dziennika"
+        "message": "Wybierz plik dziennika"
     },
     "loggingStart": {
-        "message": "Rozpocznij zapisywane"
+        "message": "Rozpocznij rejestrowanie"
     },
     "loggingStop": {
-        "message": "Zatrzymaj zapisywanie"
+        "message": "Zatrzymaj rejestrowanie"
     },
     "loggingBack": {
-        "message": "Wyjdź z dziennika\/rozłącz"
+        "message": "Opuść rejestrowanie \/ rozłącz"
     },
     "loggingErrorNotConnected": {
         "message": "Najpierw musisz się <strong>połączyć<\/strong>"
@@ -3409,20 +3507,18 @@
     "dataflashNotPresentNote": {
         "message": "Twój kontroler latu nie ma kompatybilnego chipu na dane."
     },
-    "dataflashFirmwareUpgradeRequired": {
-        "message": "Aktualizacja wymaga oprogramowania&gt;= 1.8.0."
-    },
     "dataflashButtonSaveFile": {
         "message": "Zapisz do pliku..."
-    },
-    "dataflashButtonSaveFileDeprecated": {
-        "message": "Zrzut pamięci flash do pliku... (nie wspierany)"
     },
     "dataflashSavetoFileNote": {
         "message": "Bezpośrednie zapisywanie zawartości pamięci do pliku jest powolne i z natury podatne na błąd lub nawet uszkodzenie pliku.<br>W niektórych przypadkach będzie to działać podczas zapisu małych plików, ale zalecane jest użycie trybu pamięci masowej."
     },
     "dataflashSaveFileDepreciationHint": {
         "message": "Ta metoda jest powolna i z natury podatna na błąd \/ uszkodzenie plików, ponieważ połączenie MSP jest zmienne, co jest podstawowym ograniczeniem, które sprawia, że jest nieodpowiednie do przesyłania plików. Może zadziałać tylko dla małych plików. Nie twórz żądań dodania wsparcia tej funkcji gdy transfer plików nie powiedzie się po zapisaniu, przy użyciu tej metody. Zalecaną metodą jest użycie '<b>$t(onboardLoggingRebootMscText.message)<\/b>' (poniżej) aby aktywować tryb pamięci masowej i uzyskać dostęp do kontrolera lotu jako urządzenia pamięci."
+    },
+    "dataflashButtonSaveAndErase": {
+        "message": "Zapisz i Wyczyść",
+        "description": "Button text to save blackbox logs to file and then erase the flash"
     },
     "dataflashButtonErase": {
         "message": "Kasuj pamieć"
@@ -3475,6 +3571,12 @@
     "sdcardStatusUnknown": {
         "message": "Nieznany stan $1"
     },
+    "firmwareFlasherPleaseWait": {
+        "message": "Proszę czekać"
+    },
+    "firmwareFlasherBoardSelectionHead": {
+        "message": "Wybór kontrolera lotu"
+    },
     "firmwareFlasherBranch": {
         "message": "Wybierz opcję Żądanie ściągnięcia lub Zatwierdź"
     },
@@ -3510,10 +3612,10 @@
         "message": "Szczegóły kompilacji w chmurze:"
     },
     "firmwareFlasherCloudBuildLogUrl": {
-        "message": "Pokaż logi."
+        "message": "Pokaż log"
     },
-    "firmwareFlasherCloudBuildStatus": {
-        "message": "Status:"
+    "firmwareFlasherCloudBuildQueued": {
+        "message": "w kolejce"
     },
     "firmwareFlasherCloudBuildPending": {
         "message": "oczekujący"
@@ -3573,7 +3675,7 @@
         "message": "Wybierz swój kontroler lotu, aby zobaczyć dostępne wersje oprogramowania online. Wybierz odpowiednie oprogramowanie dla twojego kontrolera lotu."
     },
     "firmwareFlasherOnlineSelectBoardHint": {
-        "message": "Konfigurator Betaflight obsługuje flashowanie kontrolerów lotu wykorzystując ujednolicone cele.<br><br>Koncepcja ta oznacza, że ​​ten sam plik .hex oprogramowania układowego może być używany dla wszystkich kontrolerów lotu korzystających z tego samego MCU.<br> <br>Betaflight 4.4 wprowadza <strong>Kompilację w chmurze<\/strong><br><br>W przypadku <strong>kompilacji w chmurze<\/strong> musimy zdefiniować opcje sprzętowe obecne w Twojej kompilacji.<br><br>Aby różne kontrolery lotu współpracowały z tym samym oprogramowaniem układowym, a określony plik konfiguracyjny był wdrażany wraz z oprogramowaniem układowym podczas flashowania.<br><br>Dzięki kompilacji lokalnej można załadować docelowy plik konfiguracyjny lub wybrać płytkę kontrolera lotu przed załadowaniem oprogramowania układowego .hex.<br><br>Jeśli napotkasz problemy z używaniem oprogramowania układowego, rozważ dołączenie do Discorda lub otwórz plik <a href=\"https:\/\/github.com\/betaflight\/betaflight\/issues\" target=\"_blank\" rel =\"noopener noreferrer\">problem<\/a>."
+        "message": "Betaflight App obsługuje programowanie Unified Target (ujednoliconej platformy docelowej) wraz z przypisaną konfiguracją sprzętową konkretnej płytki – wszystko w jednym kroku.<br><br>Koncepcja Unified Target oznacza, że ten sam plik z oprogramowaniem .hex może być używany na wszystkich płytkach z tym samym MCU.<br><br>Betaflight 4.4 wprowadza funkcję <strong>Cloud Build<\/strong>.<br><br>Dzięki <strong>Cloud Build<\/strong> możesz samodzielnie określić, jakie opcje sprzętowe są obecne w Twojej konfiguracji.<br><br>Aby różne płytki mogły działać z tym samym oprogramowaniem, przy wgrywaniu Unified Target dołączany jest odpowiedni plik konfiguracyjny.<br><br>W przypadku kompilacji z lokalnego źródła możesz załadować plik konfiguracyjny Unified Target lub wybrać płytkę przed załadowaniem pliku z oprogramowaniem .hex.<br><br>Jeśli napotkasz problemy z oprogramowaniem, zachęcamy do dołączenia do Discorda lub utworzenia <a href=\"https:\/\/github.com\/betaflight\/betaflight\/issues\" target=\"_blank\" rel=\"noopener noreferrer\">zgłoszenia<\/a>."
     },
     "firmwareFlasherOnlineSelectFirmwareVersionDescription": {
         "message": "Wybierz wersję oprogramowania dla swojego urządzenia."
@@ -3681,13 +3783,7 @@
         "message": "Wiadomość:"
     },
     "firmwareFlasherWarningText": {
-        "message": "Postępuj według wytycznych oraz <span class = \"message-negative\"> nie <\/span> próbuj wgrywać oprogramowania<strong> innego niż Betaflight <\/strong> za pomocą tego oprogramowania. <br \/> Pamiętaj<span class = \"message-negative\" > nie <\/span> <strong> odłączaj <\/strong> kontrolera lotu oraz <strong> nie wyłączaj <\/strong> komputera podczas wgrywania oprogramowania. <br \/> <br \/> <strong> Uwaga: <\/strong> Bootloader STM32 jest przechowywany w ROM-ie dlatego nie może być blokowany. <br \/> <strong> Uwaga: <\/strong> <span class = \"message-negative\"> Automatyczne połączenie <\/span> jest zawsze wyłączone, gdy jesteś w trybie wgrywania oprogramowania. <br \/> <strong> Uwaga: <\/strong> Upewnij się, że masz kopię zapasową, niektóre aktualizacje mogą usunąć twoją konfigurację. <br \/> <strong> Uwaga: <\/strong> Jeśli masz problem z wgrywaniem oprogramowania<strong> spróbuj odłączyć wszystkie przewody od kontrolera lotu <\/strong> następnie spróbuj ponownie uruchomić komputer oraz zaktualizować sterowniki. <br \/> <strong> Uwaga: <\/strong> Podczas wgrywania oprogramowania do płytek bezpośrednio podłączonych do gniazd USB (większość nowszych płytek) upewnij się, że przeczytałeś sekcję Wgrywanie oprogramowania w instrukcji Betaflight i zainstalowałeś odpowiednie oprogramowanie i sterowniki"
-    },
-    "firmwareFlasherRecoveryHead": {
-        "message": "<strong>Problemy z połączeniem FC<\/strong>"
-    },
-    "firmwareFlasherRecoveryText": {
-        "message": "Jeżeli utracono komunikację z kontrolerem lotu, należy wykonać następujące kroki, aby ją przywrócić: <ul><li>Odłączyć zasilanie kontrolera lotu.<\/li><li>Zaznaczyć opcje „Bez ponownego uruchamiania” oraz „Pełne czyszczenie pamięci”.<\/li><li>Złączyć zworką styki BOOT lub przytrzymać przycisk BOOT na kontrolerze lotu.<\/li><li>Podłączyć zasilanie kontrolera lotu (proprawne wykonanie zasygnalizuje dioda aktywności, która PRZESTANIE mrugać).<\/li><li>Jeżeli to konieczne, zainstalować wszystkie sterowniki STM32 i Zadig. Więcej przydatnych informacji na stronie:\n<a href=\"https:\/\/betaflight.com\/docs\/wiki\/guides\/current\/Installing-Betaflight\" target=\"_blank\" rel=\"noopener noreferrer\"> instalowanie oprogramowania<\/a> w instrukcji Betaflight.<\/li><li>Zamknąć konfigurator, a następnie uruchomić go ponownie.<\/li><li>Zwolnić przycisk BOOT, jeśli kontroler lotu go posiada.<\/li><li>Zainstalować poprawne oprogramowanie układowe (używać ręcznej szybkości transmisji, jeśli jest to określone w instrukcji kontrolera lotu).<\/li><li>Odłączyć zasilanie kontrolera lotu.<\/li><li>Usunąć zworkę ze styków BOOT.<\/li><li>Podłączyć zasilanie kontrolera lotu (dioda aktywności powinna teraz mrugać).<\/li><li>Połączyć normalnie.<\/li><\/ul>"
+        "message": "Proszę <span class=\"message-negative\">nie<\/span> próbuj używać tego programu do wgrywania oprogramowania na urządzenia <strong>niekompatybilne z Betaflight<\/strong>.<br \/><span class=\"message-negative\">Nie<\/span><strong>odłączaj<\/strong> kontrolera lotu oraz <strong>nie wyłączaj<\/strong> komputera w trakcie wgrywania oprogramowania.<br \/><br \/><strong>Uwaga:<\/strong><ul><li>Bootloader STM32 znajduje się w pamięci ROM i nie można go uszkodzić.<\/li><li><span class=\"message-negative\">Automatyczne połączenie<\/span> pozostaje nieaktywne podczas korzystania z zakładki Wgraj Oprogramowanie.<\/li><li>Wykonaj kopię zapasową — aktualizacja lub cofnięcie wersji może wyczyścić zapisaną konfigurację.<\/li><li>W razie niepowodzenia wgrywania <strong>odłącz wszystkie kable od kontrolera lotu<\/strong>, uruchom komputer ponownie i zaktualizuj sterowniki.<\/li><li>Wgrywając oprogramowanie na kontrolery lotu z bezpośrednio podłączonym USB (większość nowszych), zapoznaj się z sekcją USB Flashing w instrukcji Betaflight i upewnij się, że masz właściwe oprogramowanie oraz sterowniki.<\/li><\/ul>"
     },
     "firmwareFlasherButtonLeave": {
         "message": "Urzyj opcji wgrywania oprogramowania"
@@ -3695,14 +3791,38 @@
     "firmwareFlasherFirmwareNotLoaded": {
         "message": "Oprogramowanie nie załadowane"
     },
+    "firmwareFlasherFirmwareLoaded": {
+        "message": "Oprogramowanie"
+    },
+    "firmwareFlasherFirmwareSize": {
+        "message": "{{bytes}} bajtów"
+    },
     "firmwareFlasherFirmwareLocalLoaded": {
         "message": "Załadowano lokalne firmware: {{filename}} ({{bytes}} bajtów)"
     },
     "firmwareFlasherFirmwareOnlineLoaded": {
         "message": "Załadowano Firmware Online: {{filename}} ({{bytes}} bajtów)"
     },
+    "firmwareFlasherTooltipSaveFirmware": {
+        "message": "Zapisz Firmware"
+    },
+    "firmwareFlasherInvalidFileFormat": {
+        "message": "Nieprawidłowy format pliku"
+    },
+    "firmwareFlasherUf2Corrupted": {
+        "message": "Plik UF2 wydaje się być uszkodzony"
+    },
     "firmwareFlasherHexCorrupted": {
         "message": "Plik HEX wydaje się być uszkodzony"
+    },
+    "firmwareFlasherUF2SaveSuccess": {
+        "message": "Pomyślnie zapisano () UF2"
+    },
+    "firmwareFlasherUF2SaveFailed": {
+        "message": "Nie udało się zapisać (flash) UF2"
+    },
+    "firmwareFlasherClickToConnectDfu": {
+        "message": "Kliknij, aby połączyć się z urządzeniem DFU"
     },
     "firmwareFlasherConfigCorrupted": {
         "message": "Plik konfiguracyjny wydaje się być uszkodzony, ASCII akceptowane (znaki 0-255)",
@@ -3748,15 +3868,15 @@
         "description": "Make a quick connection to read firmware target and never flash a wrong target again"
     },
     "firmwareFlasherBoardVerificationSuccess": {
-        "message": "Konfigurator <span class=\"message-positive\">pomyślnie<\/span> wykrył i zweryfikował kontroler lotu: <strong>{{boardName}}<\/strong>",
+        "message": "Aplikacja <span class=\"message-positive\">pomyślnie<\/span> wykryła i zweryfikowała board: <strong>{{boardName}}<\/strong>",
         "description": "Board verification has succeeded."
     },
     "firmwareFlasherBoardVerficationTargetNotAvailable": {
-        "message": "Konfigurator wykrył kontroler lotu: <strong>{{boardName}}<\/strong>, lecz nie znaleziono oficjalnego oprogramowania układowego Betaflight",
-        "description": "Board verification has succeeded, but the target is not available as offical Betaflight target."
+        "message": "Aplikacja wykryła board: <strong>{{boardName}}<\/strong>, ale nie znaleziono oficjalnego celu Betaflight",
+        "description": "Board verification has succeeded, but the target is not available as official Betaflight target."
     },
     "firmwareFlasherBoardVerificationFail": {
-        "message": "Konfiguracja <span class=\"message-negative\">nie powiodła się<\/span> ponieważ nie zdołano zidentyfikować kontrolera lotu. Spróbuj ponownie lub utwórz nowe połączenie USB, jeśli to nie pomogło podłącz kontroler lotu w trybie DFU",
+        "message": "Aplikacja <span class=\"message-negative\">nie powiodła się<\/span> w celu zweryfikowania działu. Jeśli ta opcja będzie się powtarzała, spróbuj zmienić zakładki i ponowić próbę, podłącz się ponownie lub połącz najpierw jeśli zapomniałeś zastosować niestandardowe ustawienia domyślne.",
         "description": "Sometimes MSP values cannot be read from firmware correctly"
     },
     "firmwareFlasherButtonAbort": {
@@ -3778,7 +3898,7 @@
         "message": "Zamierzasz wgrać <strong>deweloperską kompilację oprogramowania układowego<\/strong>. Ciągle trwają prace nad tą wersją oprogramowania, a każda z poniższych sytuacji może mieć miejsce:<strong><ul><li>oprogramowanie w ogóle nie będzie działć<\/li><li>oprogramowanie będzie miało problemy ze sterowaniem lotem<\/li><li>wystąpią problemy z bezpieczeństwem, na przykład podczas lotu<\/li><li>oprogramowanie może spowodować, że kontroler lotu stanie się nieprzewidywalny i doprowadzi do uszkodzenia jednostki latającej lub czyjegoś zdrowia<\/li><\/ul><\/strong>Jeśli kontynuujesz wgrywanie tego oprogramowania, <strong>ponosisz pełną odpowiedzialność za ryzyko którejkolwiek z powyższych sytuacji<\/strong>. Ponadto przyznajesz, że dokonasz <strong>dokładnych testów funkcji ze zdjętymi śmigłami<\/strong> przed jakimikolwiek próbami latania na tym oprogramowaniu."
     },
     "unstableFirmwareAcknowledgement": {
-        "message": "Przeczytałem powyższe i <strong>biorę pełną odpowiedzialność<strong> za wgrywanie niestabilnego oprogramowania"
+        "message": "Przeczytałem powyższe i <strong>biorę pełną odpowiedzialność<\/strong> za wgrywanie niestabilnego oprogramowania"
     },
     "unstableFirmwareAcknowledgementFlash": {
         "message": "Wgraj"
@@ -4272,29 +4392,13 @@
         "message": "Mocniejsze Filtrowanie",
         "description": "Filter tuning slider high header"
     },
-    "pidTuningGyroFilterSlider": {
-        "message": "Mnożnik filtru żyroskopowego:",
-        "description": "Gyro filter tuning slider label"
-    },
     "pidTuningGyroFilterSliderHelp": {
         "message": "Zmienia odcięcia filtra dolnoprzepustowego żyroskopu.<br \/><br \/>Przesunięcie suwaka w lewo zapewnia silniejsze filtrowanie żyroskopu (niższa częstotliwość odcięcia).<br \/><br \/>Przesunięcie suwaka w prawo zmniejsza filtrowanie żyroskopu ( wyższa częstotliwość odcięcia).<br \/><br \/>Podczas przesuwania suwaka w prawo, aby poprawić obsługę propwash, UWAŻAJ, aby nie posunąć się zbyt radykalnie. Wprowadzisz więcej szumów zarówno do P, jak i D, co może spowodować odloty lub spalenie silników.<br \/><br \/>Może być konieczne przesunięcie suwaka w lewo, jeśli masz problemy z rezonansem ramy, złe łożyska, pobicie rekwizyty, gorące silniki itp.<br \/><br \/>Filtrowanie żyroskopowe jest stosowane przed i oprócz filtrowania D.",
         "description": "Gyro filter tuning slider helpicon message"
     },
-    "pidTuningGyroSliderEnabled": {
-        "message": "Użyj filtrów suwakowych",
-        "description": "Disable or enable Gyro Filter Tuning Slider"
-    },
-    "pidTuningDTermFilterSlider": {
-        "message": "Mnożnik członu D filtra:",
-        "description": "D Term filter tuning slider label"
-    },
     "pidTuningDTermFilterSliderHelp": {
         "message": "Zmienia wartości odcięcia filtra dolnoprzepustowego D-term.<br \/><br \/>Przesunięcie suwaka w lewo zapewnia silniejsze filtrowanie D (niższa częstotliwość odcięcia).<br \/><br \/>Przesunięcie suwaka w prawo zmniejsza filtrowanie (wyższa częstotliwość odcięcia).<br \/><br \/>D-term jest najbardziej wrażliwym elementem PID na szum i rezonans. Może wzmocnić hałas o wysokiej częstotliwości od 10x do 100x. Dlatego wartości odcięcia filtra D są znacznie niższe niż filtry żyroskopowe.<br \/><br \/>Filtrowanie D-term jest stosowane po filtrowaniu żyroskopowym i oprócz niego. Domyślne filtrowanie D jest optymalne dla większości quadów i rzadko wymaga zmiany.<br \/><br \/>Przesunięcie tego suwaka w lewo zmniejsza ciepło silnika w modelach i przy wysokich ustawieniach PID „D”, ale możemy zobaczyć więcej propwash i rezonanse D o niższej częstotliwości.<br \/><br \/>Przesunięcie suwaka w prawo nie jest zalecane, ale może poprawić pranie wstępne na czystych kompilacjach. Może to spowodować zgrzytanie silnika podczas uzbrajania, nagłe rezonanse podczas lotu i poważne przegrzanie silnika.",
         "description": "D Term filter tuning slider helpicon message"
-    },
-    "pidTuningDTermSliderEnabled": {
-        "message": "Użyj suwaka dla D",
-        "description": "Disable or enable D Term Filter Tuning Slider"
     },
     "pidTuningPidSlidersHelp": {
         "message": "Suwaki do regulacji charakterystyki lotu jednostki latającej (wzmocnienia PID)<br \/><br \/>Tłumienie (wzmocnienie D): Odporność na szybki ruch, minimalizacja oscylacji P.<br \/><br \/>Śledzenie (wzmocnienie P i I): ​​Ulepszenia reakcja jednostki latającej, jeśli jest zbyt wysoka, może powodować drżenie lub oscylacje.<br \/><br \/>Stick Response (feedforward): Zwiększa reakcję jednostki latającej na szybsze ruchy drążków.<br \/><br \/>Drift - Wobble (wzmocnienie, ekspert): Precyzyjna regulacja I.<br \/><br \/>Dynamiczne D (D Max, ekspert): Ustawia maksymalną wartość, do której można zwiększyć D podczas szybkich ruchów.<br \/><br \/>Tłumienie tonu (współczynnik Pitch:Roll D, ekspert): Zwiększa tłumienie na boisku względem przechyłu.<br \/><br \/>Śledzenie tonu (stosunek Pitch:Roll P, I i F, ekspert): Zwiększa stabilizująca siłę na skoku w stosunku do przechyłu.<br \/><br \/>Master Multiplier (wszystkie wzmocnienia, ekspert): podnosi lub obniża wszystkie wzmocnienia PID, utrzymując ich proporcje na stałym poziomie.",
@@ -4484,7 +4588,7 @@
         "message": "Częstotliwość odcięcia [Hz]"
     },
     "pidTuningNotchFilterHelp": {
-        "message": "Filtr typu Notch to symetryczny, wąski, wysoko obcinany filtr o parametrach środka i odcięcia.<br \/><br \/>Wartość środka to częstotliwość środkowa filtra. Wartość odcięcia to dolna częstotliwość odcięcia -3dB.<br \/><br \/>Na przykład filtr typu Notch Cutoff o wartości 160 i wartości środkowej 260 daje szerokie wycięcie o zakresie -3dB od 160 do 360 Hz i największym tłumieniu w okolicy 260 Hz.",
+        "message": "Filtr typu Notch to symetryczny, wąski, wysoko obcinany filtr o parametrach środka i odcięcia.<br \/><br \/>Wartość środka to częstotliwość środkowa filtra. Wartość odcięcia to dolna częstotliwość odcięcia -3 dB.<br \/><br \/>Na przykład filtr typu Notch Cutoff o wartości 160 i wartości środkowej 260 daje szerokie wycięcie o zakresie -3 dB od 160-360 Hz i największym tłumieniu w okolicy 260 Hz.",
         "description": "Notch filter helpicon message"
     },
     "pidTuningDynamicNotchFilterGroup": {
@@ -4506,7 +4610,7 @@
         "message": "Zakres filtra dynamicznego:"
     },
     "pidTuningDynamicNotchQ": {
-        "message": "Współczynnik Q"
+        "message": "Współczynnik Q (x100)"
     },
     "pidTuningDynamicNotchMinHz": {
         "message": "Min częstotliwość [Hz]"
@@ -4521,7 +4625,7 @@
         "message": "Równanie dynamiczne ma trzy zakresy częstotliwości, w których może działać: NISKIE (80-330hz) dla gorzej odwołujących się modeli na śmigłach 6 cali i więcej, ŚREDNIE (140-550hz) dla normalnego modelu o długości śmigieł 5 cali, WYSOKIE (230-800hz) dla bardzo małych 2-3 calowych modeli. Opcja AUTO wybiera zakres w zależności od wartości maksymalnej częstotliwości dolnoprzepustowego filtra żyroskopu."
     },
     "pidTuningDynamicNotchQHelp": {
-        "message": "Współczynnik Q dostosowuje szerokość charakterystyki filtra dynamicznego. Wyższa wartość sprawia, że pasmo aktywne filtra jest wąskie i dokładniejsze, a niższa wartość daje szerszą strefę aktywną. Używanie naprawdę niskiej wartości znacznie zwiększy opóźnienie filtra (więcej obliczeń)."
+        "message": "Współczynnik Q dostosowuje wąski lub szeroki zakres filtrów dynamicznych. Zapisaną wartością jest współczynnik Q × 100 (np. 300 = Q 3.0). Wyższa wartość sprawia, że jest ona węższa i bardziej precyzyjna, a niższa wartość sprawia, że jest szersza i szersza. Posiadanie naprawdę niskiej wartości znacznie zwiększy opóźnienia filtrowania."
     },
     "pidTuningDynamicNotchMinHzHelp": {
         "message": "Ustaw tę wartość na najniższą częstotliwość zakłóceń które muszą być kontrolowane przez wycięcie dynamiczne."
@@ -4540,21 +4644,20 @@
         "message": "Filtrowanie RPM to zestaw filtrów wykorzystujący żyroskop, który wykorzystują dane telemetryczne RPM do usuwania szumów silnika z chirurgiczną precyzją. <br \/> <br \/> <b> <span class = \"message-Positive\"> WAŻNE <\/span>: ESC musi obsługiwać dwukierunkowy protokół DShot, a wartość $t(configurationMotorPoles.message) na karcie $t(tabMotorTesting.message) musi być poprawna, aby ten filtr działał. <\/b>",
         "description": "Header text for the RPM Filter group"
     },
-    "pidTuningRpmHarmonics": {
-        "message": "Liczba harmoniczna żyroskopowego filtra RPM",
-        "description": "Text for one of the parameters of the RPM Filter"
-    },
     "pidTuningRpmHarmonicsHelp": {
         "message": "Liczba harmonicznych przypadająca na silnik. Wartość 3 (jest zalecana dla większości maszyn) wygeneruje 3 filtry pasmowo zaporowe \"notch\" na silnik, dla każdej osi. Łącznie 36 filtrów. Jeden dla bazowej częstotliwości silnika, i pozostałe dwa w następnych harmonicznych.",
         "description": "Help text for one of the parameters of the RPM Filter"
     },
-    "pidTuningRpmMinHz": {
-        "message": "Minimalna częstotliwość filtra żyroskopu RPM [Hz]",
-        "description": "Text for one of the parameters of the RPM Filter"
-    },
     "pidTuningRpmMinHzHelp": {
         "message": "Minimalna częstotliwość, która będzie używana przez filtr RPM.",
         "description": "Help text for one of the parameters of the RPM Filter"
+    },
+    "pidTuningRpmQ": {
+        "message": "Współczynnik Q (x100)",
+        "description": "Text for one of the parameters of the RPM Filter"
+    },
+    "pidTuningRpmQHelp": {
+        "message": "Współczynnik Q dostosowuje wąski lub szeroki filtr nachylenia RPM. Przechowywana wartość to współczynnik Q × 100, dozwolony zakres 250–3000 (Q 2,5 do Q 30.0), wartość domyślna 500 (Q 5.). Wyższe wartości sprawiają, że każdy nch węższy i bardziej precyzyjny; niższe wartości zwiększają je. Bardzo niskie wartości znacznie zwiększają opóźnienie filtra."
     },
     "pidTuningFilterSettings": {
         "message": "Ustawienia filtra zależne od profilu"
@@ -4610,16 +4713,13 @@
         "message": "Zwiększa wartości PID, aby zrekompensować spadek Vbat. Zapewni to bardziej stałą charakterystykę podczas całego lotu. Zastosowana rekompensata jest obliczana na podstawie wartości $t(powerBatteryMaximum.message) ustawionej na stronie $t(tabPower.message), więc upewnij się, że jest ustawiona tak jak byś tego chciał."
     },
     "pidTuningVbatSagCompensation": {
-        "message": "Kompensacja spadku napięcia baterii"
-    },
-    "pidTuningVbatSagCompensationHelp": {
-        "message": "Zapewnia stałą wydajność przepustnicy, zwiększając moc silnika w miarę spadku napięcia akumulatora.<br \/><br \/>Wielkość kompensacji można zmieniać w zakresie od 0 do 100%. Zalecana jest pełna rekompensacja (100%).<br \/><br \/>Odwiedź <a href=\"https:\/\/betaflight.com\/docs\/wiki\/tuning\/4-2-tuning-notes#dynamic-battery-sag-compensation\" target=\"_blank\" rel=\"noopener noreferrer\">ten wpis wiki<\/a>, aby uzyskać więcej informacji."
+        "message": "Kompensacja spadku napięcia baterii %"
     },
     "pidTuningVbatSagValue": {
         "message": "%"
     },
     "pidTuningThrustLinearization": {
-        "message": "Linearyzacja ciągu silników"
+        "message": "Linearyzacja ciągu %"
     },
     "pidTuningThrustLinearizationHelp": {
         "message": "Poprawia autorytet i szybkość reakcji przy niskiej przepustnicy. <br><br> Szczególnie przydatne w przypadku  ESC 48k.  Nie ma wpływu przy większej przepustnicy. <br><br>Zakres rekompensacji może wynosić od 0 do 150%. Zwykle wystarczy 30-40%."
@@ -4632,12 +4732,6 @@
     },
     "pidTuningItermRotationHelp": {
         "message": "Prawidłowo obraca bieżący wektor I Term do innych osi, ponieważ model obraca się podczas ciągłych beczek, flipów oraz innych trików. Bardzo doceniane przez pilotów LOS acro."
-    },
-    "pidTuningSmartFeedforward": {
-        "message": "Smart Feedforward"
-    },
-    "pidTuningSmartFeedforwardHelp": {
-        "message": "Zmniejsza działanie parametru F w PID. Gdy parametry P i F są aktywne w tym samym momencie, wykorzystuje on tylko większy z tych dwóch czynników, unikając przesterowań bez konieczności podnoszenia poziomu D, ale także ogranicza szybkość reakcji wywołany przez parametr F w przypadku dodania go do P."
     },
     "pidTuningItermRelax": {
         "message": "I Term Relax"
@@ -4779,7 +4873,7 @@
         "message": "Wartość przepustnicy użyta podczas lądowania"
     },
     "failsafeOffDelayItem": {
-        "message": "Opóźnienie wyłączenia silnika podczas Failsafe [sekund]"
+        "message": "Opóźnienie wyłączenia silników podczas Fail-Safe [sekundy]"
     },
     "failsafeOffDelayHelp": {
         "message": "Czas pozostawania w trybie lądowania do momentu wyłączenia silników i wyłączenia jednostki"
@@ -4891,13 +4985,13 @@
         "message": "Zaznacz tę opcję, aby ustawić przełącznik odpowiedzialny za failsafe (Zakładka Tryby). Będziesz go mógł użyć tego testowania funkcji awaryjnego lądowania. <strong>Uwaga:<\/strong> Uzbrojenie silników jest niemożliwe, gdy przełącznik odpowiedzialny za funkcje failsafe jest w pozycji włączonej"
     },
     "failsafeSwitchTitle": {
-        "message": "PRZEŁĄCZNIK FAILSAFE"
+        "message": "AKTYWOWANIE FAIL-SAFE PRZEŁĄCZNIKIEM"
     },
     "failsafeSwitchModeItem": {
-        "message": "Wybrany typ Failsafe"
+        "message": "Efekt Fail-Safe wywołany przełącznikiem"
     },
     "failsafeSwitchModeHelp": {
-        "message": "Ta opcja określa, co się dzieje, gdy procedura Fail-Safe jest aktywowana przez przełącznik AUX:<br\/><strong>Etap 1<\/strong> aktywuje Etap 1 Fail-Safe. Jest to przydatne, jeśli chcesz symulować właściwe zachowanie w wyniku utraty sygnału.<br\/><strong>Etap 2<\/strong> pomija Etap 1 i natychmiast aktywuje procedurę Etapu 2<br\/><strong>Upadek<\/strong> rozbraja natychmiast (twój model spadnie na ziemię)"
+        "message": "Ta opcja określa, co się dzieje po aktywacji Fail-Safe za pomocą przełącznika AUX:<br\/><strong>Etap 1<\/strong> aktywuje Etap 1 Fail-Safe. Jest to przydatne, jeśli chcesz zasymulować zachowanie failsafe przy rzeczywistej utracie sygnału.<br\/><strong>Etap 2<\/strong> pomija Etap 1 i natychmiast uruchamia procedurę Etapu 2<br\/><strong>Upadek<\/strong> natychmiast rozbraja (Twój model spadnie)"
     },
     "failsafeSwitchOptionStage1": {
         "message": "Etap 1"
@@ -5160,6 +5254,18 @@
     "powerAmperageCalibratedScale": {
         "message": "Skalibrowana skala natężenia prądu:"
     },
+    "powerBatteryProfile": {
+        "message": "Profil baterii"
+    },
+    "powerBatteryProfileOption": {
+        "message": "Profil baterii $1"
+    },
+    "powerBatteryProfileNamePlaceholder": {
+        "message": "np. LiPo, Li-Ion"
+    },
+    "powerBatteryProfileNameLabel": {
+        "message": "Nazwa profilu"
+    },
     "powerBatteryHead": {
         "message": "Akumulator"
     },
@@ -5362,17 +5468,11 @@
     "osdSetupCustomLogoInfoTitle": {
         "message": "Własny obraz:"
     },
-    "osdSetupCustomLogoInfoImageSize": {
-        "message": "Wymagane wymiary obrazu: $t(logoWidthPx)×$t(logoHeightPx) pikseli"
-    },
     "osdSetupCustomLogoInfoColorMap": {
         "message": "Musi zawierać piksele w kolorach zielonym, czarnym i białym"
     },
     "osdSetupCustomLogoInfoUploadHint": {
         "message": "Kliknij <b>$t(osdSetupUploadFont.message)<\/b> , aby zapisać własne logo"
-    },
-    "osdSetupCustomLogoImageSizeError": {
-        "message": "Nieprawidłowe wymiary obrazu: {{width}}×{{height}} (oczekiwano $t(logoWidthPx)×$t(logoHeightPx))"
     },
     "osdSetupCustomLogoColorMapError": {
         "message": "Obraz zawiera nieprawidłowy piksel: rgb({{valueR}}, {{valueG}}, {{valueB}}) o współrzędnych {{posX}}×{{posY}}"
@@ -5386,8 +5486,14 @@
     "osdSetupUploadingFontEnd": {
         "message": "Przesłano wszystkie {{length}} znaki do OSD"
     },
+    "osdSetupUploadingFontFailed": {
+        "message": "Błąd przesyłania"
+    },
     "osdSetupSave": {
         "message": "Zapisz"
+    },
+    "osdSetupRefresh": {
+        "message": "Odśwież"
     },
     "osdSetupFontManager": {
         "message": "Menedżer czcionek"
@@ -5421,8 +5527,9 @@
         "message": "Wartość RSSI",
         "description": "One of the elements of the OSD"
     },
-    "osdDescElementRssiValue": {
-        "message": "Chwilowa wartość RSSI (miga, gdy jest poniżej progu alarmowego)"
+    "osdTextElementRssiDbmValue": {
+        "message": "Wartość RSSI dBm",
+        "description": "One of the elements of the OSD"
     },
     "osdTextElementTimer": {
         "message": "Licznik",
@@ -5919,12 +6026,12 @@
     "osdDescElementEscRpm": {
         "message": "RPM zgłaszane za pomocą telemetrii ESC"
     },
-    "osdTextElementRemaningTimeEstimate": {
-        "message": "Licznik: szacowany pozostały czas",
+    "osdTextElementRemainingTimeEstimate": {
+        "message": "Licznik: pozostały szacunkowy czas",
         "description": "One of the elements of the OSD"
     },
-    "osdDescElementRemaningTimeEstimate": {
-        "message": "Szacunkowy czas lotu"
+    "osdDescElementRemainingTimeEstimate": {
+        "message": "Szacowany pozostały czas lotu"
     },
     "osdTextElementRtcDateTime": {
         "message": "Data i godzina RTC",
@@ -5936,6 +6043,10 @@
     },
     "osdTextElementRtcDateTimeVariantShortDate": {
         "message": "Skrócona data",
+        "description": "One of the variants of the RTC date and time element of the OSD"
+    },
+    "osdTextElementRtcDateTimeVariantTimeOnly": {
+        "message": "Tylko godzina",
         "description": "One of the variants of the RTC date and time element of the OSD"
     },
     "osdDescElementRtcDateTime": {
@@ -6008,9 +6119,6 @@
         "message": "Jakość połączenia",
         "description": "One of the elements of the OSD"
     },
-    "osdDescElementLinkQuality": {
-        "message": "Alternatywny wskaźnik „jakości połączenia” oparty na ilości utraconych ramkach danych - używaj z ostrożnością"
-    },
     "osdTextElementFlightDist": {
         "message": "Odległość lotu",
         "description": "One of the elements of the OSD"
@@ -6073,13 +6181,6 @@
     },
     "osdDescElementOsdProfileName": {
         "message": "Nazwa Profilu OSD ustawiona w Wierszu Poleceń CLI z pomocą zmiennych: \"osd_profile_1_name\", \"osd_profile_2_name\" oraz \"osd_profile_3_name\"."
-    },
-    "osdTextElementRssiDbmValue": {
-        "message": "Wartość RSSI dBm",
-        "description": "One of the elements of the OSD"
-    },
-    "osdDescElementRssiDbmValue": {
-        "message": "Wartość w dBm sygnału RSSI, jeżeli jest dostępna"
     },
     "osdTextElementRcChannels": {
         "message": "Kanały RC",
@@ -6591,6 +6692,10 @@
         "message": "Ostrzeżenia jeśli CPU LOAD kontrolera lotu jest zbyt wysokie",
         "description": "Description of one of the warnings that can be selected to be shown in the OSD"
     },
+    "osdTextElementPosHoldFailed": {
+        "message": "Utrzymanie pozycji nie powiodło się",
+        "description": "One of the elements of the OSD that can be enabled to show a warning when position hold fails (e.g. in GPS mode)"
+    },
     "osdWarningTextUnknown": {
         "message": "Nieznane $1"
     },
@@ -6613,7 +6718,7 @@
         "message": "Ustaw progi używane dla elementów OSD ze stanami alarmowymi."
     },
     "osdSectionHelpStats": {
-        "message": "Ustaw wartości wyświetlane na ekranie po zakończonym locie."
+        "message": "Ustaw wartości wyświetlane na ekranie statystyk po locie."
     },
     "osdSectionHelpWarnings": {
         "message": "Włącz lub wyłącz ostrzeżenia pokazywane w elemencie ostrzeżeń."
@@ -6626,10 +6731,6 @@
     },
     "osdButtonSaved": {
         "message": "Zapisano"
-    },
-    "vtxHelp": {
-        "message": "Tutaj możesz skonfigurować wartości dla swojego Nadajnika wideo (VTX). Możesz przeglądać i zmieniać wartości transmisji, w tym tabele VTX, jeśli kontroler lotu i VTX to obsługują.<br>Aby skonfigurować VTX, wykonaj następujące czynności:<br>1. Przejdź do <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https:\/\/betaflight.com\/docs\/wiki\/guides\/current\/VTX-Tables\">tej<\/a> strony.<br>2. Znajdź odpowiedni plik konfiguracyjny VTX dla swojego kraju i modelu VTX i pobierz go.<br>3. Kliknij „$t(vtxButtonLoadFile.message)” następnie, wybierz plik konfiguracyjny VTX i załaduj go.<br>4. Sprawdź, czy ustawienia są prawidłowe.<br>5. Kliknij „$t(vtxButtonSave.message)”, aby zapisać ustawienia VTX w kontrolerze lotu.<br>6. Opcjonalnie kliknij „$t(vtxButtonSaveLua.message)”, aby zapisać plik konfiguracyjny lua, którego możesz używać ze skryptami lua betaflight (Zobacz więcej <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https:\/\/github.com\/betaflight\/betaflight-tx-lua-scripts\/\">tutaj<\/a>.)",
-        "description": "Introduction message in the VTX tab"
     },
     "vtxMessageNotSupported": {
         "message": "<span class=\"message-negative\">Uwaga:<\/span> Twój VTX nie jest skonfigurowany lub nie jest obsługiwany, więc nie możesz zmieniać jego wartości w tym miejscu. Modyfikacja będzie możliwa jedynie, jeśli kontroler lotu jest podłączony do VTX za pomocą protokołu, takiego jak Tramp lub SmartAudio, oraz odpowiednio skonfigurowany w zakładce $t(tabPorts.message), jeśli jest to wymagane.",
@@ -6652,7 +6753,7 @@
         "description": "Text of one of the fields of the VTX tab"
     },
     "vtxFrequencyChannelHelp": {
-        "message": "Jeśli włączysz tę opcję, konfigurator pozwoli Ci wybrać częstotliwość zamiast (standardowo) pasma\/kanału. Twój VTX musi mieć mieć taką funkcję aby zadziałało poprawnie.",
+        "message": "Jeśli to włączysz, aplikacja pozwoli Ci wybrać częstotliwość zamiast zwykłego paska\/kanału. Aby to zadziałało, VTX musi obsługiwać tę funkcję.",
         "description": "Help text for the frequency or channel select field of the VTX tab"
     },
     "vtxSelectedMode": {
@@ -6776,7 +6877,7 @@
         "description": "Help text for the pit mode field of the VTX tab"
     },
     "vtxLowPowerDisarm": {
-        "message": "Rozbrojenie przy niskiej mocy",
+        "message": "Niska moc przy rozbrojeniu",
         "description": "Text of one of the fields of the VTX tab"
     },
     "vtxLowPowerDisarmHelp": {
@@ -6948,7 +7049,7 @@
         "message": "ESC wysyła dane zwrotne do Kontrolera lotu przez kanał telemetrii DShot, jest  to wymagane przez funkcje Filtrowania RPM oraz funkcje Dynamicznego biegu jałowego. <br><br>  Uwaga: Wymagany jest ESC, który posiada takie funkcje w oprogramowaniu np. JESC, Jazzmac, BLHeli-32.",
         "description": "Description of the Bidirectional DShot feature of the ESC\/Motor"
     },
-    "configurationGyroSyncDenom": {
+    "configurationGyroFrequency": {
         "message": "Częstotliwość aktualizacji żyroskopu"
     },
     "configurationPidProcessDenom": {
@@ -6967,16 +7068,37 @@
         "message": "Akcelerometr"
     },
     "configurationBaroHardware": {
-        "message": "Barometr (jeśli jest wspierany)"
+        "message": "Barometr"
     },
     "configurationMagHardware": {
-        "message": "Magnetometr (jeśli jest wspierany)"
+        "message": "Magnetometr"
+    },
+    "configurationMagInclination": {
+        "message": "Inklinacja"
+    },
+    "sensorConfigMagDetect": {
+        "message": "Wykryj"
+    },
+    "sensorConfigMagUpdate": {
+        "message": "Aktualizuj"
+    },
+    "magCalibrationCancel": {
+        "message": "Anuluj"
+    },
+    "magCalibrationRetry": {
+        "message": "Ponów"
+    },
+    "magAlignmentApply": {
+        "message": "Zastosuj"
+    },
+    "configurationMagDetectAlignment": {
+        "message": "Wykryj"
     },
     "configurationSmallAngle": {
         "message": "Maksymalny kąt uzbrojenia [w stopniach]"
     },
     "configurationSmallAngleHelp": {
-        "message": "Model nie zostanie uzbrojony, jeśli jego przechylenie przekroczy podaną tutaj liczbę stopni. Dotyczy to tylko sytuacji, gdy akcelerometr jest włączony. Ustawienie wartości na 180 stopni skutecznie wyłączy to zabezpieczenie"
+        "message": "Model nie uzbroi się, jeśli jest przechylony ponad ustaloną liczbę stopni. Funkcja działa tylko przy włączonym akcelerometrze. Ustawienie 180 wyłącza zabezpieczenie."
     },
     "configurationBatteryVoltage": {
         "message": "Napięcie akumulatora"
@@ -7024,7 +7146,7 @@
         "message": "Profil Rate"
     },
     "pidTuningRateProfileTip": {
-        "message": "W kontrolerze lotu można przechowywać do 3 różnych Profili Rate. Zawierają one ustawienia: RC Rate, Rate, RC Expo, Przepustnica oraz TPA. Przełączanie między Profilami Rate jest możliwe podczas lotu, poprzez ustawienie 3-pozycyjnego przełącznika w zakładce „Modyfikacje”."
+        "message": "Na kontrolerze lotu można zapisać do trzech różnych Profili Rate. Obejmują one ustawienia dotyczące RC Rate, Rate, RC Expo, Przepustnicy oraz TPA. Między Profilami Rate można przełączać się w trakcie lotu, konfigurując trójpozycyjny przełącznik dla opcji „Wybór Profilu Rate” w zakładce Korekty."
     },
     "pidTuningRateSetup": {
         "message": "Podstawowy\/Acro Rates"
@@ -7043,7 +7165,7 @@
         "message": "Pomiar"
     },
     "pidTuningDeltaTip": {
-        "message": "<b>Pochodna liczona na podstawie Błędu<\/b> zapewnia bardziej bezpośrednią odpowiedź na drążki i jest przeważnie preferowana w bardziej agresywnym stylu lotu.<br \/><br \/><b>Pochodna na podstawie Pomiaru<\/b> zapewnia bardziej płynną odpowiedź na drążki, co jest przydatne dla osób ceniących styl mniej agresywny"
+        "message": "<b>Pochodna od błędu<\/b> zapewnia dokładniejszą odpowiedź na drążki, jest preferowana podczas wyścigów.<br \/><br \/><b>Pochodna od pomiaru<\/b> zapewnia płynniejszą odpowiedź na drążki, przydatniejszą do freestyle'u"
     },
     "pidTuningPidControllerTip": {
         "message": "<b>Stara \"Legacy(integer)\" kontra nowa wersja Betaflight (float):<\/b> Ustawienia i silnik PID są dokładnie takie same. Nie jest konieczne ponowne strojenie kontrolera PID. \"Legacy\" to stary silnik PID który jest podstawowym kontrolerem PID, został zmodernizowany i jest oparty na arytmetyce całkowitoliczbowej(integer). Natomiast kontroler PID Betaflight wykorzystuje matematykę zmiennoprzecinkową i posiada wiele nowych funkcji zaprojektowanych specjalnie dla aplikacji wielofunkcyjnych <br> <b>zmiennoprzecinkowy \"Float\" vs całkowitoliczbowy\"Integer\":<\/b> skalowanie PID i logika PID są dokładnie takie same. mikrokontrolery serii F1 (czyli też płytki mające w nazwie F1) nie mają sprzętowego FPU. Arytmetyka zmiennoprzecinkowa zwiększa obciążenie procesora dlatego zastosowano całkowitoliczbowe obliczenia aby odciążyć CPU i przyspieszyć proces liczenia PID.\nJednakże obliczenia przeprowadzane w arytmetyce zmiennoprzecinkowej (w czym pomaga koprocesor FPU(floating point unit)) oferują dużo lepszą dokładność uzyskanego wyniku."
@@ -7082,7 +7204,7 @@
         "message": "Częstotliwość rejestrowania danych Czarnej Skrzynki"
     },
     "onboardLoggingDebugFields": {
-        "message": "Dane zawarte"
+        "message": "Pola debugowania uwzględnione"
     },
     "onboardLoggingDebugMode": {
         "message": "Tryb debugowania Czarnej Skrzynki"
@@ -7142,16 +7264,29 @@
         "message": "Automatycznie podpowiadaj komendy w Wierszu Poleceń CLI"
     },
     "firmwareBackupOnFlash": {
-        "message": "Zanim wgrasz nowe oprogramowanie, stwórz kopię zapasową"
+        "message": "Tworzenie kopii zapasowej przed wgrywaniem oprogramowania"
     },
     "darkTheme": {
-        "message": "Włącz ciemny motyw"
+        "message": "Włącz tryb ciemny"
+    },
+    "colorTheme": {
+        "message": "Kolor motywu",
+        "description": "Color theme settings"
+    },
+    "colorThemeYellow": {
+        "message": "Żółty (domyślnie)",
+        "description": "Default yellow color theme"
+    },
+    "colorThemeAmber": {
+        "message": "Bursztynowy",
+        "description": "Amber color theme"
+    },
+    "colorThemeContrast": {
+        "message": "Wysoki Kontrast",
+        "description": "Contrast color theme"
     },
     "pidTuningRatesType": {
         "message": "Rodzaj Rate"
-    },
-    "pidTuningRatesTypeTip": {
-        "message": "Zmiana rodzaju Rate zmieni krzywą Rate oraz sposób jej ustawiania"
     },
     "pidTuningRcRateRaceflight": {
         "message": "Profil szybkości"
@@ -7226,7 +7361,7 @@
         "message": "Serwer niekompatybilny"
     },
     "cordovaWebviewTroubleshootingMsg": {
-        "message": "Aby korzystać z konfiguratora, musisz zaktualizować aplikację webview."
+        "message": "Aby korzystać z aplikacji Betaflight musisz zaktualizować widok swojego urządzenia."
     },
     "cordovaWebviewTroubleshootingMsg2": {
         "message": "Poniższe narzędzie ma pomóc Ci zainstalować lub uaktualnić aplikację webview."
@@ -7256,7 +7391,7 @@
         "message": "Aktualizuj ze sklepu Google Play Store"
     },
     "cordovaWebviewEnable": {
-        "message": "Przejdź do zakładki z informacjami o twoim urządzeniu mobilnym i naciśnij 10 razy numer wersji kompilacji - aby włączyć 'Opcje programisty'. Następnie odszukaj i przejdź do opcji programisty i wybierz <b>{{app}}<\/b> jako dostawcę widoku internetowego."
+        "message": "W Ustawieniach przejdź do sekcji informacji o urządzeniu i stuknij numer kompilacji 10 razy, aby włączyć „Opcje programistyczne”. Następnie otwórz Opcje programistyczne i wybierz <b>{{app}}<\/b> jako dostawcę WebView."
     },
     "cordovaWebviewEnableBtn": {
         "message": "Otwórz ustawienia"
@@ -7274,7 +7409,7 @@
         "message": "Potwierdzenie"
     },
     "cordovaExitAppMessage": {
-        "message": "Czy na pewno chcesz zamknąć konfigurator?"
+        "message": "Czy na pewno chcesz zamknąć aplikację?"
     },
     "dropDownSelectAll": {
         "message": "[Zaznacz\/odznacz wszystko]",
@@ -7374,11 +7509,11 @@
     },
     "presetsButtonSave": {
         "message": "Zapisz i uruchom ponownie",
-        "description": "A button that saves all appied presets - analog to 'save' command in CLI"
+        "description": "A button that saves all applied presets - analogous to 'save' command in CLI"
     },
     "presetsButtonCancel": {
         "message": "Anuluj",
-        "description": "A button that restarts FC without saving appied presets - analog to 'exit' command in CLI"
+        "description": "A button that restarts FC without saving applied presets - analogous to 'exit' command in CLI"
     },
     "presetsApplyingPresets": {
         "message": "Zapisywanie konfiguracji...",
@@ -7388,7 +7523,7 @@
         "message": "Proszę czekać.",
         "description": "Second label in the progress dialog when applying presets"
     },
-    "presetsCliErrorsWaring": {
+    "presetsCliErrorsWarning": {
         "message": "<span class='message-negative'>OSTRZEŻENIE!<\/span><br\/>W tej konfiguracji znajdują się niepoprawne komendy Wiersza Poleceń CLI.",
         "description": "Text to show when there are CLI errors after applying presets or user configuration"
     },
@@ -7408,6 +7543,14 @@
         "message": "Anuluj",
         "description": "Cancel button in the presets warning dialog"
     },
+    "presetsFavoriteAddAriaLabel": {
+        "message": "Dodaj ulubione czcionki",
+        "description": "Accessible label for the button that favorites a preset"
+    },
+    "presetsFavoriteRemoveAriaLabel": {
+        "message": "Usuń ulubione czcionki",
+        "description": "Accessible label for the button that removes a preset from favorites"
+    },
     "presetsWiki": {
         "message": "Szablony Wiki",
         "description": "Button to open Presets Wiki link"
@@ -7419,6 +7562,10 @@
     "presetsBackupLoad": {
         "message": "Załaduj kopię zapasową",
         "description": "Button to load backup from the file"
+    },
+    "presetsVirtualModeCliUnsupported": {
+        "message": "Ustawienie wstępne i akcje tworzenia kopii zapasowej wymagają CLI, które nie są dostępne w trybie wirtualnym.",
+        "description": "Warning shown when a presets CLI action is attempted in Virtual Mode"
     },
     "presetsLoadingDumpAll": {
         "message": "Wczytywanie bieżącej konfiguracji z kontrolera lotu",
@@ -7486,11 +7633,11 @@
     },
     "presetsNoPresetsFound": {
         "message": "Nie znaleziono ustawień wstępnych dla podanych parametrów wyszukiwania",
-        "description": "Message that apprears on presets tab if no presets were found"
+        "description": "Message that appears on presets tab if no presets were found"
     },
     "presetsTooManyPresetsFound": {
         "message": "Osiągnięto maksymalny limit wyświetlanych predefiniowanych ustawień",
-        "description": "Message that apprears on presets tab if too many presets found"
+        "description": "Message that appears on presets tab if too many presets found"
     },
     "presetsOptionsPlaceholder": {
         "message": "UWAGA! Przejrzyj listę opcji",
@@ -7509,6 +7656,16 @@
     },
     "firmwareFlasherBuildOptions": {
         "message": "Inne opcje"
+    },
+    "firmwareFlasherRemoveBuildOption": {
+        "message": "Usuń {{option}}",
+        "description": "Accessible label for the remove button on a selected build option badge."
+    },
+    "firmwareFlasherSelectProtocol": {
+        "message": "Wybierz protokół"
+    },
+    "firmwareFlasherSelectOptions": {
+        "message": "Wybierz opcje"
     },
     "firmwareFlasherBuildRadioProtocols": {
         "message": "Protokół radia"
@@ -7564,6 +7721,18 @@
     "firmwareFlasherOSDProtocolNotSelectedContinue": {
         "message": "Kontynuuj bez protokołu OSD"
     },
+    "firmwareFlasherOptionLabelVerifiedPartner": {
+        "message": "✅ Zweryfikowany partner"
+    },
+    "firmwareFlasherOptionLabelVendorCommunity": {
+        "message": "⚠️ Dostawca \/ Społeczność"
+    },
+    "firmwareFlasherOptionLabelLegacy": {
+        "message": "Zastane"
+    },
+    "firmwareFlasherOptionLabelNotQualified": {
+        "message": "⚠️ cel wspierany przez Wspólnotę\/producenta – nie jest oficjalnie wspierany ⚠️"
+    },
     "coreBuild": {
         "message": "Tylko rdzeń"
     },
@@ -7612,5 +7781,805 @@
     "osdDescElementLidar": {
         "message": "$t(osdTextElementLidar.message)",
         "description": "Don't translate!!!"
+    },
+    "osdTextElementCustomSerialText": {
+        "message": "Własny tekst seryjny",
+        "description": "One of the elements of the OSD"
+    },
+    "osdDescElementCustomSerialText": {
+        "message": "Wyświetla niestandardowy tekst otrzymany z portu szeregowego"
+    },
+    "osdTextElementBatteryProfileName": {
+        "message": "Profil: Nazwa profilu baterii",
+        "description": "One of the elements of the OSD"
+    },
+    "osdDescElementBatteryProfileName": {
+        "message": "Pokazuje aktywną nazwę profilu baterii lub indeks"
+    },
+    "osdSetupPreviewCheckRulers": {
+        "message": "Linijki",
+        "description": "Label for the checkbox to toggle OSD preview rulers around the preview"
+    },
+    "tabUserProfile": {
+        "message": "Profil użytkownika"
+    },
+    "labelEmail": {
+        "message": "Email"
+    },
+    "placeholderEmailAddress": {
+        "message": "Wprowadź adres e-mail"
+    },
+    "userEmailRequired": {
+        "message": "Adres e-mail jest wymagany"
+    },
+    "profileLoginMessage": {
+        "message": "Zaloguj się, aby zobaczyć swój profil."
+    },
+    "tabBackups": {
+        "message": "Kopia bezpie"
+    },
+    "userPasskeyDeleteSuccess": {
+        "message": "Usunięcie klucza zakończyło się sukcesem"
+    },
+    "userPasskeyDeleteFailed": {
+        "message": "Nie udało się usunąć klucza dostępu"
+    },
+    "userTokenDeleteSuccess": {
+        "message": "Token usunięty pomyślnie"
+    },
+    "userTokenDeleteFailed": {
+        "message": "Nie udało się usunąć tokenu"
+    },
+    "userProfileLoadFailed": {
+        "message": "Nie można załadować profilu użytkownika"
+    },
+    "userTokenLoadFailed": {
+        "message": "Nie udało się załadować tokenów użytkownika"
+    },
+    "userPasskeyLoadFailed": {
+        "message": "Nie udało się załadować kluczy użytkownika"
+    },
+    "userProfileUpdateSuccess": {
+        "message": "Pomyślnie zaktualizowano profil"
+    },
+    "userProfileUpdateFailed": {
+        "message": "Nie udało się zaktualizować profilu"
+    },
+    "userBackupsLoadFailed": {
+        "message": "Nie udało się załadować kopii zapasowej"
+    },
+    "userBackupDownloadFailed": {
+        "message": "Nie udało się pobrać kopii zapasowej"
+    },
+    "userBackupFileEmpty": {
+        "message": "Plik kopii zapasowej jest pusty"
+    },
+    "userBackupUpdateSuccess": {
+        "message": "Kopia zapasowa zaktualizowana pomyślnie"
+    },
+    "userBackupUpdateFailed": {
+        "message": "Nie udało się zaktualizować kopii zapasowej"
+    },
+    "userBackupDeleteSuccess": {
+        "message": "Kopia zapasowa została usunięta"
+    },
+    "userBackupDeleteFailed": {
+        "message": "Nie udało się usunąć kopii zapasowej"
+    },
+    "actionRestore": {
+        "message": "Przywróć"
+    },
+    "titleRestoreBackup": {
+        "message": "Przywróć kopię zapasową"
+    },
+    "userBackupRestoreInProgress": {
+        "message": "Przywracanie kopii zapasowej..."
+    },
+    "userPasskeyNoPasskeys": {
+        "message": "Brak dostępnych kluczy dostępu"
+    },
+    "userTokenNoTokens": {
+        "message": "Brak dostępnych tokenów"
+    },
+    "profileBackupSuccess": {
+        "message": "Kopia zapasowa wykonana"
+    },
+    "profileBackupApiSuccess": {
+        "message": "Kopia zapasowa została pomyślnie zapisana w API"
+    },
+    "profileBackupApiFail": {
+        "message": "Nie udało się zapisać kopii zapasowej do API"
+    },
+    "profileBackupEmptyResult": {
+        "message": "Kopia zapasowa nie powiodła się"
+    },
+    "labelLogin": {
+        "message": "Login"
+    },
+    "labelSignOut": {
+        "message": "Wyloguj się"
+    },
+    "labelAvatarUrl": {
+        "message": "Adres URL awatara"
+    },
+    "placeholderAvatarUrl": {
+        "message": "Wprowadź adres URL obrazu dla swojego awatara"
+    },
+    "labelCreatePasskey": {
+        "message": "Utwórz hasło"
+    },
+    "labelUsePasskey": {
+        "message": "Użyj klucza"
+    },
+    "labelBack": {
+        "message": "Powrót"
+    },
+    "titleEnterVerificationCode": {
+        "message": "Wprowadź kod weryfikacyjny"
+    },
+    "labelVerificationCode": {
+        "message": "Kod weryfikacyjny"
+    },
+    "labelCode": {
+        "message": "Kod"
+    },
+    "userLoggingIn": {
+        "message": "Logowanie do..."
+    },
+    "userSignedOut": {
+        "message": "Wylogowano"
+    },
+    "userSignOutFailed": {
+        "message": "Nie udało się wylogować"
+    },
+    "userLoginSuccess": {
+        "message": "Logowanie powiodło się"
+    },
+    "userLoginFailed": {
+        "message": "Logowanie nie powiodło się"
+    },
+    "userCreatePasskeyFailed": {
+        "message": "Nie udało się utworzyć klucza dostępu"
+    },
+    "userCreatePasskeySuccess": {
+        "message": "Klucz został utworzony pomyślnie"
+    },
+    "userVerifyingCode": {
+        "message": "Weryfikacja kodu..."
+    },
+    "userCreatingPasskey": {
+        "message": "Tworzenie klucza..."
+    },
+    "dataWaitingForData": {
+        "message": "Oczekiwanie na dane..."
+    },
+    "labelId": {
+        "message": "ID"
+    },
+    "labelCreated": {
+        "message": "Utworzono"
+    },
+    "labelLastUsed": {
+        "message": "Ostatnio używane"
+    },
+    "labelActions": {
+        "message": "Akcje"
+    },
+    "labelDetails": {
+        "message": "Szczegóły"
+    },
+    "labelExpiry": {
+        "message": "Wygaśnięcie"
+    },
+    "labelDescription": {
+        "message": "Opis"
+    },
+    "labelDate": {
+        "message": "Data"
+    },
+    "actionDownload": {
+        "message": "Pobierz"
+    },
+    "actionBackup": {
+        "message": "Kopia zapasowa"
+    },
+    "actionEdit": {
+        "message": "Edytuj"
+    },
+    "actionDelete": {
+        "message": "Usuń"
+    },
+    "actionSave": {
+        "message": "Zapisz"
+    },
+    "titleEditProfile": {
+        "message": "Edytuj profil"
+    },
+    "titleLogin": {
+        "message": "Logowanie"
+    },
+    "labelName": {
+        "message": "Nazwa"
+    },
+    "labelAddress": {
+        "message": "Adres"
+    },
+    "labelCountry": {
+        "message": "Kraj"
+    },
+    "confirmDelete": {
+        "message": "Czy na pewno chcesz usunąć to {{item}}?"
+    },
+    "itemBackup": {
+        "message": "kopia zapasowa"
+    },
+    "itemToken": {
+        "message": "token"
+    },
+    "itemPasskey": {
+        "message": "klucz dostępu"
+    },
+    "notLoggedIn": {
+        "message": "Nie zalogowano"
+    },
+    "backupNoBackupsAvailable": {
+        "message": "Brak dostępnych kopii zapasowych"
+    },
+    "titleEditBackup": {
+        "message": "Edytuj kopię zapasową"
+    },
+    "backupMcuUnknown": {
+        "message": "MCU nieznane"
+    },
+    "sectionUserTokens": {
+        "message": "Token użytkownika"
+    },
+    "sectionUserPasskeys": {
+        "message": "Klucz użytkownika"
+    },
+    "osdPresetPositionAlignTitle": {
+        "message": "Wyrównaj do pozycji",
+        "description": "Label for the preset position alignment menu in the OSD elements list"
+    },
+    "osdPresetPositionChooseTitle": {
+        "message": "Wybierz pozycję",
+        "description": "Title for the preset position grid popup in the OSD elements list"
+    },
+    "tabPreflight": {
+        "message": "Przed lotem"
+    },
+    "preflightTitle": {
+        "message": "Sprawdzanie środowiska przed lotem"
+    },
+    "preflightLocation": {
+        "message": "Lokalizacja lotu"
+    },
+    "preflightUseMyLocation": {
+        "message": "Użyj mojej lokalizacji"
+    },
+    "preflightDetecting": {
+        "message": "Wykrywanie..."
+    },
+    "preflightOr": {
+        "message": "lub wprowadź współrzędne:"
+    },
+    "preflightLatitude": {
+        "message": "Szerokość geograficzna"
+    },
+    "preflightLongitude": {
+        "message": "Długość geograficzna"
+    },
+    "preflightApply": {
+        "message": "Zastosuj"
+    },
+    "preflightLaunchStatus": {
+        "message": "Status uruchamiania"
+    },
+    "preflightStatusGo": {
+        "message": "Idź"
+    },
+    "preflightStatusCaution": {
+        "message": "UWAGA"
+    },
+    "preflightStatusWarning": {
+        "message": "OSTRZEŻENIE"
+    },
+    "preflightStatusNoGo": {
+        "message": "Nie-idź"
+    },
+    "preflightStatusNoData": {
+        "message": "Brak danych"
+    },
+    "preflightCheckWind": {
+        "message": "Wiatr"
+    },
+    "preflightCheckVisibility": {
+        "message": "Widoczność"
+    },
+    "preflightCheckPrecipitation": {
+        "message": "Opady"
+    },
+    "preflightCheckSolar": {
+        "message": "Nasłonecznianie"
+    },
+    "preflightLevelUnknown": {
+        "message": "Nieznane"
+    },
+    "preflightWmoClearSky": {
+        "message": "Czyste niebo"
+    },
+    "preflightWmoMainlyClear": {
+        "message": "Częściowe zachmurzenie"
+    },
+    "preflightWmoPartlyCloudy": {
+        "message": "Częściowo chmurny"
+    },
+    "preflightWmoOvercast": {
+        "message": "Pochmurnie"
+    },
+    "preflightWmoFog": {
+        "message": "Mgła"
+    },
+    "preflightWmoRimeFog": {
+        "message": "Mgła osadzająca szron"
+    },
+    "preflightWmoLightDrizzle": {
+        "message": "Przelotnie mżawka"
+    },
+    "preflightWmoModerateDrizzle": {
+        "message": "Umiarkowana mgła"
+    },
+    "preflightWmoDenseDrizzle": {
+        "message": "Gęsta mżawka"
+    },
+    "preflightWmoLightFreezingDrizzle": {
+        "message": "Lekka marznąca mżawka"
+    },
+    "preflightWmoDenseFreezingDrizzle": {
+        "message": "Gęsta mrożąca mżawka"
+    },
+    "preflightWmoSlightRain": {
+        "message": "Lekki deszcz"
+    },
+    "preflightWmoModerateRain": {
+        "message": "Umiarkowany deszcz"
+    },
+    "preflightWmoHeavyRain": {
+        "message": "Silny deszcz"
+    },
+    "preflightWmoLightFreezingRain": {
+        "message": "Przelotnie marznący deszcz"
+    },
+    "preflightWmoHeavyFreezingRain": {
+        "message": "Przelotnie marznący deszcz"
+    },
+    "preflightWmoSlightSnow": {
+        "message": "Niewielkie opady śniegu"
+    },
+    "preflightWmoModerateSnow": {
+        "message": "Umiarkowany śnieg"
+    },
+    "preflightWmoHeavySnow": {
+        "message": "Silny śnieg"
+    },
+    "preflightWmoSnowGrains": {
+        "message": "Ziarna śniegu"
+    },
+    "preflightWmoSlightRainShowers": {
+        "message": "Lekkie opady deszczu"
+    },
+    "preflightWmoModerateRainShowers": {
+        "message": "Umiarkowane opady deszczu"
+    },
+    "preflightWmoViolentRainShowers": {
+        "message": "Gwałtowne opady deszczu"
+    },
+    "preflightWmoSlightSnowShowers": {
+        "message": "Lekkie opady śniegu"
+    },
+    "preflightWmoHeavySnowShowers": {
+        "message": "Ciężkie opady śniegu"
+    },
+    "preflightWmoThunderstorm": {
+        "message": "Burza z piorunami"
+    },
+    "preflightWmoThunderstormSlightHail": {
+        "message": "Burza z lekkim gradem"
+    },
+    "preflightWmoThunderstormHeavyHail": {
+        "message": "Burza z silnym gradem"
+    },
+    "preflightKpLow": {
+        "message": "Niski"
+    },
+    "preflightKpModerate": {
+        "message": "Umiarkowane"
+    },
+    "preflightKpElevated": {
+        "message": "Podwyższone"
+    },
+    "preflightKpStorm": {
+        "message": "Burza"
+    },
+    "preflightWindCalm": {
+        "message": "Spokój"
+    },
+    "preflightWindLight": {
+        "message": "Jasny"
+    },
+    "preflightWindModerate": {
+        "message": "Umiarkowane"
+    },
+    "preflightWindStrong": {
+        "message": "Silne"
+    },
+    "preflightWindDangerous": {
+        "message": "Niebezpieczny"
+    },
+    "preflightVisExcellent": {
+        "message": "Usuń"
+    },
+    "preflightVisGood": {
+        "message": "Dobrze"
+    },
+    "preflightVisReduced": {
+        "message": "Zredukowana"
+    },
+    "preflightVisPoor": {
+        "message": "Ubogie"
+    },
+    "preflightPrecipNone": {
+        "message": "Brak"
+    },
+    "preflightPrecipLight": {
+        "message": "Jasny"
+    },
+    "preflightPrecipModerate": {
+        "message": "Umiarkowane"
+    },
+    "preflightPrecipHeavy": {
+        "message": "Szańca"
+    },
+    "preflightDewNoRisk": {
+        "message": "Bez ryzyka"
+    },
+    "preflightDewLowRisk": {
+        "message": "Niskie ryzyko"
+    },
+    "preflightDewFogLikely": {
+        "message": "Prawdopodobne zmętnienie\/kondensacja"
+    },
+    "preflightDewFogExpected": {
+        "message": "Oczekiwane zmywanie ognio\/soczewki"
+    },
+    "preflightUvLow": {
+        "message": "Niski"
+    },
+    "preflightUvModerate": {
+        "message": "Umiarkowane"
+    },
+    "preflightUvHigh": {
+        "message": "Silny"
+    },
+    "preflightUvVeryHigh": {
+        "message": "Bardzo wysoka"
+    },
+    "preflightBatteryRisk": {
+        "message": "Ryzyko baterii"
+    },
+    "preflightBatteryOk": {
+        "message": "Zakres normalny"
+    },
+    "preflightBatteryCool": {
+        "message": "Zmniejszona wydajność, ciepłe baterie"
+    },
+    "preflightBatteryCold": {
+        "message": "Znacznie ograniczona zdolność produkcyjna"
+    },
+    "preflightBatteryHot": {
+        "message": "Ryzyko obrzęku, zachować zacienione"
+    },
+    "preflightBatteryExtreme": {
+        "message": "Nie lataj, ekstremalne ciepło"
+    },
+    "preflightCheckBattery": {
+        "message": "Bateria"
+    },
+    "preflightCheckDensityAlt": {
+        "message": "Gęstość Alt"
+    },
+    "preflightFeelsLike": {
+        "message": "Polubione"
+    },
+    "preflightFogRisk": {
+        "message": "Ryzyko mgły"
+    },
+    "preflightFogUnlikely": {
+        "message": "Nieprawdopodobne"
+    },
+    "preflightFogLow": {
+        "message": "Niskie ryzyko"
+    },
+    "preflightFogModerate": {
+        "message": "Umiarkowane ryzyko"
+    },
+    "preflightFogHigh": {
+        "message": "Wysokie ryzyko"
+    },
+    "preflightElevation": {
+        "message": "Wysokość"
+    },
+    "preflightDensityAlt": {
+        "message": "Wysokość Gęstość"
+    },
+    "preflightDaNormal": {
+        "message": "Normalna wydajność"
+    },
+    "preflightDaReduced": {
+        "message": "Nieznacznie zmniejszony podnośnik"
+    },
+    "preflightDaLow": {
+        "message": "Znacznie zmniejszona wydajność"
+    },
+    "preflightDaPoor": {
+        "message": "Znacząca redukcja podnośnika"
+    },
+    "preflightCivilTwilight": {
+        "message": "Cywilne okno podświetlenia"
+    },
+    "preflightRefresh": {
+        "message": "Odśwież"
+    },
+    "preflightCurrentWeather": {
+        "message": "Bieżąca pogoda"
+    },
+    "preflightWind": {
+        "message": "Prędkość wiatru"
+    },
+    "preflightGusts": {
+        "message": "Porywy wiatru"
+    },
+    "preflightVisibility": {
+        "message": "Widoczność"
+    },
+    "preflightPrecipitation": {
+        "message": "Opady"
+    },
+    "preflightCloudCover": {
+        "message": "Zachmurzenie"
+    },
+    "preflightHumidity": {
+        "message": "Wilgotność"
+    },
+    "preflightPressure": {
+        "message": "Ciśnienie"
+    },
+    "preflightDewPoint": {
+        "message": "Punkt rosy"
+    },
+    "preflightFlightWindow": {
+        "message": "Okno lotu"
+    },
+    "preflightSunrise": {
+        "message": "Wschód słońca"
+    },
+    "preflightSunset": {
+        "message": "Słońce"
+    },
+    "preflightDaylight": {
+        "message": "Światło dzienne"
+    },
+    "preflightUvIndex": {
+        "message": "Indeks UV"
+    },
+    "preflightTempRange": {
+        "message": "Dodaj Zakres"
+    },
+    "preflightCurrentlyDay": {
+        "message": "Obecnie"
+    },
+    "preflightDaytime": {
+        "message": "Zależny od pory dnia"
+    },
+    "preflightNighttime": {
+        "message": "Noc"
+    },
+    "preflightWindForecast": {
+        "message": "Prognoza wiatru na wysokości"
+    },
+    "preflightWindForecastHelp": {
+        "message": "Prędkość wiatru na różnych wysokościach ma kluczowe znaczenie dla lotów FPV dalekiego zasięgu i wysokiej wysokości. Wyższe wysokości mają zazwyczaj silniejsze wiatry."
+    },
+    "preflightTime": {
+        "message": "Czas"
+    },
+    "preflightWind10m": {
+        "message": "10m"
+    },
+    "preflightWind80m": {
+        "message": "80m"
+    },
+    "preflightWind120m": {
+        "message": "120m"
+    },
+    "preflightGustsShort": {
+        "message": "Porywy wiatru"
+    },
+    "preflightRainProb": {
+        "message": "Deszcz %"
+    },
+    "preflightWindUnit": {
+        "message": "Prędkości wiatru w m\/s. Wysokość nad poziomem ziemi (AGL)."
+    },
+    "preflightSolarActivity": {
+        "message": "Aktywność słoneczna"
+    },
+    "preflightSolarHelp": {
+        "message": "Wysoka aktywność słoneczna (Kp > 5) powoduje zakłócenia jonosferyczne, które mogą obniżyć dokładność GPS i wpłynąć na niezawodność ratownictwa GPS."
+    },
+    "preflightGeoStorm": {
+        "message": "Burza Geomagnetyczna"
+    },
+    "preflightSolarRadiation": {
+        "message": "Promieniowanie słoneczne"
+    },
+    "preflightRadioBlackout": {
+        "message": "Awaria radia"
+    },
+    "preflightLastMeasurement": {
+        "message": "Ostatni pomiar"
+    },
+    "preflightLoadingSolar": {
+        "message": "Ładowanie danych słonecznych..."
+    },
+    "preflightGNSS": {
+        "message": "GNSS \/ GPS Status"
+    },
+    "preflightGNSSHelp": {
+        "message": "Jakość sygnału satelitarnego GNSS jest zależna od aktywności słonecznej. Wysokie wartości Kp mogą obniżyć dokładność wyznaczania pozycji GPS i zmniejszyć niezawodność systemu GPS Rescue."
+    },
+    "preflightGNSSNote": {
+        "message": "Na dokładność GPS mają wpływ warunki słoneczne\/geomagnetyczne. Połącz swój quad z danymi satelitarnymi na karcie GPS."
+    },
+    "preflightKpEffect": {
+        "message": "Uderzenie jonosferyczne"
+    },
+    "preflightGPSRescue": {
+        "message": "GPS Rescue Status"
+    },
+    "preflightMagDeclination": {
+        "message": "Deklinacja magnetyczna"
+    },
+    "preflightMagInclination": {
+        "message": "Inklinacja magnetyczna"
+    },
+    "preflightGNSSPlanner": {
+        "message": "Narzędzie do planowania satelitarnego GNSS"
+    },
+    "preflightAirspace": {
+        "message": "Przestrzeń powietrzna i strefy bezzałogowe"
+    },
+    "preflightAirspaceNote": {
+        "message": "Zawsze sprawdzaj ograniczenia dotyczące lokalnej przestrzeni powietrznej i NOTAM. Zasady różnią się w zależności od kraju i regionu."
+    },
+    "preflightDroneSafetyMap": {
+        "message": "Mapa bezpieczeństwa drona (wysokościowy kąt)"
+    },
+    "preflightAirspaceExplorer": {
+        "message": "Wykres przestrzeni powietrznej SkyVector"
+    },
+    "preflightNOTAMs": {
+        "message": "FAA NOTAMs (US)"
+    },
+    "preflightNOTAMsEU": {
+        "message": "EUROCONTROL NOTAMs (EU)"
+    },
+    "preflightMap": {
+        "message": "Mapa lokalizacji"
+    },
+    "preflightNoData": {
+        "message": "Ustaw lokalizację, aby załadować dane środowiska"
+    },
+    "preflightAttribution": {
+        "message": "Dane pogodowe: Open-Meteo.com (CC BY 4.0) | Dane słoneczne: NOAA Space Weather Prediction Center"
+    },
+    "preflightSavedLocationsPlaceholder": {
+        "message": "Zapisane lokalizacje..."
+    },
+    "preflightLoadLocation": {
+        "message": "Załaduj"
+    },
+    "preflightSaveLocation": {
+        "message": "Zapisz"
+    },
+    "preflightSavedLocationsFull": {
+        "message": "Osiągnięto maksymalnie 5 zapisanych lokalizacji"
+    },
+    "preflightLocationLabel": {
+        "message": "Nazwa lokalizacji (maksymalnie 20 znaków)"
+    },
+    "preflightDeleteLocation": {
+        "message": "Usuń wybraną lokalizację"
+    },
+    "preflightRenameLocation": {
+        "message": "Zmień nazwę wybranej lokalizacji"
+    },
+    "preflightRenameLocationBtn": {
+        "message": "Zmień nazwę"
+    },
+    "preflightCoordinates": {
+        "message": "Współrzędne"
+    },
+    "preflightSaveLocationBtn": {
+        "message": "Zapisz lokalizację"
+    },
+    "preflightConfirmSave": {
+        "message": "Zapisz"
+    },
+    "preflightCancel": {
+        "message": "Anuluj"
+    },
+    "preflightGeolocationFailed": {
+        "message": "Nie można wykryć lokalizacji. Wprowadź współrzędne ręcznie."
+    },
+    "preflightIpConsentMessage": {
+        "message": "Lokalizacja przeglądarki nie powiodła się. Twoja przybliżona lokalizacja może zostać wykryta za pomocą adresu IP za pośrednictwem usługi ipapi.co, innej firmy."
+    },
+    "preflightIpConsentAllow": {
+        "message": "Pozwól"
+    },
+    "preflightIpConsentDeny": {
+        "message": "Nie, dziękuję"
+    },
+    "preflightMapSatellite": {
+        "message": "Widok satelitarny"
+    },
+    "preflightMapHybrid": {
+        "message": "Hybrydowy widok satelitarny i uliczny"
+    },
+    "preflightMapStreet": {
+        "message": "Widok mapy ulicznej"
+    },
+    "preflightMapZoomIn": {
+        "message": "Powiększ"
+    },
+    "preflightMapZoomOut": {
+        "message": "Pomniejsz"
+    },
+    "preflightMapFullscreen": {
+        "message": "Przełącz na pełny ekran"
+    },
+    "preflightKpMinimal": {
+        "message": "Minimalny wpływ na GPS"
+    },
+    "preflightKpDegraded": {
+        "message": "Możliwa degradacja dokładności GPS"
+    },
+    "preflightKpSevere": {
+        "message": "Oczekiwana znacząca interwencja GPS"
+    },
+    "preflightGpsRescueUnknown": {
+        "message": "Sprawdź najpierw aktywność słoneczną"
+    },
+    "preflightGpsRescueReliable": {
+        "message": "Wiarygodne wsparcie GPS"
+    },
+    "preflightGpsRescueUnreliable": {
+        "message": "Ratowanie GPS może być niewiarygodne"
+    },
+    "preflightGpsRescueNotRecommended": {
+        "message": "GPS Ratowanie NIE zalecane"
+    },
+    "preflightForecast": {
+        "message": "Prognoza 5-dniowa"
+    },
+    "preflightForecastHelp": {
+        "message": "Dzienny przegląd pogody, aby pomóc planować sesje lotu z wyprzedzeniem"
+    },
+    "preflightForecastDay": {
+        "message": "Dzień"
+    },
+    "preflightForecastWeather": {
+        "message": "Pogoda"
     }
 }

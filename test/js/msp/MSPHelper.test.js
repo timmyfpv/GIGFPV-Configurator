@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import semver from "semver";
 import MspHelper from "../../../src/js/msp/MSPHelper";
 import MSPCodes from "../../../src/js/msp/MSPCodes";
 import "../../../src/js/injected_methods";
 import FC from "../../../src/js/fc";
-import { API_VERSION_1_46 } from "../../../src/js/data_storage";
+import { API_VERSION_1_47 } from "../../../src/js/data_storage";
 
 describe("MspHelper", () => {
     const mspHelper = new MspHelper();
@@ -28,7 +29,6 @@ describe("MspHelper", () => {
                 callbacks: [
                     {
                         callback: callbackFunction,
-                        callbackOnError: true,
                         code: MSPCodes.MSP_BOARD_INFO,
                     },
                 ],
@@ -48,6 +48,45 @@ describe("MspHelper", () => {
 
             expect(FC.CONFIG.mspProtocolVersion).toEqual(mspProtocolVersion);
             expect(FC.CONFIG.apiVersion).toEqual(`${apiVersionMajor}.${apiVersionMinor}.0`);
+        });
+        it("keeps a valid default apiVersion when MSP_API_VERSION payload is empty (MSP corruption)", () => {
+            // An empty/truncated payload makes readU8() return null, which would
+            // otherwise build the unparseable "null.null.0" and make every downstream
+            // semver comparison throw "Invalid Version".
+            mspHelper.process_data({
+                code: MSPCodes.MSP_API_VERSION,
+                dataView: new DataView(new Uint8Array([]).buffer),
+                crcError: false,
+                callbacks: [],
+            });
+
+            expect(FC.CONFIG.apiVersion).not.toContain("null");
+            expect(FC.CONFIG.apiVersion).toEqual("0.0.0"); // unchanged default
+            expect(semver.valid(FC.CONFIG.apiVersion)).not.toBeNull();
+        });
+        it("keeps a valid default apiVersion when MSP_API_VERSION payload is truncated (MSP corruption)", () => {
+            // Only the protocol-version byte present, major/minor missing -> "X.null.null".
+            mspHelper.process_data({
+                code: MSPCodes.MSP_API_VERSION,
+                dataView: new DataView(new Uint8Array([42]).buffer),
+                crcError: false,
+                callbacks: [],
+            });
+
+            expect(FC.CONFIG.apiVersion).not.toContain("null");
+            expect(FC.CONFIG.apiVersion).toEqual("0.0.0");
+            expect(semver.valid(FC.CONFIG.apiVersion)).not.toBeNull();
+        });
+        it("does not let a corrupt MSP_API_VERSION throw in a downstream semver comparison", () => {
+            mspHelper.process_data({
+                code: MSPCodes.MSP_API_VERSION,
+                dataView: new DataView(new Uint8Array([]).buffer),
+                crcError: false,
+                callbacks: [],
+            });
+
+            // Mirrors the guard in serial_backend.js after the MSP_API_VERSION callback.
+            expect(() => semver.gte(FC.CONFIG.apiVersion, API_VERSION_1_47)).not.toThrow();
         });
         it("handles MSP_PIDNAMES correctly", () => {
             let pidNamesCount = 1 + crypto.getRandomValues(new Uint8Array(1))[0];
@@ -79,7 +118,7 @@ describe("MspHelper", () => {
             expect(FC.MOTOR_DATA.slice(motorCount, 8)).toContain(undefined);
         });
         it("handles MSP_BOARD_INFO correctly for API version", () => {
-            FC.CONFIG.apiVersion = API_VERSION_1_46;
+            FC.CONFIG.apiVersion = API_VERSION_1_47;
             let infoBuffer = [];
 
             const boardIdentifier = appendStringToArray(infoBuffer, generateRandomString(4)); // set board-identifier
@@ -119,6 +158,56 @@ describe("MspHelper", () => {
             expect(FC.CONFIG.configurationState).toEqual(0xbb);
             expect(FC.CONFIG.sampleRateHz).toEqual(0xbaab);
             expect(FC.CONFIG.configurationProblems).toEqual(0xdeadbeef);
+        });
+        it("handles MSP_ATTITUDE_QUATERNION correctly", () => {
+            // Encode known quaternion values as int16 (value * 32767)
+            const qw = 0.7071;
+            const qx = 0;
+            const qy = -0.7071;
+            const qz = 0;
+
+            const buffer = new ArrayBuffer(8);
+            const view = new DataView(buffer);
+            view.setInt16(0, Math.round(qw * 32767), true);
+            view.setInt16(2, Math.round(qx * 32767), true);
+            view.setInt16(4, Math.round(qy * 32767), true);
+            view.setInt16(6, Math.round(qz * 32767), true);
+
+            mspHelper.process_data({
+                code: MSPCodes.MSP_ATTITUDE_QUATERNION,
+                dataView: new DataView(buffer),
+                crcError: false,
+                callbacks: [],
+            });
+
+            const q = FC.SENSOR_DATA.quaternion;
+            expect(q).not.toBeNull();
+            expect(q.w).toBeCloseTo(qw, 3);
+            expect(q.x).toBeCloseTo(qx, 3);
+            expect(q.y).toBeCloseTo(qy, 3);
+            expect(q.z).toBeCloseTo(qz, 3);
+        });
+        it("handles MSP_ATTITUDE_QUATERNION with extreme values", () => {
+            // Mixed extreme values: w=1.0, x=-1.0, y=0.0, z≈0.5
+            const buffer = new ArrayBuffer(8);
+            const view = new DataView(buffer);
+            view.setInt16(0, 32767, true); // w = 32767/32767 = 1.0
+            view.setInt16(2, -32767, true); // x = -32767/32767 = -1.0
+            view.setInt16(4, 0, true); // y = 0/32767 = 0.0
+            view.setInt16(6, 16384, true); // z = 16384/32767 ~= 0.5
+
+            mspHelper.process_data({
+                code: MSPCodes.MSP_ATTITUDE_QUATERNION,
+                dataView: new DataView(buffer),
+                crcError: false,
+                callbacks: [],
+            });
+
+            const q = FC.SENSOR_DATA.quaternion;
+            expect(q.w).toBeCloseTo(1, 3);
+            expect(q.x).toBeCloseTo(-1, 3);
+            expect(q.y).toBeCloseTo(0, 3);
+            expect(q.z).toBeCloseTo(16384 / 32767, 3);
         });
     });
 });

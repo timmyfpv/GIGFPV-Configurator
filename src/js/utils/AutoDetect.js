@@ -1,7 +1,6 @@
-import PortHandler from "../port_handler";
+import DeviceHandler from "../device_handler";
 import { gui_log } from "../gui_log";
 import { i18n } from "../localization";
-import { TABS } from "../gui";
 import MspHelper from "../msp/MSPHelper";
 import FC from "../fc";
 import MSP from "../msp";
@@ -9,6 +8,7 @@ import MSPCodes from "../msp/MSPCodes";
 import semver from "semver";
 import { API_VERSION_1_45, API_VERSION_1_46 } from "../data_storage";
 import { serial } from "../serial";
+import BuildApi from "../BuildApi";
 
 /**
  *
@@ -33,38 +33,74 @@ class AutoDetect {
         MSP.read(event.detail);
     }
 
-    verifyBoard() {
-        const port = PortHandler.portPicker.selectedPort;
-        const isLoaded = TABS.firmware_flasher.targets ? Object.keys(TABS.firmware_flasher.targets).length > 0 : false;
+    async loadTargetsIfNeeded() {
+        if (this._boardOptions && Array.isArray(this._boardOptions) && this._boardOptions.length > 0) {
+            return true;
+        }
 
-        if (!isLoaded) {
-            console.log("Releases not loaded yet");
+        try {
+            const buildApi = new BuildApi();
+            this._boardOptions = await buildApi.loadTargets();
+            return true;
+        } catch (e) {
+            console.error("Failed to load targets:", e);
             gui_log(i18n.getMessage("firmwareFlasherNoTargetsLoaded"));
-            return;
+            return false;
+        }
+    }
+
+    canAttemptConnection() {
+        if (!DeviceHandler.portAvailable) {
+            gui_log(i18n.getMessage("firmwareFlasherNoValidPort"));
+            return false;
+        }
+
+        if (!this._boardOptions || this._boardOptions.length === 0) {
+            gui_log(i18n.getMessage("firmwareFlasherNoTargetsLoaded"));
+            return false;
         }
 
         if (serial.connected || serial.connectionId) {
-            console.warn(
-                "Attempting to connect while there still is a connection",
-                serial.connected,
-                serial.connectionId,
-                serial.openCanceled,
-            );
-            serial.disconnect();
+            console.warn("Attempting to connect while there still is a connection", serial.connected);
+            gui_log(i18n.getMessage("serialPortOpenFail"));
+            return false;
+        }
+
+        return true;
+    }
+
+    async verifyBoard(onBoardDetected) {
+        const port = DeviceHandler.devicePicker.selectedDevice;
+        if (port.startsWith("virtual")) {
             return;
         }
 
-        gui_log(i18n.getMessage("firmwareFlasherDetectBoardQuery"));
+        const targetsLoaded = await this.loadTargetsIfNeeded();
+        if (!targetsLoaded) {
+            return;
+        }
 
-        if (!port.startsWith("virtual")) {
+        if (!this.canAttemptConnection()) {
+            return;
+        }
+
+        let result = false;
+        try {
+            // Register listeners just-in-time before connection attempt
+            this._onBoardDetected = onBoardDetected;
             serial.addEventListener("connect", this.boundHandleConnect, { once: true });
             serial.addEventListener("disconnect", this.boundHandleDisconnect, { once: true });
 
-            console.log("Connecting to serial port", port, serial.connected, serial.connectionId);
-
-            serial.connect(port, { baudRate: PortHandler.portPicker.selectedBauds || 115200 });
-        } else {
-            gui_log(i18n.getMessage("serialPortOpenFail"));
+            console.log("Connecting to serial port", port);
+            gui_log(i18n.getMessage("firmwareFlasherDetectBoardQuery"));
+            result = await serial.connect(port, { baudRate: DeviceHandler.devicePicker.selectedBauds || 115200 });
+        } catch (error) {
+            console.error("Failed to connect:", error);
+        } finally {
+            // Only run cleanup when connection attempt failed
+            if (!result) {
+                this.cleanup();
+            }
         }
     }
 
@@ -86,49 +122,29 @@ class AutoDetect {
 
     onFinishClose() {
         const board = FC.CONFIG.boardName;
-
-        if (board) {
-            const boardSelect = $('select[name="board"]');
-            const boardSelectOptions = $('select[name="board"] option');
-            const target = boardSelect.val();
-
-            boardSelectOptions.each((_, e) => {
-                if ($(e).text() === board) {
-                    this.targetAvailable = true;
-                }
-            });
-
-            if (board !== target) {
-                boardSelect.val(board).trigger("change");
-            }
-
-            gui_log(
-                i18n.getMessage(
-                    this.targetAvailable
-                        ? "firmwareFlasherBoardVerificationSuccess"
-                        : "firmwareFlasherBoardVerficationTargetNotAvailable",
-                    { boardName: board },
-                ),
-            );
+        let found = false;
+        if (board && typeof this._onBoardDetected === "function") {
+            found = this._onBoardDetected(board);
+        } else if (board && this._boardOptions) {
+            // fallback: just check if board exists in loaded targets
+            found = this._boardOptions.some((b) => b.target === board);
         }
-
-        // Remove event listeners using stored references
-        serial.removeEventListener("receive", this.boundHandleSerialReceive);
-        serial.removeEventListener("connect", this.boundHandleConnect);
-        serial.removeEventListener("disconnect", this.boundHandleDisconnect);
-
-        // Clean up MSP listeners
-        MSP.clearListeners();
-        MSP.disconnect_cleanup();
-
-        // Disconnect without passing onClosed as a callback
-        serial.disconnect();
+        this.targetAvailable = !!found;
+        gui_log(
+            i18n.getMessage(
+                this.targetAvailable
+                    ? "firmwareFlasherBoardVerificationSuccess"
+                    : "firmwareFlasherBoardVerficationTargetNotAvailable",
+                { boardName: board },
+            ),
+        );
+        this.cleanup();
     }
 
     async getBoardInfo() {
         await MSP.promise(MSPCodes.MSP_BOARD_INFO);
         if (semver.gte(FC.CONFIG.apiVersion, API_VERSION_1_46)) {
-            TABS.firmware_flasher.cloudBuildOptions = FC.CONFIG.buildOptions;
+            this.cloudBuildOptions = FC.CONFIG.buildOptions;
         }
         this.onFinishClose();
     }
@@ -139,30 +155,9 @@ class AutoDetect {
             await MSP.promise(MSPCodes.MSP2_GET_TEXT, mspHelper.crunch(MSPCodes.MSP2_GET_TEXT, MSPCodes.CRAFT_NAME));
             await MSP.promise(MSPCodes.MSP_BUILD_INFO);
 
-            // store FC.CONFIG.buildKey as the object gets destroyed after disconnect
-            TABS.firmware_flasher.cloudBuildKey = FC.CONFIG.buildKey;
-
-            // 3/21/2024 is the date when the build key was introduced
-            const supportedDate = new Date("3/21/2024");
-            const buildDate = new Date(FC.CONFIG.buildInfo);
-
-            if (
-                TABS.firmware_flasher.validateBuildKey() &&
-                (semver.lt(FC.CONFIG.apiVersion, API_VERSION_1_46) || buildDate < supportedDate)
-            ) {
-                try {
-                    let options = await TABS.firmware_flasher.buildApi.requestBuildOptions(
-                        TABS.firmware_flasher.cloudBuildKey,
-                    );
-                    if (options) {
-                        TABS.firmware_flasher.cloudBuildOptions = options.Request.Options;
-                    }
-                } catch (error) {
-                    console.error(`${this.logHead} Failed to request build options:`, error);
-                }
-            }
+            // store FC.CONFIG.buildKey locally if needed
+            this.cloudBuildKey = FC.CONFIG.buildKey;
         }
-
         await this.getBoardInfo();
     }
 
@@ -189,6 +184,25 @@ class AutoDetect {
             this.requestBoardInformation();
         } else {
             gui_log(i18n.getMessage("serialPortOpenFail"));
+        }
+    }
+
+    async cleanup() {
+        // Disconnect first, so the once-registered disconnect handler can fire
+        try {
+            await serial.disconnect();
+        } catch (error) {
+            // Log the error with context but continue to run cleanup
+            console.error("Serial disconnection failed:", error);
+        } finally {
+            // Remove event listeners using stored references (disconnect listener is once-registered and already removed)
+            serial.removeEventListener("receive", this.boundHandleSerialReceive);
+            serial.removeEventListener("connect", this.boundHandleConnect);
+            // Do NOT remove disconnect listener, as it is once-registered and will be auto-removed
+
+            // Clean up MSP listeners after disconnect (always run)
+            MSP.clearListeners();
+            MSP.disconnect_cleanup();
         }
     }
 }

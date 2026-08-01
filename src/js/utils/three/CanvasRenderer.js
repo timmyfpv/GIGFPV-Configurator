@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Projector, RenderableSprite, RenderableLine, RenderableFace } from "three/examples/jsm/renderers/Projector";
+import { Projector, RenderableSprite, RenderableLine, RenderableFace } from "./Projector";
 
 /**
  * @author mrdoob / http://mrdoob.com/
@@ -551,7 +551,7 @@ class CanvasRenderer {
                             );
                             grad.addColorStop(0, colorStyle1);
                             grad.addColorStop(1, colorStyle2);
-                        } catch (exception) {
+                        } catch {
                             grad = colorStyle1;
                         }
 

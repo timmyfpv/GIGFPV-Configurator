@@ -65,9 +65,6 @@
     "cancel": {
         "message": "Annuleren"
     },
-    "autoConnectEnabled": {
-        "message": "Automatisch verbinden: Aan - Configurator zal automatisch proberen verbinding te maken wanneer een nieuwe poort is gedetecteerd"
-    },
     "autoConnectDisabled": {
         "message": "Automatisch verbinden: Uitgeschakeld - Gebruiker moet de poort selecteren en zelf \"Verbinden\" klikken"
     },
@@ -96,9 +93,6 @@
     },
     "language_default": {
         "message": "Systeem standaard"
-    },
-    "language_default_pretty": {
-        "message": "Systeem standaard ($t(detectedLanguage))"
     },
     "language_de": {
         "message": "Duits",
@@ -166,12 +160,6 @@
         "message": "Sonar",
         "description": "Text of the image in the top sensors icons. Please keep it short."
     },
-    "checkForConfiguratorUnstableVersions": {
-        "message": "Update meldingen voor onstabiele versies van de configurator weergeven"
-    },
-    "configuratorUpdateNotice": {
-        "message": "U gebruikt een verouderde versie van de <b>Betaflight Configurator<\/b>.<br>$t(configuratorUpdateHelp.message)"
-    },
     "configuratorUpdateWebsite": {
         "message": "Ga naar de Release Pagina"
     },
@@ -229,9 +217,6 @@
     "tabFailsafe": {
         "message": "Uitval beveiliging"
     },
-    "tabTransponder": {
-        "message": "Race Transponder"
-    },
     "tabOsd": {
         "message": "OSD"
     },
@@ -249,9 +234,6 @@
     },
     "tabLedStrip": {
         "message": "LED-Strip"
-    },
-    "tabRawSensorData": {
-        "message": "Sensoren"
     },
     "tabCLI": {
         "message": "CLI"
@@ -397,14 +379,8 @@
     "noConfigurationReceived": {
         "message": "Geen configuratie binnen <span class=\"message-negative\">10 seconden<\/span>ontvangen, communicatie <span class=\"message-negative\">is mislukt<\/span>"
     },
-    "firmwareVersionNotSupported": {
-        "message": "Dit besturingssysteem is <span class=\"message-negative\">niet ondersteund<\/span>. Upgrade alstublieft naar een besturingssysteem die wel API versie <strong>$1<\/strong> of hoger ondersteunt. Gebruik CLI om een backup te maken vóór het flashen. CLI backup\/herstel procedure is terug te vinden in de documentatie.<br \/>Als alternatief kunt u een oudere versie van de configurator gebruiken als je nog niet wil upgraden."
-    },
     "firmwareTypeNotSupported": {
         "message": "Firmware anders dan Betaflight is <span class=\"message-negative\">niet ondersteund<\/span>, behalve CLI modus."
-    },
-    "firmwareUpgradeRequired": {
-        "message": "Het besturingssysteem op dit apparaat moet worden geupgrade naar een nieuwere versie. Gebruik CLI om een backup te maken voor dat je begint met flashen. Hoe je dit moet doen staat in de documentatie.<br \/>Als alternatief kunt u een oudere versie van de configurator gebruiken als je nog niet wilt upgraden."
     },
     "resetToCustomDefaultsDialog": {
         "message": "Er zijn aangepaste standaardinstellingen voor dit bord beschikbaar. Normaal gesproken zal een bord niet goed werken tenzij deze aangepaste standaardinstellingen worden toegepast.<br \/>Wilt u de aangepaste standaardinstellingen voor dit bord toepassen?"
@@ -421,10 +397,6 @@
     "infoVersionOs": {
         "message": "Besturingsysteem:<strong>{{operatingSystem}}<\/strong>",
         "description": "Message that appears in the GUI log panel indicating operating system"
-    },
-    "infoVersionConfigurator": {
-        "message": "Configurator: <strong>{{configuratorVersion}}<\/strong>",
-        "description": "Message that appears in the GUI log panel indicating Configurator version"
     },
     "buildServerUsingCached": {
         "message": "Maakt gebruik van gecachte versie informatie voor $1."
@@ -483,12 +455,6 @@
     "versionLabelTarget": {
         "message": "Doel"
     },
-    "versionLabelFirmware": {
-        "message": "Besturingssysteem"
-    },
-    "versionLabelConfigurator": {
-        "message": "Configurator"
-    },
     "notifications_app_just_updated_to_version": {
         "message": "Applicatie is geupdate naar versie: $1"
     },
@@ -538,12 +504,6 @@
     "eeprom_saved_ok": {
         "message": "EEPROM <span class=\"message-positive\">opgeslagen<\/span>"
     },
-    "defaultWelcomeIntro": {
-        "message": "Welkom bij <strong>Betaflight - Configurator<\/strong>, een hulpmiddel dat ontworpen is om het bijwerken, configureren en tunen van uw vlucht controller te vereenvoudigen."
-    },
-    "defaultWelcomeHead": {
-        "message": "Hardware"
-    },
     "defaultContributingHead": {
         "message": "Bijdragen"
     },
@@ -552,12 +512,6 @@
     },
     "defaultButtonFirmwareFlasher": {
         "message": "Besturingssysteem Flasher"
-    },
-    "defaultDonateHead": {
-        "message": "Open Source \/ Donatie Mededeling"
-    },
-    "defaultDonateText": {
-        "message": "<p><strong>Betaflight<\/strong> is een vluchtcontroller software die <strong>open source<\/strong> is en gratis beschikbaar is <strong>zonder garantie<\/strong> voor alle gebruikers.<\/p><p>Als u Betaflight of Betaflight Configurator nuttig vindt, overweeg dan <strong>om zijn ontwikkeling te ondersteunen<\/strong> door te doneren.<\/p>"
     },
     "defaultDonateBottom": {
         "message": "<p>Als u regelmatig wilt doneren kunt u overwegen om zich aan te sluiten bij ons Patreon account. $t(patreonLink.message)<\/p>"
@@ -601,12 +555,6 @@
     },
     "initialSetupButtonCalibrateAccel": {
         "message": "Kalibreer Versnellingsmeter"
-    },
-    "initialSetupCalibrateAccelText": {
-        "message": "Plaats de FC of het frame op een <strong>platte<\/strong> ondergrond. Ga daarna door met de kalibratie en zorg er voor dat deze niet beweegt gedurende de kalibratie periode"
-    },
-    "initialSetupButtonCalibrateMag": {
-        "message": "Kalibreer Magnetometer"
     },
     "initialSetupCalibrateMagText": {
         "message": "Draai multirotor tenminste <strong>360<\/strong> graden om alle axisen van rotatie, je hebt 30 seconden om dit te doen"
@@ -750,10 +698,6 @@
         "message": "Een Black Sheep Telemetry apparaat (TBS Core Pro bijvoorbeeld) is uigeschakeld en verhindert arming",
         "description": "Message that pops up to describe the BST arming disable flag"
     },
-    "initialSetupArmingDisableFlagsTooltipMSP": {
-        "message": "MSP-verbinding is actief, waarschijnlijk met deze Betaflight Configurator",
-        "description": "Message that pops up to describe the MSP arming disable flag"
-    },
     "initialSetupArmingDisableFlagsTooltipPARALYZE": {
         "message": "Paralyze modus is geactiveerd",
         "description": "Message that pops up to describe the PARALYZE arming disable flag"
@@ -803,9 +747,6 @@
     },
     "initialSetupSettingsRestored": {
         "message": "Instellingen teruggezet naar <strong>standaard<\/strong>"
-    },
-    "initialSetupEepromSaved": {
-        "message": "EEPROM <span class=\"message-positive\">opgeslagen<\/span>"
     },
     "featureNone": {
         "message": "&lt;Selecteer er Een&gt;"
@@ -861,9 +802,6 @@
     "featureTRANSPONDER": {
         "message": "Race Transponder"
     },
-    "featureTRANSPONDERTip": {
-        "message": "Configureer via het tabblad Race Transponder nadat u dit heeft ingeschakeld."
-    },
     "featureAIRMODE": {
         "message": "Airmode permanent inschakelen"
     },
@@ -897,9 +835,6 @@
     "configurationReceiverMode": {
         "message": "Ontvanger modus"
     },
-    "configurationRSSI": {
-        "message": "RSSI (signaalsterkte)"
-    },
     "configurationRSSIHelp": {
         "message": "RSSI is een meting van de signaalsterkte en is erg handig om te weten wanneer uw vliegtuig buiten het bereik gaat of als deze aan RF-interferentie lijdt."
     },
@@ -912,26 +847,8 @@
     "configurationSpiRxHelp": {
         "message": "<strong>Opmerking:<\/strong> De SPI RX provider werkt alleen als de vereiste hardware aan boord is of verbonden is met een SPI bus."
     },
-    "configurationOtherFeaturesHelp": {
-        "message": "<strong>Opmerking:<\/strong> Niet alle functies worden ondersteund door alle vluchtcontrollers. Als u een specifieke functie inschakelt en deze is uitgeschakeld nadat u op 'Sla op en herstart' klikt, betekent dit dat deze functie niet ondersteund wordt door uw vluchtcontroller."
-    },
-    "configurationBoardAlignmentRoll": {
-        "message": "Roll Graden"
-    },
-    "configurationBoardAlignmentPitch": {
-        "message": "Pitch Graden"
-    },
-    "configurationBoardAlignmentYaw": {
-        "message": "Yaw Graden"
-    },
-    "configurationSensorAlignmentGyro": {
-        "message": "GYRO Uitlijning"
-    },
     "configurationSensorGyroToUse": {
         "message": "GYRO\/ACCEL"
-    },
-    "configurationSensorGyroToUseNotFound": {
-        "message": "Waarschuwing: Geen Gyro\/Acc gevonden"
     },
     "configurationSensorGyroToUseFirst": {
         "message": "Eerste"
@@ -948,14 +865,8 @@
     "configurationSensorAlignmentGyro2": {
         "message": "Tweede GYRO"
     },
-    "configurationSensorAlignmentAcc": {
-        "message": "Uitlijning Versnellingsmeter"
-    },
     "configurationSensorAlignmentDefaultOption": {
         "message": "Standaard"
-    },
-    "configurationAccelTrims": {
-        "message": "Versnellingsmeter Trim"
     },
     "configurationAccelTrimRoll": {
         "message": "Versnellingsmeter Roll Trim"
@@ -1148,9 +1059,6 @@
     "configurationSpiRX": {
         "message": "SPI Bus Ontvanger Provider"
     },
-    "configurationEepromSaved": {
-        "message": "EEPROM <span class=\"message-positive\">opgeslagen<\/span>"
-    },
     "configurationButtonSave": {
         "message": "Sla op en herstart"
     },
@@ -1265,9 +1173,6 @@
     "pidTuningSubTabPid": {
         "message": "PID Profiel Instellingen"
     },
-    "pidTuningSubTabRates": {
-        "message": "Rateprofiel Instellingen"
-    },
     "pidTuningSubTabFilter": {
         "message": "Filterinstellingen"
     },
@@ -1315,10 +1220,6 @@
     "receiverRcSmoothingManual": {
         "message": "Manueel"
     },
-    "receiverRcSmoothingAutoFactor": {
-        "message": "Auto Factor",
-        "description": "Auto Factor parameter for RC smoothing"
-    },
     "receiverRcSmoothingInterpolation": {
         "message": "Interpolatie"
     },
@@ -1333,9 +1234,6 @@
     },
     "receiverRcSmoothingFeedforwardTypeAuto": {
         "message": "Automatisch"
-    },
-    "receiverRcSmoothingMode": {
-        "message": "Vloeiende Modus"
     },
     "pidTuningDtermSetpointTransition": {
         "message": "D Setpoint transition"
@@ -1475,9 +1373,6 @@
     "pidTuningDataRefreshed": {
         "message": "PID gegevens <strong>vernieuwd<\/strong>"
     },
-    "pidTuningEepromSaved": {
-        "message": "EEPROM <span class=\"message-positive\">opgeslagen<\/span>"
-    },
     "tuningHelp": {
         "message": "<b>Tuning tips<\/b><br \/><span class=\"message-negative\">BELANGRIJK:<\/span> Het is belangrijk om de motortemperatuur te verifiëren tijdens de eerste vluchten. Hoe hoger de filterwaarde des te beter je quad kan gaat vliegen. Echter krijgen je motoren ook meer ruis te voorduren.<br>De standaardwaarde van 100Hz is optimaal. Maar voor quads die meer ruis hebben kan je proberen om de D-Term filter te verlagen naar 50Hz en dit mogelijk ook toe te passen op de gyro-filter."
     },
@@ -1562,9 +1457,6 @@
     "receiverDataRefreshed": {
         "message": "RC Tuning data <strong>vernieuwd<\/strong>"
     },
-    "receiverEepromSaved": {
-        "message": "EEPROM <span class=\"message-positive\">opgeslagen<\/span>"
-    },
     "receiverModelPreview": {
         "message": "Voorbeeld"
     },
@@ -1585,7 +1477,7 @@
     },
     "auxiliaryDisabled": {
         "message": "(UITGESCHAKELD)",
-        "descripton": "Text to add to the ARM mode (maybe others in the future) in the MODES TAB when it has been disabled for some external reason"
+        "description": "Text to add to the ARM mode (maybe others in the future) in the MODES TAB when it has been disabled for some external reason"
     },
     "auxiliaryAddRange": {
         "message": "Voeg bereik toe"
@@ -1734,72 +1626,6 @@
     "adjustmentsSave": {
         "message": "Opslaan"
     },
-    "adjustmentsEepromSaved": {
-        "message": "EEPROM <span class=\"message-positive\">opgeslagen<\/span>"
-    },
-    "transponderNotSupported": {
-        "message": "De firmware van uw vlucht-controller ondersteunt geen transponder functionaliteit."
-    },
-    "transponderInformation": {
-        "message": "Transponders systemen zorgen ervoor dat raceorganisatoren je rondetijden bij kunnen houden. De transponder is op je drone gemonteerd en wanneer je drone een timing gate passeert wordt jouw code en rondetijd geregistreerd. Wanneer je een Infrarood transponder gebruikt dien je ervoor te zorgen dat deze niet geblokkeerd wordt door je frame, batterij, kabels, propellers of andere zaken."
-    },
-    "transponderConfigurationType": {
-        "message": "Transponder type"
-    },
-    "transponderType0": {
-        "message": "Geen"
-    },
-    "transponderType1": {
-        "message": "iLap"
-    },
-    "transponderType2": {
-        "message": "aRCiTimer"
-    },
-    "transponderType3": {
-        "message": "ERLT"
-    },
-    "transponderConfiguration1": {
-        "message": "Configuratie iLap"
-    },
-    "transponderConfiguration2": {
-        "message": "Configuratie aRCiTimer"
-    },
-    "transponderConfiguration3": {
-        "message": "Configuratie ERLT"
-    },
-    "transponderData1": {
-        "message": "Data"
-    },
-    "transponderData2": {
-        "message": "Transponder ID"
-    },
-    "transponderData3": {
-        "message": "Transponder ID"
-    },
-    "transponderDataHelp1": {
-        "message": "Alleen hexadecimale karakters, 0-9, A-F"
-    },
-    "transponderHelp1": {
-        "message": "Configureer hier uw transponder code. Let op: Alleen geldige codes worden herkend door race timing systemen. Geldige transponder codes kunnen worden verkregen op <a href=\"http:\/\/seriouslypro.com\/transponder-codes\" target=\"_blank\" rel=\"noopener noreferrer\">Serious Pro<\/a>."
-    },
-    "transponderHelp2": {
-        "message": "Voor meer informatie bezoek <a href=\"http:\/\/www.arcitimer.com\/\" title=\"aRCiTimer\" target=\"_blank\" rel=\"noopener noreferrer\">aRCiTimer site<\/a>"
-    },
-    "transponderDataHelp3": {
-        "message": "Kies ERLT ID 0-63"
-    },
-    "transponderHelp3": {
-        "message": "Voor meer informatie bezoek <a href=\"https:\/\/github.com\/polyvision\/EasyRaceLapTimer\" title=\"aRCiTimer\" target=\"_blank\" rel=\"noopener noreferrer\">EasyRaceLapTimer website<\/a>"
-    },
-    "transponderButtonSave": {
-        "message": "Opslaan"
-    },
-    "transponderButtonSaveReboot": {
-        "message": "Sla op en Herstart"
-    },
-    "transponderDataInvalid": {
-        "message": "Transponder data is <span class=\"message-negative\">ongeldig<\/span>"
-    },
     "servosFirmwareUpgradeRequired": {
         "message": "Servos vereisen firmware &gt;= 1.10.0. en doel ondersteuning."
     },
@@ -1836,15 +1662,6 @@
     "servosReverse": {
         "message": "Omgekeerd"
     },
-    "servosEepromSave": {
-        "message": "EEPROM <span class=\"message-positive\">opgeslagen<\/span>"
-    },
-    "gpsHead": {
-        "message": "GPS"
-    },
-    "gpsMapHead": {
-        "message": "Gebruik GPS-locatie"
-    },
     "gpsMapMessage1": {
         "message": "Controller alstublieft uw internetverbinding"
     },
@@ -1862,9 +1679,6 @@
     },
     "gpsDistToHome": {
         "message": "Afst naar Home:"
-    },
-    "gpsSignalStrHead": {
-        "message": "GPS signaalsterkte"
     },
     "gpsSignalStr": {
         "message": "Signaalsterkte"
@@ -2169,9 +1983,6 @@
     "cliConfirmSnippetBtn": {
         "message": "Uitvoeren"
     },
-    "loggingNote": {
-        "message": "Gegevens worden <span class=\"message-negative\">alleen<\/span> op dit tabblad gelogd. Als u dit tabblad verlaat <span class=\"message-negative\">annuleert<\/span> u de logging en zal de applicatie terugkeren naar de normale <strong>\"configurator\"<\/strong> staat. <br\/>U bent vrij om de globale updateperiode te wijzigen. Gegevens worden om prestatieredenen elke <strong>1<\/strong> seconde naar het logbestand weggeschreven."
-    },
     "loggingSamplesSaved": {
         "message": "Voorbeelden opgeslagen:"
     },
@@ -2250,14 +2061,8 @@
     "dataflashNotPresentNote": {
         "message": "Uw vluchtcontroller heeft geen compatibele dataflash chip beschikbaar."
     },
-    "dataflashFirmwareUpgradeRequired": {
-        "message": "Dataflash vereist firmware &gt;= 1.8.0."
-    },
     "dataflashButtonSaveFile": {
         "message": "Sla flash op in bestand..."
-    },
-    "dataflashButtonSaveFileDeprecated": {
-        "message": "Flash opslaan in bestand... (niet ondersteund)"
     },
     "dataflashSavetoFileNote": {
         "message": "Het direct opslaan van Flash naar een bestand is traag en inherent vatbaar voor fouten. Het kan lijden tot bestandscorruptie.<br>In sommige gevallen werkt het wel voor kleine bestanden. Maar dit wordt niet ondersteund. Ondersteuningsverzoeken hiervoor worden zonder commentaar gesloten. Gebruik in plaats daarvan de modus voor massaopslag."
@@ -2463,12 +2268,6 @@
     "firmwareFlasherMessage": {
         "message": "Bericht:"
     },
-    "firmwareFlasherWarningText": {
-        "message": "Probeer alsjeblieft <span class=\"message-negative\">niet<\/span> om <strong>niet-Betaflight-hardware<\/strong> te flashen met deze firmware-flasher.<br \/><span class=\"message-negative\">Ontkoppel<\/span><strong>niet<\/strong> het bord <strong> gedurende <\/strong> het flashen.<br \/> <br \/> <strong>Opmerking:<\/strong>STM32 bootloader wordt opgeslagen in ROM, deze kan niet worden gebricked.<br \/><strong>Opmerking:<\/strong><span class=\"message-negative\">Auto-Connect<\/span>is altijd uitgeschakeld als u zich in de firmware-flasher bevindt.<br \/><strong>Opmerking:<\/strong> zorg ervoor dat u een back-up heeft; sommige upgrades \/ downgrades zullen al uw configuratie wissen.<br \/><strong>Opmerking:<\/strong>Als u problemen heeft met flashen<strong> probeer dan eerst alle kabels van uw FC los te koppelen<\/strong>, probeer vervolgens opnieuw op te starten en upgrade uw stuurprogramma's.<br \/><strong>Opmerking: <\/strong> bij het flashen van kaarten die rechtstreeks aangesloten USB-aansluitingen hebben (de meeste nieuwere kaarten), zorg ervoor dat u de sectie USB Flashing van de Betaflight-handleiding heeft gelezen en dat de juiste software en stuurprogramma's zijn geïnstalleerd"
-    },
-    "firmwareFlasherRecoveryHead": {
-        "message": "<strong>Herstellen \/ Communicatie verloren<\/strong>"
-    },
     "firmwareFlasherButtonLeave": {
         "message": "Firmware Flasher verlaten"
     },
@@ -2514,14 +2313,6 @@
     "firmwareFlasherVerifyBoard": {
         "message": "<h3>Firmware komt niet overeen<\/h3><br \/>Het verbonden bord is <strong>{{verified_board}}<\/strong> terwijl je <strong>{{selected_board}}<\/strong> hebt geselecteerd.<br \/><br \/>Wilt u doorgaan met flashen?",
         "description": "Make a quick connection to read firmware target and never flash a wrong target again"
-    },
-    "firmwareFlasherBoardVerificationSuccess": {
-        "message": "De configurator heeft <span class=\"message-positive\">succesvol<\/span> het bord gedetecteerd en geverifieerd: <strong>{{boardName}}<\/strong>",
-        "description": "Board verification has succeeded."
-    },
-    "firmwareFlasherBoardVerificationFail": {
-        "message": "De configurator <span class=\"message-negative\">kan het bord niet verifiëren<\/span>. Als dit niet werkt, probeer dan eerst langzaam tussen de tabbladen te wisselen. Of maak een nieuwe Usb-verbinding. Of als laatst, pas de standaardinstellingen toe op dit bord en probeer het opnieuw",
-        "description": "Sometimes MSP values cannot be read from firmware correctly"
     },
     "firmwareFlasherButtonAbort": {
         "message": "Afbreken"
@@ -2897,14 +2688,6 @@
         "message": "Meer filteren",
         "description": "Filter tuning slider high header"
     },
-    "pidTuningGyroFilterSlider": {
-        "message": "Gyro-filtervermenigvuldiger:",
-        "description": "Gyro filter tuning slider label"
-    },
-    "pidTuningDTermFilterSlider": {
-        "message": "D Term Filtervermenigvuldiger:",
-        "description": "D Term filter tuning slider label"
-    },
     "pidTuningSlidersDisabled": {
         "message": "<strong>Opmerking:<\/strong> schuifregelaars zijn uitgeschakeld omdat de waarden handmatig gewijzigd zijn. Als u op de knop '$t(pidTuningSliderEnableButton.message)' klikt, worden ze opnieuw geactiveerd. Hierdoor worden de waarden gereset en gaan alle niet-opgeslagen wijzigingen verloren.",
         "description": "Tuning sliders disabled note when manual changes are detected"
@@ -2948,9 +2731,6 @@
     "pidTuningDynamicNotchRange": {
         "message": "Dynamic Notch Filter Bereik"
     },
-    "pidTuningDynamicNotchQHelp": {
-        "message": "Q-factor bepaalt hoe smal of breed de dynamische notch-filters zijn. Een hogere waarde maakt het smaller en nauwkeuriger en een lagere waarde maakt het breder en minder nauwkeurig. Een erg lage waarde zal de filtervertraging enorm vergroten."
-    },
     "pidTuningDynamicNotchMinHzHelp": {
         "message": "Stel dit in op de laagste inkomende ruisfrequentie die moet worden gebruikt door de dynamische notch."
     },
@@ -2968,14 +2748,6 @@
         "message": "RPM-filtering is een reeks notch-filters die wordt toegepast op de gyroscoop met behulp van de RPM-telemetriegegevens. Om zodoende motorvibraties met chirurgische precisie te verwijderen.<br \/><br \/><b><span class=\"message-positive\">BELANGRIJK<\/span>: De ESC moet het bidirectionele DShot-protocol ondersteunen en de waarde van $t(configurationMotorPoles.message) op het tabblad $t(tabMotorTesting.message) moet correct zijn om dit filter te laten werken.<\/b>",
         "description": "Header text for the RPM Filter group"
     },
-    "pidTuningRpmHarmonics": {
-        "message": "Gyro RPM Filter Harmonics-nummer",
-        "description": "Text for one of the parameters of the RPM Filter"
-    },
-    "pidTuningRpmMinHz": {
-        "message": "Gyro RPM Filter Min Frequentie [Hz]",
-        "description": "Text for one of the parameters of the RPM Filter"
-    },
     "pidTuningRpmMinHzHelp": {
         "message": "Minimale frequentie die zal worden gebruikt door het RPM Filter.",
         "description": "Help text for one of the parameters of the RPM Filter"
@@ -2992,26 +2764,14 @@
     "pidTuningVbatPidCompensationHelp": {
         "message": "Verhoogt de PID-waarden om te compenseren wanneer Vbat lager wordt. Dit zorgt voor meer constante vliegeigenschappen gedurende de totale vlucht. De hoeveelheid compensatie die wordt toegepast wordt berekend op basis van de $t(powerBatteryMaximum.message) die instelbaar is op de $t(tabPower.message)-pagina. Zorg ervoor dat deze correct is ingesteld."
     },
-    "pidTuningVbatSagCompensation": {
-        "message": "Vbat Sag Compenseren"
-    },
     "pidTuningVbatSagValue": {
         "message": "%"
-    },
-    "pidTuningThrustLinearization": {
-        "message": "Stuwkracht Linearisatie"
     },
     "pidTuningThrustLinearValue": {
         "message": "%"
     },
     "pidTuningItermRotation": {
         "message": "I Term Rotatie"
-    },
-    "pidTuningSmartFeedforward": {
-        "message": "Slimme Feedforward"
-    },
-    "pidTuningSmartFeedforwardHelp": {
-        "message": "Vermindert het effect van de F-term in de PID loop. Wanneer zowel de P-term als de F-term op hetzelfde moment actief zijn, wordt alleen de grootste van de twee gebruikt. Hierdoor wordt overshoot vermeden zonder dat we de D hoeven te verhogen. Maar dit vermindert ook het responsiviteitseffect dat wordt geproduceerd door de F-term wanneer toegevoegd aan P."
     },
     "pidTuningItermRelax": {
         "message": "I Term Relax"
@@ -3602,8 +3362,9 @@
         "message": "RSSI waarde",
         "description": "One of the elements of the OSD"
     },
-    "osdDescElementRssiValue": {
-        "message": "Directe RSSI-waarde (knippert onder de alarmdrempel)"
+    "osdTextElementRssiDbmValue": {
+        "message": "RSSI dBm waarde",
+        "description": "One of the elements of the OSD"
     },
     "osdTextElementTimer": {
         "message": "Timer",
@@ -3905,13 +3666,6 @@
     "osdDescElementEscRpm": {
         "message": "RPM gerapporteerd door ESC telemetry"
     },
-    "osdTextElementRemaningTimeEstimate": {
-        "message": "Timer: geschatte resterende tijd",
-        "description": "One of the elements of the OSD"
-    },
-    "osdDescElementRemaningTimeEstimate": {
-        "message": "Geschate resterende vluchttijd"
-    },
     "osdTextElementRtcDateTime": {
         "message": "RTC datum en tijd",
         "description": "One of the elements of the OSD"
@@ -3980,9 +3734,6 @@
         "message": "Kwaliteit van de verbinding",
         "description": "One of the elements of the OSD"
     },
-    "osdDescElementLinkQuality": {
-        "message": "Alternatieve indicator voor 'link kwaliteit' welke is gebaseerd op het aantal frames die verloren zijn - gebruik dit voorzichtig"
-    },
     "osdTextElementFlightDist": {
         "message": "Vlucht afstand",
         "description": "One of the elements of the OSD"
@@ -4035,13 +3786,6 @@
     },
     "osdDescElementOsdProfileName": {
         "message": "OSD profiel naam zoals deze is ingesteld middels de CLI variabelen \"osd_profile_1_name\", \"osd_profile_2_name\" en \"osd_profile_3_name\""
-    },
-    "osdTextElementRssiDbmValue": {
-        "message": "RSSI dBm waarde",
-        "description": "One of the elements of the OSD"
-    },
-    "osdDescElementRssiDbmValue": {
-        "message": "Waarde in dBm van het RSSI-signaal indien beschikbaar"
     },
     "osdTextElementRcChannels": {
         "message": "RC kanalen",
@@ -4479,9 +4223,6 @@
     "osdSectionHelpAlarms": {
         "message": "Stel de drempelwaarden in voor OSD elementen met alarmstaten."
     },
-    "osdSectionHelpStats": {
-        "message": "Stel de waarden in die zichtbaar zijn op het post-flight statistieken scherm."
-    },
     "osdSectionHelpWarnings": {
         "message": "Schakel waarschuwingen in of uit die worden weergegeven op het WAARSCHUWINGEN-element."
     },
@@ -4513,10 +4254,6 @@
     "vtxFrequencyChannel": {
         "message": "Voer frequentie rechtstreeks in",
         "description": "Text of one of the fields of the VTX tab"
-    },
-    "vtxFrequencyChannelHelp": {
-        "message": "Als u dit inschakelt, laat de Configurator u een frequentie selecteren in plaats van de gebruikelijke band \/ kanaal. Om dit te laten werken, moet uw VTX deze functie ondersteunen.",
-        "description": "Help text for the frequency or channel select field of the VTX tab"
     },
     "vtxSelectedMode": {
         "message": "Geselecteerde modus",
@@ -4764,9 +4501,6 @@
         "message": "Stuurt ESC gegevens naar het FC via DShot telemetry. Dit is vereist voor RPM Filtering en dynamisch idle.<br> <br>Opmerking: Vereist een compatibel ESC met de juiste firmware, bijvoorbeeld JESC, Jazzmac, BLHeli-32.",
         "description": "Description of the Bidirectional DShot feature of the ESC\/Motor"
     },
-    "configurationGyroSyncDenom": {
-        "message": "Gyro update frequentie"
-    },
     "configurationPidProcessDenom": {
         "message": "PID loop frequentie"
     },
@@ -4781,12 +4515,6 @@
     },
     "configurationAccHardware": {
         "message": "Versnellingsmeter"
-    },
-    "configurationBaroHardware": {
-        "message": "Barometer (indien ondersteund)"
-    },
-    "configurationMagHardware": {
-        "message": "Magnetometer (indien ondersteund)"
     },
     "configurationSmallAngle": {
         "message": "Maximale ARM-hoek [degrees]"
@@ -4854,9 +4582,6 @@
     },
     "pidTuningDeltaMeasurement": {
         "message": "Meting"
-    },
-    "pidTuningDeltaTip": {
-        "message": "<b>Afgeleide van Fout<\/b> zorgt voor een directere stick-respons en heeft vooral de voorkeur bij racen.<br \/><br \/><b>Afgeleide van Meting<\/b> zorgt voor een soepelere stick-respons, wat handiger is voor freestylen"
     },
     "pidTuningPidControllerTip": {
         "message": "<b>Legacy vs Betaflight (float):<\/b> PID-schaling en PID-logica zijn bij beide precies hetzelfde. Het is daardoor niet noodzakelijk om opnieuw te PID-tunen. Legacy is de oude betaflight welke werkt met een PID-controller die op basis van integers werkt. De nieuwe Betaflight PID-controller maakt gebruik van floating point berekeningen. <br><b>Float vs Integer:<\/b> PID-schaalverdeling en PID-logica werken bij beide precies hetzelfde. Er is geen extra tuning benodigd. Integer berekeningen zijn eenvoudiger en is minder belastend voor de CPU. Bij F1 boards heeft dit de voorkeur. Berekeningen met behulp van Floats kost de CPU meer maar daar krijg je meer precisie voor terug."
@@ -4942,9 +4667,6 @@
     "pidTuningRatesType": {
         "message": "Rates Type"
     },
-    "pidTuningRatesTypeTip": {
-        "message": "Als u een ratetype wijzigt, verandert de rate curve en de manier waarop u deze kunt instellen"
-    },
     "pidTuningRcRateRaceflight": {
         "message": "Rate"
     },
@@ -5011,9 +4733,6 @@
     "cordovaIncompatibleWebview": {
         "message": "Incompatibele webweergave"
     },
-    "cordovaWebviewTroubleshootingMsg": {
-        "message": "U moet de webweergave van uw apparaat bijwerken om de configurator te gebruiken."
-    },
     "cordovaWebviewTroubleshootingMsg2": {
         "message": "De onderstaande tool is bedoeld om u te helpen bij het installeren van een nieuwe webview of het updaten van een reeds geïnstalleerde webview."
     },
@@ -5041,9 +4760,6 @@
     "cordovaWebviewUpdateBtn": {
         "message": "Update vanuit de Google Play Store"
     },
-    "cordovaWebviewEnable": {
-        "message": "Ga naar het tabblad met informatie over uw apparaat in de instellingen en tik 10 keer op het buildversienummer om de 'Developper-opties' in te schakelen. Zoek daarna naar de ontwikkelaaropties en selecteer <b>{{app}}<\/b> als webviewprovider."
-    },
     "cordovaWebviewEnableBtn": {
         "message": "Instellingen openen"
     },
@@ -5058,8 +4774,5 @@
     },
     "cordovaExitAppTitle": {
         "message": "Bevestiging"
-    },
-    "cordovaExitAppMessage": {
-        "message": "Wilt u de configurator echt sluiten?"
     }
 }

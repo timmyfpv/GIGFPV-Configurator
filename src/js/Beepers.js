@@ -1,5 +1,4 @@
 import { bit_check, bit_clear, bit_set } from "./bit";
-import $ from "jquery";
 
 class Beepers {
     constructor(config, supportedConditions) {
@@ -59,48 +58,59 @@ class Beepers {
         self._beeperDisabledMask = beeperDisabledMask;
     }
     isEnabled(beeperName) {
-        const self = this;
+        const beeper = this._beepers.find((b) => b.name === beeperName);
 
-        for (let i = 0; i < self._beepers.length; i++) {
-            if (self._beepers[i].name === beeperName && bit_check(self._beeperOfMask, self._beepers[i].bit)) {
-                return true;
+        return beeper ? !bit_check(this._beeperDisabledMask, beeper.bit) : false;
+    }
+    setEnabled(beeperName, enabled) {
+        const beeper = this._beepers.find((b) => b.name === beeperName);
+
+        if (beeper) {
+            if (enabled) {
+                this._beeperDisabledMask = bit_clear(this._beeperDisabledMask, beeper.bit);
+            } else {
+                this._beeperDisabledMask = bit_set(this._beeperDisabledMask, beeper.bit);
             }
         }
-        return false;
     }
     generateElements(template, destination) {
-        const self = this;
+        for (let i = 0; i < this._beepers.length; i++) {
+            if (this._beepers[i].visible) {
+                const element = template.cloneNode(true);
+                destination.appendChild(element);
 
-        for (let i = 0; i < self._beepers.length; i++) {
-            if (self._beepers[i].visible) {
-                const element = template.clone();
-                destination.append(element);
+                const inputElement = element.querySelector("input");
+                const labelElement = element.querySelector("div");
+                const spanElement = element.querySelector("span");
 
-                const inputElement = $(element).find("input");
-                const labelElement = $(element).find("div");
-                const spanElement = $(element).find("span");
+                if (inputElement) {
+                    inputElement.id = `beeper-${i}`;
+                    inputElement.name = this._beepers[i].name;
+                    inputElement.title = this._beepers[i].name;
+                    inputElement.checked = !bit_check(this._beeperDisabledMask, this._beepers[i].bit);
+                    inputElement.dataset.bit = this._beepers[i].bit;
+                }
 
-                inputElement.attr("id", `beeper-${i}`);
-                inputElement.attr("name", self._beepers[i].name);
-                inputElement.attr("title", self._beepers[i].name);
-                inputElement.prop("checked", !bit_check(self._beeperDisabledMask, self._beepers[i].bit));
-                inputElement.data("bit", self._beepers[i].bit);
+                if (labelElement) {
+                    labelElement.textContent = this._beepers[i].name;
+                }
+                if (spanElement) {
+                    spanElement.setAttribute("i18n", `beeper${this._beepers[i].name}`);
+                }
 
-                labelElement.text(self._beepers[i].name);
-
-                spanElement.attr("i18n", `beeper${self._beepers[i].name}`);
-
-                element.show();
+                element.style.display = "";
             }
         }
     }
     updateData(beeperElement) {
         const self = this;
 
-        if (beeperElement.attr("type") === "checkbox") {
-            const bit = beeperElement.data("bit");
+        const type = beeperElement.type ?? beeperElement.getAttribute?.("type");
 
-            if (beeperElement.is(":checked")) {
+        if (type === "checkbox") {
+            const bit = Number.parseInt(beeperElement.dataset?.bit ?? beeperElement.getAttribute?.("data-bit"), 10);
+
+            if (beeperElement.checked) {
                 self._beeperDisabledMask = bit_clear(self._beeperDisabledMask, bit);
             } else {
                 self._beeperDisabledMask = bit_set(self._beeperDisabledMask, bit);

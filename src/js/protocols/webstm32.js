@@ -12,32 +12,28 @@ import MSP from "../msp";
 import FC from "../fc";
 import { bit_check } from "../bit";
 import { gui_log } from "../gui_log";
+import { MspCancelledError } from "../msp/mspErrors";
 import MSPCodes from "../msp/MSPCodes";
 import PortUsage from "../port_usage";
-import $ from "jquery";
 import { serial } from "../serial";
-import DFU from "../protocols/webusbdfu";
-import { read_serial } from "../serial_backend";
+import { getConnectionState } from "../connection_state";
+// NOTE: the flashing path must NOT depend on serial_backend (the MSP-connection
+// orchestrator). During flashing the received bytes are always MSP, so we feed
+// MSP.read directly instead of serial_backend.read_serial.
+import { DFU_AUTH_REQUIRED } from "../protocols/usbdfu";
+import DeviceHandler from "../device_handler";
 import NotificationManager from "../utils/notifications";
 import { get as getConfig } from "../ConfigStorage";
 
 function readSerialAdapter(event) {
-    read_serial(event.detail.buffer);
+    // Flashing bytes are always MSP — feed MSP directly (no serial_backend dependency).
+    // The serial facade wraps every receive as { data, protocolType }, so read .data.
+    MSP.read(event.detail.data);
 }
 
-function onTimeoutHandler() {
-    GUI.connect_lock = false;
-    console.log(`${STM32Protocol.logHead} Looking for capabilities via MSP failed`);
-
-    TABS.firmware_flasher.flashingMessage(
-        i18n.getMessage("stm32RebootingToBootloaderFailed"),
-        TABS.firmware_flasher.FLASH_MESSAGE_TYPES.INVALID,
-    );
-}
-
-function onFailureHandler() {
-    GUI.connect_lock = false;
-    TABS.firmware_flasher.refresh();
+function onMSPConnectionError() {
+    gui_log(i18n.getMessage("stm32RebootingToBootloaderFailed"));
+    STM32.handleError();
 }
 
 class STM32Protocol {
@@ -86,13 +82,35 @@ class STM32Protocol {
         this.useExtendedErase = false;
         this.rebootMode = 0;
         this.handleMSPConnect = this.handleMSPConnect.bind(this);
+
+        // Bind event handlers once so they can be properly added/removed
+        this._boundHandleConnect = (event) => this.handleConnect(event.detail);
+        this._boundHandleDisconnect = (event) => this.handleDisconnect(event.detail);
     }
 
-    handleConnect(event) {
-        console.log(`${this.logHead} Connected to serial port`, event.detail, event);
-        if (event) {
+    /**
+     * Centralized error handling method that resets UI state and releases connection lock
+     * @param {boolean} resetRebootMode - Whether to reset the reboot mode
+     */
+    handleError(resetRebootMode = true) {
+        GUI.connect_lock = false;
+        // Flash aborted/failed — release the FLASHING state alongside the lock so
+        // the connection state hard-block can't strand a later connect (endFlashing is idempotent).
+        getConnectionState().endFlashing();
+        if (resetRebootMode) {
+            this.rebootMode = 0;
+        }
+        TABS.firmware_flasher.resetFlashingState();
+    }
+
+    handleConnect(connectionResult) {
+        console.log(`${this.logHead} Connected to serial port`, connectionResult);
+        if (connectionResult) {
             // we are connected, disabling connect button in the UI
             GUI.connect_lock = true;
+            // The flasher now owns the raw port — stand the MSP reconnect down and
+            // enter FLASHING (hard-blocks connect/reboot until the flash completes).
+            getConnectionState().beginDeviceReplacement();
 
             this.initialize();
         } else {
@@ -100,64 +118,96 @@ class STM32Protocol {
         }
     }
 
-    handleDisconnect(disconnectionResult) {
+    async handleDisconnect(disconnectionResult) {
         console.log(`${this.logHead} Waiting for DFU connection`);
 
-        serial.removeEventListener("connect", (event) => this.handleConnect(event.detail));
-        serial.removeEventListener("disconnect", (event) => this.handleDisconnect(event.detail));
+        serial.removeEventListener("connect", this._boundHandleConnect);
+        serial.removeEventListener("disconnect", this._boundHandleDisconnect);
 
         if (disconnectionResult && this.rebootMode) {
-            // If the firmware_flasher does not start flashing, we need to ask for permission to flash
-            setTimeout(() => {
-                if (this.rebootMode) {
-                    console.log(`${this.logHead} STM32 Requesting permission for device`);
-
-                    DFU.requestPermission()
-                        .then((device) => {
-                            if (device != null) {
-                                console.log(`${this.logHead} DFU request permission granted`, device);
-                            } else {
-                                console.error(`${this.logHead} DFU request permission denied`);
-                                this.rebootMode = 0;
-                                GUI.connect_lock = false;
-                            }
-                        })
-                        .catch((e) => {
-                            console.error(`${this.logHead} DFU request permission failed`, e);
-                            this.rebootMode = 0;
-                            GUI.connect_lock = false;
-                        });
+            try {
+                // Poll for an already-authorized DFU device (no user gesture needed).
+                // Keep timeout short (~4s) so the Flash button's transient user
+                // activation is still valid if we need to fall back to requestPermission.
+                const device = await DeviceHandler.dfuProtocol.waitForDfu(4000, 500);
+                console.log(`${this.logHead} DFU device found via waitForDfu:`, device);
+            } catch (e) {
+                if (e.code !== DFU_AUTH_REQUIRED) {
+                    console.error(`${this.logHead} waitForDfu error:`, e);
+                    this.handleError();
+                    return;
                 }
-            }, 3000);
+
+                // Device not previously authorized via WebUSB.
+                // Try requestPermission directly — browser may still honour the
+                // original user gesture from the Flash button click.
+                console.warn(`${this.logHead} No authorized DFU device found, requesting permission`);
+                gui_log(i18n.getMessage("stm32UsbDfuNotFound"));
+                GUI.connect_lock = false;
+
+                const device = await DeviceHandler.dfuProtocol.requestPermission();
+                if (device) {
+                    // Only WebUSB needs a manual dispatch here. The Android
+                    // Capacitor adapter already emits addedDevice from
+                    // requestPermission().
+                    if (!DeviceHandler.dfuProtocol.transport?.emitsAddedDeviceOnPermissionGrant) {
+                        DeviceHandler.dfuProtocol.dispatchEvent(new CustomEvent("addedDevice", { detail: device }));
+                    }
+                    return;
+                }
+
+                // requestPermission returned null — either the browser blocked it
+                // (no user gesture) or user cancelled. Show dialog as fallback.
+                console.warn(`${this.logHead} requestPermission failed, showing dialog`);
+                if (TABS.firmware_flasher.requestDfuPermission) {
+                    TABS.firmware_flasher.requestDfuPermission();
+                } else {
+                    this.handleError();
+                }
+            }
         } else {
-            GUI.connect_lock = false;
+            this.handleError(false);
         }
     }
 
     prepareSerialPort() {
-        serial.removeEventListener("connect", (event) => this.handleConnect(event.detail));
-        serial.addEventListener("connect", (event) => this.handleConnect(event.detail), { once: true });
+        serial.removeEventListener("connect", this._boundHandleConnect);
+        serial.addEventListener("connect", this._boundHandleConnect, { once: true });
 
-        serial.removeEventListener("disconnect", (event) => this.handleDisconnect(event.detail));
-        serial.addEventListener("disconnect", (event) => this.handleDisconnect(event.detail), { once: true });
+        serial.removeEventListener("disconnect", this._boundHandleDisconnect);
+        serial.addEventListener("disconnect", this._boundHandleDisconnect, { once: true });
     }
 
     reboot() {
         const buffer = [];
         buffer.push8(this.rebootMode);
         setTimeout(() => {
-            MSP.promise(MSPCodes.MSP_SET_REBOOT, buffer).then(() => {
-                // if firmware doesn't flush MSP/serial send buffers and gracefully shutdown VCP connections we won't get a reply, so don't wait for it.
+            const disconnectFromMsp = () => {
                 this.mspConnector.disconnect((disconnectionResult) => {
                     console.log(`${this.logHead} Disconnecting from MSP`, disconnectionResult);
                 });
-            });
+            };
+            MSP.promise(MSPCodes.MSP_SET_REBOOT, buffer)
+                .then(() => {
+                    // if firmware doesn't flush MSP/serial send buffers and gracefully shutdown VCP connections we won't get a reply, so don't wait for it.
+                    disconnectFromMsp();
+                })
+                .catch((error) => {
+                    if (error instanceof MspCancelledError && error.reason === "disconnected") {
+                        // Expected: the FC drops the serial link as part of rebooting.
+                        disconnectFromMsp();
+                    } else {
+                        console.error(`${this.logHead} MSP_SET_REBOOT request failed:`, error);
+                        this.handleError();
+                    }
+                });
             console.log(`${this.logHead} Reboot request received by device`);
         }, 100);
     }
 
     onAbort() {
         GUI.connect_lock = false;
+        getConnectionState().endFlashing();
         this.rebootMode = 0;
         console.log(`${this.logHead} User cancelled because selected target does not match verified board`);
         this.reboot();
@@ -167,38 +217,49 @@ class STM32Protocol {
     lookingForCapabilitiesViaMSP() {
         console.log(`${this.logHead} Looking for capabilities via MSP`);
 
-        MSP.promise(MSPCodes.MSP_BOARD_INFO).then(() => {
-            if (bit_check(FC.CONFIG.targetCapabilities, FC.TARGET_CAPABILITIES_FLAGS.HAS_FLASH_BOOTLOADER)) {
-                // Board has flash bootloader
-                gui_log(i18n.getMessage("deviceRebooting_flashBootloader"));
-                console.log(`${this.logHead} flash bootloader detected`);
-                this.rebootMode = 4; // MSP_REBOOT_BOOTLOADER_FLASH
-            } else {
-                gui_log(i18n.getMessage("deviceRebooting_romBootloader"));
-                console.log(`${this.logHead} no flash bootloader detected`);
-                this.rebootMode = 1; // MSP_REBOOT_BOOTLOADER_ROM;
-            }
-
-            const selectedBoard =
-                TABS.firmware_flasher.selectedBoard !== "0" ? TABS.firmware_flasher.selectedBoard : "NONE";
-            const connectedBoard = FC.CONFIG.boardName ? FC.CONFIG.boardName : "UNKNOWN";
-
-            try {
-                if (selectedBoard !== connectedBoard && !TABS.firmware_flasher.localFirmwareLoaded) {
-                    TABS.firmware_flasher.showDialogVerifyBoard(
-                        selectedBoard,
-                        connectedBoard,
-                        this.reboot.bind(this),
-                        this.onAbort.bind(this),
-                    );
+        MSP.promise(MSPCodes.MSP_BOARD_INFO)
+            .then(() => {
+                if (bit_check(FC.CONFIG.targetCapabilities, FC.TARGET_CAPABILITIES_FLAGS.HAS_FLASH_BOOTLOADER)) {
+                    // Board has flash bootloader
+                    gui_log(i18n.getMessage("deviceRebooting_flashBootloader"));
+                    console.log(`${this.logHead} flash bootloader detected`);
+                    this.rebootMode = 4; // MSP_REBOOT_BOOTLOADER_FLASH
                 } else {
+                    gui_log(i18n.getMessage("deviceRebooting_romBootloader"));
+                    console.log(`${this.logHead} no flash bootloader detected`);
+                    this.rebootMode = 1; // MSP_REBOOT_BOOTLOADER_ROM;
+                }
+
+                const selectedBoard =
+                    this.serialOptions.selectedBoard && this.serialOptions.selectedBoard !== "0"
+                        ? this.serialOptions.selectedBoard
+                        : "NONE";
+                const connectedBoard = FC.CONFIG.boardName ? FC.CONFIG.boardName : "UNKNOWN";
+
+                try {
+                    if (
+                        selectedBoard !== connectedBoard &&
+                        !this.serialOptions.localFirmwareLoaded &&
+                        this.serialOptions.showDialogVerifyBoard
+                    ) {
+                        this.serialOptions.showDialogVerifyBoard(
+                            selectedBoard,
+                            connectedBoard,
+                            this.reboot.bind(this),
+                            this.onAbort.bind(this),
+                        );
+                    } else {
+                        this.reboot();
+                    }
+                } catch (e) {
+                    console.error(e);
                     this.reboot();
                 }
-            } catch (e) {
-                console.error(e);
-                this.reboot();
-            }
-        });
+            })
+            .catch((error) => {
+                console.error(`${this.logHead} MSP_BOARD_INFO request failed:`, error);
+                this.handleError();
+            });
     }
 
     handleMSPConnect() {
@@ -245,14 +306,14 @@ class STM32Protocol {
                 TABS.firmware_flasher.FLASH_MESSAGE_TYPES.NEUTRAL,
             );
 
-            serial.addEventListener("disconnect", (event) => this.handleDisconnect(event.detail), { once: true });
+            serial.addEventListener("disconnect", this._boundHandleDisconnect, { once: true });
 
             this.mspConnector.connect(
                 this.port,
                 this.mspOptions.reboot_baud,
                 this.handleMSPConnect,
-                onTimeoutHandler,
-                onFailureHandler,
+                onMSPConnectionError,
+                onMSPConnectionError,
             );
         }
     }
@@ -270,7 +331,10 @@ class STM32Protocol {
         TABS.firmware_flasher.flashingMessage(null, TABS.firmware_flasher.FLASH_MESSAGE_TYPES.NEUTRAL).flashProgress(0);
 
         // lock some UI elements TODO needs rework
-        $('select[name="release"]').prop("disabled", true);
+        const releaseSelect = document.querySelector('select[name="release"]');
+        if (releaseSelect) {
+            releaseSelect.disabled = true;
+        }
 
         serial.removeEventListener("receive", readSerialAdapter);
         serial.addEventListener("receive", readSerialAdapter);
@@ -314,7 +378,7 @@ class STM32Protocol {
         }
 
         // routine that fetches data from buffer if statement is true
-        if (this.receive_buffer.length >= this.bytesToRead && this.bytesToRead != 0) {
+        if (this.receive_buffer.length >= this.bytesToRead && this.bytesToRead !== 0) {
             const fetched = this.receive_buffer.slice(0, this.bytesToRead); // bytes requested
             this.receive_buffer.splice(0, this.bytesToRead); // remove read bytes
 
@@ -586,7 +650,7 @@ class STM32Protocol {
                         console.log(`${this.logHead} Executing global chip erase (via extended erase)`);
                         TABS.firmware_flasher.flashingMessage(
                             i18n.getMessage("stm32GlobalEraseExtended"),
-                            TABS.firmware_flasher.FLASH_MESSAGE_TYPES.NEUTRAL,
+                            TABS.firmware_flasher.FLASH_MESSAGE_TYPES.ERASING,
                         );
 
                         this.send([this.command.extended_erase, 0xbb], 1, (reply) => {
@@ -603,7 +667,7 @@ class STM32Protocol {
                         console.log(`${this.logHead} Executing local erase (via extended erase)`);
                         TABS.firmware_flasher.flashingMessage(
                             i18n.getMessage("stm32LocalEraseExtended"),
-                            TABS.firmware_flasher.FLASH_MESSAGE_TYPES.NEUTRAL,
+                            TABS.firmware_flasher.FLASH_MESSAGE_TYPES.ERASING,
                         );
 
                         this.send([this.command.extended_erase, 0xbb], 1, (reply) => {
@@ -718,7 +782,7 @@ class STM32Protocol {
                 console.log(`${this.logHead} Writing data ...`);
                 TABS.firmware_flasher.flashingMessage(
                     i18n.getMessage("stm32Flashing"),
-                    TABS.firmware_flasher.FLASH_MESSAGE_TYPES.NEUTRAL,
+                    TABS.firmware_flasher.FLASH_MESSAGE_TYPES.FLASHING,
                 );
 
                 let blocks = this.hex.data.length - 1,
@@ -811,7 +875,7 @@ class STM32Protocol {
                 console.log(`${this.logHead} Verifying data ...`);
                 TABS.firmware_flasher.flashingMessage(
                     i18n.getMessage("stm32Verifying"),
-                    TABS.firmware_flasher.FLASH_MESSAGE_TYPES.NEUTRAL,
+                    TABS.firmware_flasher.FLASH_MESSAGE_TYPES.VERIFYING,
                 );
 
                 const blocks = this.hex.data.length - 1;
@@ -911,7 +975,7 @@ class STM32Protocol {
 
                             // Show notification
                             if (getConfig("showNotifications").showNotifications) {
-                                NotificationManager.showNotification("Betaflight Configurator", {
+                                NotificationManager.showNotification("Betaflight App", {
                                     body: i18n.getMessage("programmingSuccessfulNotification"),
                                     icon: "/images/pwa/favicon.ico",
                                 });
@@ -929,7 +993,7 @@ class STM32Protocol {
 
                             // Show notification
                             if (getConfig("showNotifications").showNotifications) {
-                                NotificationManager.showNotification("Betaflight Configurator", {
+                                NotificationManager.showNotification("Betaflight App", {
                                     body: i18n.getMessage("programmingFailedNotification"),
                                     icon: "/images/pwa/favicon.ico",
                                 });
@@ -988,9 +1052,14 @@ class STM32Protocol {
 
         // unlocking connect button
         GUI.connect_lock = false;
+        // Flash complete — leave FLASHING so normal connect/reboot resume.
+        getConnectionState().endFlashing();
 
         // unlock some UI elements TODO needs rework
-        $('select[name="release"]').prop("disabled", false);
+        const releaseEl = document.querySelector('select[name="release"]');
+        if (releaseEl) {
+            releaseEl.disabled = false;
+        }
 
         // handle timing
         const timeSpent = new Date().getTime() - this.upload_time_start;

@@ -1,17 +1,18 @@
 import { get as getConfig } from "./ConfigStorage";
+import { reactive } from "vue";
 import MSP from "./msp";
-import Switchery from "switchery-latest";
-import jBox from "jbox";
-import $ from "jquery";
-import { getOS } from "./utils/checkBrowserCompatibility";
+import { getOS } from "./utils/checkCompatibility";
+import { i18n } from "./localization";
+import { useDialogStore } from "../stores/dialog";
+import { useConnectionStore } from "../stores/connection";
+import { pinia } from "./pinia_instance";
+import { getLockManager } from "./lock_manager";
 
 const TABS = {};
 
 class GuiControl {
     constructor() {
-        this.connecting_to = false;
-        this.connected_to = false;
-        this.connect_lock = false;
+        this.flashingInProgress = false;
         this.active_tab = null;
         this.tab_switch_in_progress = false;
         this.operating_system = null;
@@ -19,7 +20,17 @@ class GuiControl {
         this.timeout_array = [];
         this.buttonDisabledClass = "disabled";
 
-        this.defaultAllowedTabsWhenDisconnected = ["landing", "firmware_flasher", "privacy_policy", "options", "help"];
+        this.defaultAllowedTabsWhenDisconnected = [
+            "landing",
+            "firmware_flasher",
+            "giglrs_flasher",
+            "am32_flasher",
+            "preflight",
+            "help",
+            "flight_plan",
+            "autotune",
+            "blackbox_viewer",
+        ];
 
         this.defaultAllowedTabs = [
             "setup",
@@ -34,13 +45,16 @@ class GuiControl {
             "onboard_logging",
             "modes",
             "motors",
+            "am32",
             "pid_tuning",
+            "autotune",
             "ports",
             "receiver",
             "sensors",
+            "blackbox_viewer",
         ];
 
-        this.defaultCloudBuildTabOptions = ["gps", "led_strip", "osd", "servos", "transponder", "vtx"];
+        this.defaultCloudBuildTabOptions = ["gps", "led_strip", "osd", "servos", "vtx", "flight_plan"];
 
         this.defaultAllowedFCTabsWhenConnected = [...this.defaultAllowedTabs, ...this.defaultCloudBuildTabOptions];
 
@@ -49,6 +63,40 @@ class GuiControl {
         // check which operating system is user running
         this.operating_system = getOS();
     }
+
+    // connect_lock is backed by the reactive LockManager (single source of truth)
+    // instead of a bare instance field, so reactive consumers (store.connectLock
+    // computed, tab guards) keep updating. Behaviour is unchanged: `= true` locks,
+    // `= false` unlocks.
+    get connect_lock() {
+        return getLockManager().locked;
+    }
+
+    set connect_lock(value) {
+        getLockManager().locked = value;
+    }
+
+    // connecting_to / connected_to now live in useConnectionStore (the canonical
+    // connection-target state); GUI delegates so existing GUI.* readers/writers
+    // (serial_backend, tab_switch, …) transparently hit the store. Reactivity is
+    // preserved — the getters read store refs. Accessed lazily at runtime, so no
+    // pinia-timing issue at GUI construction.
+    get connecting_to() {
+        return useConnectionStore(pinia).connectingTo;
+    }
+
+    set connecting_to(value) {
+        useConnectionStore(pinia).connectingTo = value;
+    }
+
+    get connected_to() {
+        return useConnectionStore(pinia).connectedTo;
+    }
+
+    set connected_to(value) {
+        useConnectionStore(pinia).connectedTo = value;
+    }
+
     // Timer managing methods
     // name = string
     // code = function reference (code to be executed)
@@ -242,144 +290,77 @@ class GuiControl {
             callback();
         }
     }
-    switchery() {
-        const COLOR_ACCENT = "var(--primary-500)";
-        const COLOR_SWITCHERY_SECOND = "var(--switcherysecond)";
-
-        $(".togglesmall").each(function (index, elem) {
-            const switchery = new Switchery(elem, {
-                size: "small",
-                color: COLOR_ACCENT,
-                secondaryColor: COLOR_SWITCHERY_SECOND,
-            });
-            $(elem).on("change", function () {
-                switchery.setPosition();
-            });
-            $(elem).removeClass("togglesmall");
-        });
-
-        $(".toggle").each(function (index, elem) {
-            const switchery = new Switchery(elem, {
-                color: COLOR_ACCENT,
-                secondaryColor: COLOR_SWITCHERY_SECOND,
-            });
-            $(elem).on("change", function () {
-                switchery.setPosition();
-            });
-            $(elem).removeClass("toggle");
-        });
-
-        $(".togglemedium").each(function (index, elem) {
-            const switchery = new Switchery(elem, {
-                className: "switcherymid",
-                color: COLOR_ACCENT,
-                secondaryColor: COLOR_SWITCHERY_SECOND,
-            });
-            $(elem).on("change", function () {
-                switchery.setPosition();
-            });
-            $(elem).removeClass("togglemedium");
-        });
-    }
     content_ready(callback) {
-        this.switchery();
-
         const tRex = GUI.active_tab.replaceAll("_", "-").toLowerCase();
 
-        $("div#content #button-documentation")
-            .html(i18n.getMessage("betaflightSupportButton"))
-            .attr("href", `https://betaflight.com/docs/wiki/configurator/${tRex}-tab`);
-
-        // loading tooltip
-        $(function () {
-            new jBox("Tooltip", {
-                attach: ".cf_tip",
-                trigger: "mouseenter",
-                closeOnMouseleave: true,
-                closeOnClick: "body",
-                delayOpen: 100,
-                delayClose: 100,
-                position: {
-                    x: "right",
-                    y: "center",
-                },
-                outside: "x",
-            });
-
-            new jBox("Tooltip", {
-                theme: "Widetip",
-                attach: ".cf_tip_wide",
-                trigger: "mouseenter",
-                closeOnMouseleave: true,
-                closeOnClick: "body",
-                delayOpen: 100,
-                delayClose: 100,
-                position: {
-                    x: "right",
-                    y: "center",
-                },
-                outside: "x",
-            });
-        });
+        const docButton = document.querySelector("div#content #button-documentation");
+        if (docButton) {
+            docButton.innerHTML = i18n.getMessage("betaflightSupportButton");
+            docButton.setAttribute("href", `https://betaflight.com/docs/wiki/app/${tRex}-tab`);
+        }
 
         if (callback) {
             callback();
         }
     }
     selectDefaultTabWhenConnected() {
+        if (["firmware_flasher", "giglrs_flasher", "am32_flasher"].includes(this.active_tab)) {
+            return;
+        }
+
         const result = getConfig(["rememberLastTab", "lastTab"]);
-        const tab =
+        const tabClass =
             result.rememberLastTab && result.lastTab && this.allowedTabs.includes(result.lastTab.substring(4))
                 ? result.lastTab
                 : "tab_setup";
+        const tabKey = tabClass.substring(4);
 
-        $(`#tabs ul.mode-connected .${tab} a`).trigger("click");
+        import("./tab_switch.js").then(({ switchTab }) => {
+            if (!switchTab(tabKey, { mode: "connected" })) {
+                switchTab("setup", { mode: "connected" });
+            }
+        });
     }
     showYesNoDialog(yesNoDialogSettings) {
         // yesNoDialogSettings:
         // title, text, buttonYesText, buttonNoText, buttonYesCallback, buttonNoCallback
-        const dialog = $(".dialogYesNo");
-        const title = dialog.find(".dialogYesNoTitle");
-        const content = dialog.find(".dialogYesNoContent");
-        const buttonYes = dialog.find(".dialogYesNo-yesButton");
-        const buttonNo = dialog.find(".dialogYesNo-noButton");
+        const dialog = document.querySelector(".dialogYesNo");
+        const title = dialog.querySelector(".dialogYesNoTitle");
+        const content = dialog.querySelector(".dialogYesNoContent");
+        const buttonYes = dialog.querySelector(".dialogYesNo-yesButton");
+        const buttonNo = dialog.querySelector(".dialogYesNo-noButton");
 
-        title.html(yesNoDialogSettings.title);
-        content.html(yesNoDialogSettings.text);
-        buttonYes.html(yesNoDialogSettings.buttonYesText);
-        buttonNo.html(yesNoDialogSettings.buttonNoText);
+        title.innerHTML = yesNoDialogSettings.title;
+        content.innerHTML = yesNoDialogSettings.text;
+        buttonYes.innerHTML = yesNoDialogSettings.buttonYesText;
+        buttonNo.innerHTML = yesNoDialogSettings.buttonNoText;
 
-        buttonYes.off("click");
-        buttonNo.off("click");
-
-        buttonYes.on("click", () => {
-            dialog[0].close();
+        buttonYes.onclick = () => {
+            dialog.close();
             yesNoDialogSettings.buttonYesCallback?.();
-        });
+        };
 
-        buttonNo.on("click", () => {
-            dialog[0].close();
+        buttonNo.onclick = () => {
+            dialog.close();
             yesNoDialogSettings.buttonNoCallback?.();
-        });
+        };
 
-        dialog[0].showModal();
+        dialog.showModal();
     }
     showWaitDialog(waitDialogSettings) {
         // waitDialogSettings:
         // title, buttonCancelCallback
-        const dialog = $(".dialogWait")[0];
-        const title = $(".dialogWaitTitle");
-        const buttonCancel = $(".dialogWait-cancelButton");
+        const dialog = document.querySelector(".dialogWait");
+        const title = dialog.querySelector(".dialogWaitTitle");
+        const buttonCancel = dialog.querySelector(".dialogWait-cancelButton");
 
-        title.html(waitDialogSettings.title);
-        buttonCancel.toggle(!!waitDialogSettings.buttonCancelCallback);
+        title.innerHTML = waitDialogSettings.title;
+        buttonCancel.style.display = waitDialogSettings.buttonCancelCallback ? "" : "none";
 
-        buttonCancel.off("click");
-
-        buttonCancel.on("click", () => {
+        buttonCancel.onclick = () => {
             dialog.close();
             waitDialogSettings.buttonCancelCallback?.();
-        });
+        };
 
         dialog.showModal();
         return dialog;
@@ -388,46 +369,42 @@ class GuiControl {
         // informationDialogSettings:
         // title, text, buttonConfirmText
         return new Promise((resolve) => {
-            const dialog = $(".dialogInformation");
-            const title = dialog.find(".dialogInformationTitle");
-            const content = dialog.find(".dialogInformationContent");
-            const buttonConfirm = dialog.find(".dialogInformation-confirmButton");
+            const dialog = document.querySelector(".dialogInformation");
+            const title = dialog.querySelector(".dialogInformationTitle");
+            const content = dialog.querySelector(".dialogInformationContent");
+            const buttonConfirm = dialog.querySelector(".dialogInformation-confirmButton");
 
-            title.html(informationDialogSettings.title);
-            content.html(informationDialogSettings.text);
-            buttonConfirm.html(informationDialogSettings.buttonConfirmText);
+            title.innerHTML = informationDialogSettings.title;
+            content.innerHTML = informationDialogSettings.text;
+            buttonConfirm.innerHTML = informationDialogSettings.buttonConfirmText;
 
-            buttonConfirm.off("click");
-
-            buttonConfirm.on("click", () => {
-                dialog[0].close();
+            buttonConfirm.onclick = () => {
+                dialog.close();
                 resolve();
-            });
+            };
 
-            dialog[0].showModal();
+            dialog.showModal();
         });
     }
     showInteractiveDialog(interactiveDialogSettings) {
         // interactiveDialogSettings:
         // title, text, buttonCloseText
+        const dialogStore = useDialogStore(pinia);
         return new Promise((resolve) => {
-            const dialog = $(".dialogInteractive");
-            const title = dialog.find(".dialogInteractiveTitle");
-            const content = dialog.find(".dialogInteractiveContent");
-            const buttonClose = dialog.find(".dialogInteractive-closeButton");
-
-            title.html(interactiveDialogSettings.title);
-            content.html(interactiveDialogSettings.text);
-            buttonClose.html(interactiveDialogSettings.buttonCloseText);
-
-            buttonClose.off("click");
-
-            buttonClose.on("click", () => {
-                dialog[0].close();
-                resolve();
-            });
-
-            dialog[0].showModal();
+            dialogStore.open(
+                "InteractiveDialog",
+                {
+                    title: interactiveDialogSettings.title ?? "",
+                    buttonCloseText: interactiveDialogSettings.buttonCloseText ?? "",
+                    commandPlaceholder: i18n.getMessage("cliCommand"),
+                },
+                {
+                    close: () => {
+                        dialogStore.close();
+                        resolve();
+                    },
+                },
+            );
         });
     }
     escapeHtml(unsafe) {
@@ -439,10 +416,11 @@ class GuiControl {
             .replace(/'/g, "&#039;");
     }
     addLinksTargetBlank(element) {
-        element.find("a").each(function () {
-            $(this).attr("target", "_blank");
-        });
+        for (const a of element.querySelectorAll("a")) {
+            a.setAttribute("target", "_blank");
+        }
     }
+
     showCliPanel() {
         function set_cli_response(response) {
             const eol = "\n";
@@ -450,37 +428,55 @@ class GuiControl {
             for (const line of response) {
                 output += `${line}${eol}`;
             }
-            // gui_log(output.split(eol).join('<br>'));
-            $("#cli-command").val("");
-            $("#cli-response").text(output);
-        }
-
-        // cli-command button hook
-        $("input#cli-command").change(function () {
-            const _self = $(this);
-            const command = _self.val();
-            if (!command) {
-                return;
+            const cliCommand = document.getElementById("cli-command");
+            if (cliCommand) {
+                cliCommand.value = "";
             }
-            MSP.send_cli_command(command, function (response) {
-                set_cli_response(response);
-            });
-        });
+            const cliResponse = document.getElementById("cli-response");
+            if (cliResponse) {
+                cliResponse.textContent = output;
+            }
+        }
 
         const cliPanelDialog = {
             title: i18n.getMessage("cliPanelTitle"),
-            buttonCloseText: i18n.getMessage("Close"),
+            buttonCloseText: i18n.getMessage("close"),
         };
 
-        // clear any text leftovers from previous session
-        $("#cli-command").val("");
-        $("#cli-response").text("");
-
         this.showInteractiveDialog(cliPanelDialog);
+
+        // Wait for dialog to render before hooking up DOM elements
+        setTimeout(() => {
+            // clear response from previous session
+            const cliResponse = document.getElementById("cli-response");
+            if (cliResponse) {
+                cliResponse.textContent = "";
+            }
+
+            // cli-command input hook
+            const cliCommandInput = document.querySelector("input#cli-command");
+            if (cliCommandInput) {
+                cliCommandInput.onchange = function () {
+                    const command = this.value;
+                    if (!command) {
+                        return;
+                    }
+                    MSP.send_cli_command(command, function (response) {
+                        set_cli_response(response);
+                    });
+                };
+                cliCommandInput.focus();
+            }
+        }, 100);
     }
 }
 
-const GUI = new GuiControl();
+export function createGui() {
+    const gui = new GuiControl();
+    return reactive(gui);
+}
+
+const GUI = createGui();
 
 export { TABS };
 export default GUI;

@@ -1,10 +1,14 @@
-import { defineConfig } from "eslint-define-config";
 import vuePlugin from "eslint-plugin-vue";
 import prettierPlugin from "eslint-plugin-prettier";
 import unusedImportsPlugin from "eslint-plugin-unused-imports";
 import vueParser from "vue-eslint-parser";
 
-export default defineConfig([
+export default [
+    {
+        // Vendored blackbox-log-viewer source and assets — keep upstream formatting, not linted
+        // against configurator rules to avoid churn and drift on re-vendor.
+        ignores: ["src/blackbox-viewer/**", "src/js/webworkers/**", "src/js/three.min.js"],
+    },
     {
         files: ["**/*.js", "**/*.vue"],
         languageOptions: {
@@ -12,7 +16,6 @@ export default defineConfig([
             sourceType: "module",
             globals: {
                 ol: "readonly",
-                wNumb: "readonly",
                 ConfigStorage: "readonly",
                 // globals for vite
                 __APP_PRODUCTNAME__: "readonly",
@@ -47,7 +50,7 @@ export default defineConfig([
                 },
             ],
         },
-        ignores: ["dist/", "*.json", "*.html", "*.less", "*.css", "package.json"],
+        ignores: ["dist/", "src/dist/", "*.json", "*.html", "*.less", "*.css", "package.json"],
     },
     {
         files: ["**/*.vue"],
@@ -56,4 +59,4 @@ export default defineConfig([
         },
         processor: "vue/vue",
     },
-]);
+];

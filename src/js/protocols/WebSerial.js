@@ -35,6 +35,14 @@ async function* streamAsyncIterable(reader, keepReadingFlag) {
  * WebSerial protocol implementation for the Serial base class
  */
 class WebSerial extends EventTarget {
+    // Stable id per physical SerialPort object. The browser reuses the same
+    // SerialPort instance across an MCU-reboot USB re-enumeration, so keying the
+    // id off object identity yields an id that survives device-list rebuilds —
+    // unlike a bare counter that would reset every time loadDevices() runs.
+    // WeakMap so entries are collected once the browser drops the SerialPort.
+    #portIds = new WeakMap();
+    #nextPortId = 0;
+
     constructor() {
         super();
 
@@ -96,8 +104,34 @@ class WebSerial extends EventTarget {
         this.disconnect();
     }
 
-    getConnectedPort() {
+    getConnectedDevice() {
         return this.port;
+    }
+
+    /**
+     * Return the raw W3C SerialPort for a given path, so callers that need direct
+     * port access (e.g. esptool-js for ESP32 flashing) can own open/close and signals.
+     * @param {string} path - port path (e.g. "serial")
+     * @returns {SerialPort|undefined}
+     */
+    getNativePort(path) {
+        return this.ports.find((device) => device.path === path)?.port;
+    }
+
+    /**
+     * Return the stable id for a SerialPort object, minting one on first sighting
+     * and reusing it for the same object thereafter. The same reused SerialPort
+     * across a re-enumeration therefore always maps to the same path.
+     * @param {SerialPort} port
+     * @returns {string} stable id, e.g. "serial_0"
+     */
+    #getStablePortId(port) {
+        let id = this.#portIds.get(port);
+        if (id === undefined) {
+            id = `serial_${this.#nextPortId++}`;
+            this.#portIds.set(port, id);
+        }
+        return id;
     }
 
     createPort(port) {
@@ -106,7 +140,7 @@ class WebSerial extends EventTarget {
             ? vendorIdNames[portInfo.usbVendorId]
             : `VID:${portInfo.usbVendorId} PID:${portInfo.usbProductId}`;
         return {
-            path: "serial",
+            path: this.#getStablePortId(port),
             displayName: `Betaflight ${displayName}`,
             vendorId: portInfo.usbVendorId,
             productId: portInfo.usbProductId,
@@ -325,6 +359,68 @@ class WebSerial extends EventTarget {
         }
     }
 
+    forceClose() {
+        // Best-effort teardown for page-unload (pagehide / beforeunload).
+        // Instance refs are nulled immediately so the rest of the class sees a
+        // disconnected state; the actual async teardown runs in a Promise chain
+        // that Chrome typically drains before destroying the JS context.
+        if (!this.port && !this.reader && !this.writer) {
+            return;
+        }
+
+        this.connected = false;
+        this.transmitting = false;
+        this.reading = false;
+
+        this.removeEventListener("receive", this.handleReceiveBytes);
+
+        const reader = this.reader;
+        const writer = this.writer;
+        const port = this.port;
+        this.reader = null;
+        this.writer = null;
+        this.port = null;
+
+        if (port) {
+            port.removeEventListener("disconnect", this.handleDisconnect);
+        }
+
+        // Mirrors the disconnect() sequence but without awaiting at call-site.
+        (async () => {
+            // 1. Cancel reader — resolves the pending read in streamAsyncIterable,
+            //    whose finally block will call releaseLock() on the readable side.
+            if (reader) {
+                try {
+                    await reader.cancel();
+                } catch (error) {
+                    console.debug(`${logHead} forceClose: reader.cancel() failed during unload`, error);
+                }
+            }
+
+            if (writer) {
+                try {
+                    writer.releaseLock();
+                } catch (error) {
+                    console.debug(`${logHead} forceClose: writer.releaseLock() failed during unload`, error);
+                }
+            }
+
+            // Close port — Chrome allows this after reader.cancel() even if the
+            // reader lock is still technically held (streamAsyncIterable cleans up).
+            if (port) {
+                try {
+                    await port.close();
+                } catch (error) {
+                    console.debug(`${logHead} forceClose: port.close() failed during unload`, error);
+                }
+            }
+        })();
+
+        this.closeRequested = false;
+        this.connectionInfo = null;
+        this.connectionId = false;
+    }
+
     checkIsNeedBatchWrite() {
         const isMac = GUI.operating_system === "MacOS";
         return isMac && vendorIdNames[this.connectionInfo.usbVendorId] === "AT32";
@@ -376,15 +472,6 @@ class WebSerial extends EventTarget {
                 callback({ bytesSent: 0 });
             }
             return { bytesSent: 0 };
-        }
-    }
-
-    /**
-     * Clean up resources when the protocol is no longer needed
-     */
-    cleanup() {
-        if (this.connected) {
-            this.disconnect();
         }
     }
 }

@@ -1,12 +1,16 @@
 import { bit_check } from "./bit";
 import { reactive } from "vue";
-import { API_VERSION_1_45, API_VERSION_1_46 } from "./data_storage";
+import { API_VERSION_1_45, API_VERSION_1_46, API_VERSION_1_47 } from "./data_storage";
 import semver from "semver";
+
+const MAX_BATTERY_PROFILES = 3;
 
 const INITIAL_CONFIG = {
     apiVersion: "0.0.0",
     flightControllerIdentifier: "",
-    flightControllerVersion: "",
+    // Valid semver default so consumers (e.g. CLI autocomplete) that call semver.*
+    // on it before MSP_FC_VERSION arrives don't throw "Invalid Version".
+    flightControllerVersion: "0.0.0",
     version: 0,
     buildInfo: "",
     buildKey: "",
@@ -51,6 +55,9 @@ const INITIAL_CONFIG = {
     sampleRateHz: 0,
     configurationProblems: 0,
     hardwareName: "",
+    batteryProfile: 0,
+    numberOfBatteryProfiles: 0,
+    batteryProfileNames: Array(MAX_BATTERY_PROFILES).fill(""),
 };
 
 const INITIAL_ANALOG = {
@@ -84,6 +91,7 @@ const FIRMWARE_BUILD_OPTIONS = {
     USE_SERIALRX_SUMD: 4106,
     USE_SERIALRX_SUMH: 4107,
     USE_SERIALRX_XBUS: 4108,
+    USE_SERIALRX_MAVLINK: 4109,
 
     // Motor Protocols
     USE_BRUSHED: 8230,
@@ -126,6 +134,9 @@ const FIRMWARE_BUILD_OPTIONS = {
     USE_WING: 16424,
     USE_POSITION_HOLD: 16425,
     USE_CHIRP: 16426,
+    USE_FLIGHT_PLAN: 16427,
+    USE_OPTICALFLOW: 16428,
+    USE_RANGEFINDER: 16429,
 };
 
 const FC = {
@@ -160,15 +171,17 @@ const FC = {
     FC_CONFIG: null,
     FEATURE_CONFIG: null,
     FILTER_CONFIG: null,
+    GYRO_SENSOR: {},
+    SENSOR_NAMES: {},
     GPS_CONFIG: null,
     COMPASS_CONFIG: null,
-    GPS_DATA: null,
+    GPS_DATA: { fix: 0, numSat: 0, latitude: 0, longitude: 0 },
     GPS_RESCUE: null,
     LED_COLORS: null,
     LED_MODE_COLORS: null,
     LED_STRIP: null,
     LED_CONFIG_VALUES: [],
-    MCU_INFO: null,
+    MCU_INFO: {},
     MISC: null, // DEPRECATED
     MIXER_CONFIG: null,
     MODE_RANGES: null,
@@ -192,15 +205,14 @@ const FC = {
     RXFAIL_CONFIG: null,
     RX_CONFIG: null,
     SDCARD: null,
-    SENSOR_ALIGNMENT: null,
+    SENSOR_ALIGNMENT: {},
     SENSOR_CONFIG: null,
-    SENSOR_CONFIG_ACTIVE: null,
+    SENSOR_CONFIG_ACTIVE: {},
     SENSOR_DATA: null,
     SERIAL_CONFIG: null,
     SERVO_CONFIG: null,
     SERVO_DATA: null,
     SERVO_RULES: null,
-    TRANSPONDER: null,
     TUNING_SLIDERS: null,
     VOLTAGE_METERS: null,
     VOLTAGE_METER_CONFIGS: null,
@@ -326,6 +338,7 @@ const FC = {
             altitude: 0,
             sonar: 0,
             kinematics: [0.0, 0.0, 0.0],
+            quaternion: null,
             debug: [0, 0, 0, 0, 0, 0, 0, 0],
         };
 
@@ -457,13 +470,6 @@ const FC = {
             blackboxDisabledMask: 0,
         };
 
-        this.TRANSPONDER = {
-            supported: false,
-            data: [],
-            provider: 0,
-            providers: [],
-        };
-
         this.RC_DEADBAND_CONFIG = {
             deadband: 0,
             yaw_deadband: 0,
@@ -479,10 +485,6 @@ const FC = {
             gyro_to_use: 0,
             gyro_1_align: 0,
             gyro_2_align: 0,
-            gyro_align: [],
-            gyro_align_roll: [],
-            gyro_align_pitch: [],
-            gyro_align_yaw: [],
             mag_align_roll: 0,
             mag_align_pitch: 0,
             mag_align_yaw: 0,
@@ -537,6 +539,9 @@ const FC = {
             dyn_notch_count: 0,
             gyro_rpm_notch_harmonics: 0,
             gyro_rpm_notch_min_hz: 0,
+            gyro_rpm_notch_fade_range_hz: 0,
+            gyro_rpm_notch_q: 0,
+            gyro_rpm_notch_weights: [0, 0, 0],
         };
 
         this.ADVANCED_TUNING = {
@@ -607,6 +612,20 @@ const FC = {
             name: 0,
         };
 
+        this.GYRO_SENSOR = {
+            gyro_count: 0,
+            gyro_hardware: [],
+        };
+
+        this.SENSOR_NAMES = {
+            acc: [],
+            gyro: [],
+            baro: [],
+            mag: [],
+            sonar: [],
+            opticalflow: [],
+        };
+
         this.RX_CONFIG = {
             serialrx_provider: 0,
             stick_max: 0,
@@ -625,12 +644,14 @@ const FC = {
             fpvCamAngleDegrees: 0,
             rcSmoothingType: 0,
             rcSmoothingSetpointCutoff: 0,
+            rcSmoothingThrottleCutoff: 0,
             rcSmoothingFeedforwardCutoff: 0,
             rcSmoothingInputType: 0,
             rcSmoothingDerivativeType: 0,
             rcSmoothingAutoFactor: 0,
+            rcSmoothingAutoFactorThrottle: 0,
             usbCdcHidType: 0,
-            rcSmoothingMode: 0,
+            rcSmoothing: 0,
             elrsUid: [0, 0, 0, 0, 0, 0],
         };
 
@@ -809,6 +830,10 @@ const FC = {
             serialRxTypes.push("SPEKTRUM1024");
         }
 
+        if (semver.gte(apiVersion, API_VERSION_1_47)) {
+            serialRxTypes.push("MAVLINK");
+        }
+
         return serialRxTypes;
     },
 
@@ -855,10 +880,20 @@ const FC = {
             if (options.includes("USE_SERIALRX_GHST")) {
                 supportedRxTypes.push("IRC GHOST");
             }
+            if (options.includes("USE_SERIALRX_MAVLINK")) {
+                supportedRxTypes.push("MAVLINK");
+            }
             return supportedRxTypes;
         }
 
         return FC.getSerialRxTypes();
+    },
+
+    checkBuildOption(option) {
+        if (this.CONFIG.buildOptions?.length) {
+            return this.CONFIG.buildOptions.includes(option);
+        }
+        return true; // assume all options are available if build options are not known
     },
 
     calculateHardwareName() {

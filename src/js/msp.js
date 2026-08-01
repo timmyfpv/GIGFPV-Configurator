@@ -1,6 +1,7 @@
 import GUI from "./gui.js";
 import CONFIGURATOR from "./data_storage.js";
 import { serial } from "./serial.js";
+import { MspCancelledError, MspTimeoutError } from "./msp/mspErrors.js";
 
 const MSP = {
     symbols: {
@@ -51,25 +52,33 @@ const MSP = {
     message_buffer: null,
     message_buffer_uint8_view: null,
     message_checksum: 0,
-    messageIsJumboFrame: false,
     crcError: false,
 
     callbacks: [],
+    parked: new Map(), // errorAware requests parked behind an in-flight same-code request
     packet_error: 0,
     unsupported: 0,
 
-    MIN_TIMEOUT: 200,
-    MAX_TIMEOUT: 2000,
-    timeout: 200,
+    TIMEOUT: 1000,
+    MAX_RETRIES: 3,
 
     last_received_timestamp: null,
     listeners: [],
 
-    JUMBO_FRAME_SIZE_LIMIT: 255,
-
-    cli_buffer: [], // buffer for CLI charactor output
+    cli_buffer: [], // buffer for CLI character output
     cli_output: [],
     cli_callback: null,
+    cli_queue: [], // pending { command, callback, timeoutMs } entries
+    cli_in_flight: null,
+    cli_timer: null,
+    // When a CLI command times out, we don't know whether the firmware is
+    // mid-response, about to respond, or silent. Enter a "draining" state
+    // where every byte is dropped; the decoder clears the state on the
+    // closing ETX (so any bookended late response is consumed in full)
+    // or when the drain grace timer expires (a real hang).
+    cli_discarding: false,
+    cli_drain_timer: null,
+    cli_drain_grace_ms: 1000,
 
     read(readInfo) {
         if (CONFIGURATOR.virtualMode) {
@@ -79,17 +88,24 @@ const MSP = {
         const data = new Uint8Array(readInfo.data ?? readInfo);
 
         for (const chunk of data) {
+            if (this.cli_discarding) {
+                if (chunk === this.symbols.END_OF_TEXT) {
+                    this._end_cli_drain();
+                }
+                continue;
+            }
+
             switch (this.state) {
                 case this.decoder_states.CLI_COMMAND:
                     switch (chunk) {
                         case this.symbols.END_OF_TEXT:
                             this.cli_output.push(this.cli_buffer.join(""));
                             this.cli_buffer.length = 0;
-                            if (this.cli_callback) {
-                                this.cli_callback(this.cli_output);
-                                this.cli_output.length = 0;
-                            }
                             this.state = this.decoder_states.IDLE;
+                            if (this.cli_callback) {
+                                const response = this.cli_output;
+                                this.cli_callback(response);
+                            }
                             break;
                         case this.symbols.LINE_FEED:
                             this.cli_output.push(this.cli_buffer.join(""));
@@ -268,7 +284,11 @@ const MSP = {
         if (this.message_checksum === expectedChecksum) {
             // message received, store dataview
             this.dataView = new DataView(this.message_buffer, 0, this.message_length_expected);
-        } else if (serial._webBluetooth.shouldBypassCrc(expectedChecksum)) {
+        } else if (serial._protocol?.shouldBypassCrc?.(expectedChecksum)) {
+            // Capability check: only the Bluetooth protocols implement shouldBypassCrc,
+            // for BT-11/CC2541 bridges that corrupt the MSP checksum to 0xff. Not gated
+            // on serial.protocol — that getter returns the lowercased constructor name,
+            // never "bluetooth".
             this.dataView = new DataView(this.message_buffer, 0, this.message_length_expected);
             this.crcError = false; // Override the CRC error for this specific case
         } else {
@@ -280,7 +300,6 @@ const MSP = {
         // Reset variables
         this.message_length_received = 0;
         this.state = 0;
-        this.messageIsJumboFrame = false;
         this.crcError = false;
     },
     notify() {
@@ -289,7 +308,7 @@ const MSP = {
         });
     },
     listen(listener) {
-        if (this.listeners.indexOf(listener) == -1) {
+        if (this.listeners.indexOf(listener) === -1) {
             this.listeners.push(listener);
         }
     },
@@ -318,8 +337,8 @@ const MSP = {
         const dataLength = data ? data.length : 0;
         // always reserve 6 bytes for protocol overhead !
         const bufferSize = dataLength + 6;
-        let bufferOut = new ArrayBuffer(bufferSize);
-        let bufView = new Uint8Array(bufferOut);
+        const bufferOut = new ArrayBuffer(bufferSize);
+        const bufView = new Uint8Array(bufferOut);
 
         bufView[0] = 36; // $
         bufView[1] = 77; // M
@@ -371,98 +390,327 @@ const MSP = {
         bufView[bufferSize - 1] = this.symbols.END_OF_TEXT; // ETX
         return bufferOut;
     },
-    send_cli_command(str, callback) {
-        const bufferOut = this.encode_message_cli(str);
-        this.cli_callback = callback;
-
-        serial.send(bufferOut);
+    send_cli_command(str, callback, { timeoutMs } = {}) {
+        this.cli_queue.push({ command: str, callback, timeoutMs });
+        this._process_cli_queue();
     },
-    send_message(code, data, callback_sent, callback_msp, doCallbackOnError) {
-        const connected = serial.connected;
+    _process_cli_queue() {
+        if (this.cli_in_flight || this.cli_queue.length === 0) {
+            return;
+        }
 
-        if (code === undefined || !connected || CONFIGURATOR.virtualMode) {
+        const entry = this.cli_queue.shift();
+        this.cli_in_flight = entry;
+        this.cli_buffer.length = 0;
+        this.cli_output.length = 0;
+
+        this.cli_callback = (lines) => {
+            this._finish_cli([...lines], null);
+        };
+
+        if (entry.timeoutMs) {
+            this.cli_timer = setTimeout(() => {
+                this._finish_cli(
+                    [],
+                    new Error(`Timed out after ${entry.timeoutMs}ms waiting for response to "${entry.command}"`),
+                );
+            }, entry.timeoutMs);
+        }
+
+        serial.send(this.encode_message_cli(entry.command));
+    },
+    _finish_cli(lines, error) {
+        const entry = this.cli_in_flight;
+        if (!entry) {
+            return;
+        }
+
+        this.cli_in_flight = null;
+        this.cli_callback = null;
+        this.cli_buffer.length = 0;
+        this.cli_output.length = 0;
+
+        if (this.cli_timer) {
+            clearTimeout(this.cli_timer);
+            this.cli_timer = null;
+        }
+
+        try {
+            entry.callback?.(lines, error);
+        } catch (callbackError) {
+            console.error("CLI callback threw:", callbackError);
+        }
+
+        if (error) {
+            // Drain any in-flight or soon-to-arrive response before sending the
+            // next command; the decoder will end drain on ETX, otherwise the
+            // grace timer forces progress.
+            this.cli_discarding = true;
+            if (this.cli_drain_timer) {
+                clearTimeout(this.cli_drain_timer);
+            }
+            this.cli_drain_timer = setTimeout(() => this._end_cli_drain(), this.cli_drain_grace_ms);
+            return;
+        }
+
+        this._process_cli_queue();
+    },
+    _end_cli_drain() {
+        if (this.cli_drain_timer) {
+            clearTimeout(this.cli_drain_timer);
+            this.cli_drain_timer = null;
+        }
+        this.cli_discarding = false;
+        this.cli_buffer.length = 0;
+        this.cli_output.length = 0;
+        this.state = this.decoder_states.IDLE;
+        this._process_cli_queue();
+    },
+    _drain_cli_queue(error) {
+        if (this.cli_timer) {
+            clearTimeout(this.cli_timer);
+            this.cli_timer = null;
+        }
+        if (this.cli_drain_timer) {
+            clearTimeout(this.cli_drain_timer);
+            this.cli_drain_timer = null;
+        }
+
+        const pending = this.cli_queue.splice(0, this.cli_queue.length);
+        const inFlight = this.cli_in_flight;
+        this.cli_in_flight = null;
+        this.cli_callback = null;
+        this.cli_buffer.length = 0;
+        this.cli_output.length = 0;
+        this.cli_discarding = false;
+
+        for (const entry of [inFlight, ...pending]) {
+            if (!entry?.callback) {
+                continue;
+            }
+            try {
+                entry.callback([], error);
+            } catch (callbackError) {
+                console.error("CLI callback threw during drain:", callbackError);
+            }
+        }
+    },
+    send_message(code, data, callback_sent, callback_msp) {
+        if (code === undefined || !serial.connected || CONFIGURATOR.virtualMode) {
             if (callback_msp) {
                 callback_msp();
             }
             return false;
         }
 
-        let requestExists = false;
-        for (const instance of this.callbacks) {
-            if (instance.code === code) {
-                requestExists = true;
+        return this._transmit(code, data, callback_sent, callback_msp, false);
+    },
+    _buffer_matches(entry, view) {
+        if (entry.requestBuffer?.byteLength !== view.byteLength) {
+            return false;
+        }
+        const entryView = new Uint8Array(entry.requestBuffer);
+        for (let i = 0; i < view.byteLength; i++) {
+            if (entryView[i] !== view[i]) {
+                return false;
+            }
+        }
+        return true;
+    },
+    _transmit(code, data, callback_sent, callback_msp, errorAware) {
+        const bufferOut = code <= 254 ? this.encode_message_v1(code, data) : this.encode_message_v2(code, data);
+        const view = new Uint8Array(bufferOut);
 
-                break;
+        // Per-code serialisation: an errorAware request whose code matches an in-flight
+        // errorAware entry with a DIFFERENT buffer parks behind it (identical buffers
+        // dedup and attach instead). Same-code legacy entries never cause parking.
+        if (errorAware) {
+            const differentInFlight = this.callbacks.some(
+                (i) => i.errorAware && i.code === code && !this._buffer_matches(i, view),
+            );
+            if (differentInFlight) {
+                this._park(code, {
+                    code,
+                    requestBuffer: bufferOut,
+                    callback: callback_msp,
+                    callbackSent: callback_sent,
+                    errorAware: true,
+                });
+                return true;
             }
         }
 
-        const bufferOut = code <= 254 ? this.encode_message_v1(code, data) : this.encode_message_v2(code, data);
+        const requestExists = this.callbacks.some((i) => i.code === code && this._buffer_matches(i, view));
 
         const obj = {
-            code: code,
+            code,
             requestBuffer: bufferOut,
             callback: callback_msp,
-            callbackOnError: doCallbackOnError,
+            callbackSent: callback_sent,
+            errorAware,
+            attempts: 1,
             start: performance.now(),
         };
 
-        if (!requestExists) {
-            obj.timer = setTimeout(() => {
-                console.warn(
-                    `MSP: data request timed-out: ${code} ID: ${serial.connectionId} TAB: ${GUI.active_tab} TIMEOUT: ${
-                        this.timeout
-                    } QUEUE: ${this.callbacks.length} (${this.callbacks.map((e) => e.code)})`,
-                );
-                serial.send(bufferOut, (_sendInfo) => {
-                    obj.stop = performance.now();
-                    const executionTime = Math.round(obj.stop - obj.start);
-                    this.timeout = Math.max(this.MIN_TIMEOUT, Math.min(executionTime, this.MAX_TIMEOUT));
-                });
-            }, this.timeout);
+        // errorAware entries always arm their own timer (even when deduped) so an awaiter
+        // that attached onto a stalled request still settles.
+        if (errorAware || !requestExists) {
+            this._arm_timer(obj);
         }
 
         this.callbacks.push(obj);
 
         // always send messages with data payload (even when there is a message already in the queue)
         if (data || !requestExists) {
-            if (this.timeout > this.MIN_TIMEOUT) {
-                this.timeout--;
-            }
-
             serial.send(bufferOut, (sendInfo) => {
-                if (sendInfo.bytesSent === bufferOut.byteLength) {
-                    if (callback_sent) {
-                        callback_sent();
-                    }
+                if (sendInfo.bytesSent === bufferOut.byteLength && callback_sent) {
+                    callback_sent();
                 }
             });
         }
 
         return true;
     },
-
-    /**
-     * resolves: {command: code, data: data, length: message_length}
-     */
-    async promise(code, data) {
-        return new Promise((resolve) => {
-            this.send_message(code, data, false, (_data) => {
-                resolve(_data);
-            });
-        });
+    _arm_timer(obj) {
+        obj.timer = setTimeout(() => this._on_timeout(obj), this.TIMEOUT);
     },
-    callbacks_cleanup() {
-        for (const callback of this.callbacks) {
-            clearTimeout(callback.timer);
+    _on_timeout(obj) {
+        if (obj.attempts < this.MAX_RETRIES) {
+            obj.attempts++;
+            console.warn(
+                `MSP: data request timed-out: ${obj.code} ID: ${serial.connectionId} TAB: ${GUI.active_tab} QUEUE: ${this.callbacks.length} (${this.callbacks.map((e) => e.code)})`,
+            );
+            serial.send(obj.requestBuffer, (_sendInfo) => {
+                obj.stop = performance.now();
+                const executionTime = Math.round(obj.stop - obj.start);
+                // We should probably give up connection if the request takes too long ?
+                if (executionTime > 5000) {
+                    console.warn(
+                        `MSP: data request took too long: ${obj.code} ID: ${serial.connectionId} TAB: ${GUI.active_tab} EXECUTION TIME: ${executionTime}ms`,
+                    );
+                }
+            });
+            this._arm_timer(obj);
+            return;
         }
 
+        clearTimeout(obj.timer);
+        obj.timer = null;
+
+        if (!obj.errorAware) {
+            // legacy: give up retrying but leave the entry queued so a late response still fires it
+            return;
+        }
+
+        const index = this.callbacks.indexOf(obj);
+        if (index !== -1) {
+            this.callbacks.splice(index, 1);
+        }
+        try {
+            obj.callback?.(null, new MspTimeoutError(`MSP request timed out: ${obj.code}`, obj.code));
+        } catch (callbackError) {
+            console.error("MSP callback threw on timeout:", callbackError);
+        }
+        this._release_parked(obj.code);
+    },
+    _park(code, entry) {
+        let queue = this.parked.get(code);
+        if (!queue) {
+            queue = [];
+            this.parked.set(code, queue);
+        }
+        queue.push(entry);
+    },
+    _release_parked(code) {
+        const queue = this.parked.get(code);
+        if (!queue || queue.length === 0) {
+            return;
+        }
+        if (this.callbacks.some((i) => i.errorAware && i.code === code)) {
+            return;
+        }
+
+        const entry = queue.shift();
+        if (queue.length === 0) {
+            this.parked.delete(code);
+        }
+
+        entry.attempts = 1;
+        entry.start = performance.now();
+        this._arm_timer(entry);
+        this.callbacks.push(entry);
+
+        serial.send(entry.requestBuffer, (sendInfo) => {
+            if (sendInfo.bytesSent === entry.requestBuffer.byteLength && entry.callbackSent) {
+                entry.callbackSent();
+            }
+        });
+    },
+    /**
+     * resolves: {command: code, data: data, length: message_length}
+     * rejects: MspTimeoutError, MspCancelledError or MspCrcError
+     */
+    async promise(code, data) {
+        if (code === undefined || CONFIGURATOR.virtualMode) {
+            return undefined;
+        }
+
+        if (!serial.connected) {
+            throw new MspCancelledError("MSP request while disconnected", code, "disconnected");
+        }
+
+        return new Promise((resolve, reject) => {
+            this._transmit(
+                code,
+                data,
+                false,
+                (response, error) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(response);
+                    }
+                },
+                true,
+            );
+        });
+    },
+    callbacks_cleanup(error = new MspCancelledError("MSP queue cleared", undefined, "cleanup")) {
+        const pending = this.callbacks;
         this.callbacks = [];
+
+        const parked = [];
+        for (const queue of this.parked.values()) {
+            parked.push(...queue);
+        }
+        this.parked.clear();
+
+        for (const entry of pending) {
+            clearTimeout(entry.timer);
+        }
+
+        for (const entry of [...pending, ...parked]) {
+            if (!entry.errorAware) {
+                continue;
+            }
+            try {
+                entry.callback?.(null, error);
+            } catch (callbackError) {
+                console.error("MSP callback threw during cleanup:", callbackError);
+            }
+        }
     },
     disconnect_cleanup() {
         this.state = 0; // reset packet state for "clean" initial entry (this is only required if user hot-disconnects)
         this.packet_error = 0; // reset CRC packet error counter for next session
 
-        this.callbacks_cleanup();
+        this.callbacks_cleanup(new MspCancelledError("Serial connection closed", undefined, "disconnected"));
+        // Tag the error so callers can distinguish an EXPECTED close-driven drain — a `save`/
+        // `exit` reboots the FC, closing the port before it can reply — from a genuine command
+        // failure. The save still succeeded; the board is just restarting.
+        const closedError = new Error("Serial connection closed");
+        closedError.connectionClosed = true;
+        this._drain_cli_queue(closedError);
     },
 };
 

@@ -1,18 +1,20 @@
-// This modules is imported and has side effect of attaching the
-// `i18n` helper to window and setting up `i18next`
-// in the future it should be pure. This means it should
-// explicitly export things used by other parts of the app.
+// This module is imported for its side effects: setting up i18next
+// and initializing the Vue app with plugins and global model.
 import "../js/localization.js";
 import "../js/injected_methods";
 import i18next from "i18next";
 import { createApp, reactive } from "vue";
+import ui from "@nuxt/ui/vue-plugin";
 import I18NextVue from "i18next-vue";
 import FC from "../js/fc.js";
 import MSP from "../js/msp.js";
-import PortHandler from "../js/port_handler.js";
+import DeviceHandler from "../js/device_handler.js";
 import PortUsage from "../js/port_usage.js";
 import CONFIGURATOR from "../js/data_storage.js";
 import { BetaflightComponents } from "../js/vue_components.js";
+import { getNuxtUiRouter } from "../js/nuxt_ui_router.js";
+import { pinia } from "../js/pinia_instance.js";
+import { get as getConfig } from "../js/ConfigStorage.js";
 
 // Connection tracking object
 const CONNECTION = reactive({
@@ -25,7 +27,7 @@ const CONNECTION = reactive({
  but these instance would eventually have more children
  which would find the use for those extra properties.
 
- FIXME For some reason, some of them (like PortHandler and FC)
+ FIXME For some reason, some of them (like DeviceHandler and FC)
  need to be marked as reactive in it's own module, to detect
  changes in arrays so I added the `reactive` wrapper there too.
 */
@@ -34,9 +36,15 @@ const betaflightModel = reactive({
     FC,
     MSP,
     PortUsage,
-    PortHandler,
+    DeviceHandler,
     CONNECTION,
+    // Reactive expert mode flag to drive tab visibility via Vue
+    // Load from ConfigStorage on init
+    expertMode: !!getConfig("expertMode").expertMode,
 });
+
+// Keep the legacy global model available while the app finishes moving away from imperative globals.
+globalThis.vm = betaflightModel;
 
 i18next.on("initialized", function () {
     console.log("i18n initialized, starting Vue framework");
@@ -47,7 +55,12 @@ i18next.on("initialized", function () {
         },
     });
 
-    app.use(I18NextVue, { i18next }).use(BetaflightComponents).mount("#main-wrapper");
+    app.use(pinia)
+        .use(I18NextVue, { i18next })
+        .use(BetaflightComponents)
+        .use(getNuxtUiRouter())
+        .use(ui)
+        .mount("#main-wrapper");
 
     if (process.env.NODE_ENV === "development") {
         console.log("Development mode enabled, installing Vue tools");
@@ -56,7 +69,4 @@ i18next.on("initialized", function () {
     }
 });
 
-// Not strictly necessary here, but if needed
-// it's always possible to modify this model in
-// jquery land to trigger updates in vue
-window.vm = betaflightModel;
+export { betaflightModel };
