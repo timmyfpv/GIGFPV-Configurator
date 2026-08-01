@@ -229,7 +229,6 @@ import { useConnectionStore } from "@/stores/connection";
 import FileSystem from "@/js/FileSystem";
 import { generateFilename } from "@/js/utils/generate_filename";
 import { i18n } from "@/js/localization";
-import { update_sensor_status } from "@/js/serial_backend";
 
 const store = usePresetsStore();
 const connectionStore = useConnectionStore();
@@ -248,7 +247,7 @@ function reportProgress({ index, total }) {
 async function onTabMounted() {
     store.initialize();
     GUI.content_ready();
-    void update_sensor_status();
+    void import("@/js/serial_backend").then(({ update_sensor_status }) => update_sensor_status());
     await store.reloadRepositories();
 }
 
