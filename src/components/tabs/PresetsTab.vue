@@ -420,7 +420,11 @@ async function loadConfigBackup() {
 }
 
 function isPresetCompatible(preset) {
-    return preset.firmware_version?.some((firmwareVersion) =>
+    if (!preset.firmware_version?.length) {
+        return true;
+    }
+
+    return preset.firmware_version.some((firmwareVersion) =>
         FC.CONFIG.flightControllerVersion.startsWith(firmwareVersion),
     );
 }

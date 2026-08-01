@@ -207,5 +207,10 @@ describe("useMspCliSession", () => {
             FC.CONFIG.flightControllerVersion = "4.6.0";
             expect(isMspCliSupported()).toBe(true);
         });
+
+        it("accepts coerced GIGFLIGHT-style versions", () => {
+            FC.CONFIG.flightControllerVersion = "26.0";
+            expect(isMspCliSupported()).toBe(true);
+        });
     });
 });
